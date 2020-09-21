@@ -1,6 +1,6 @@
 part of fcm_notifications;
 
-mixin FcmNotificationMixin<T extends StatefulWidget> on State<T> {
+mixin FCMNotificationMixin<T extends StatefulWidget> on State<T> {
   @override
   void initState() {
     _listener.addListener(_onNewNotify);
@@ -19,7 +19,7 @@ mixin FcmNotificationMixin<T extends StatefulWidget> on State<T> {
   void _onNewNotify() => onNotify(_listener.value);
 }
 
-mixin FcmNotificationClickMixin<T extends StatefulWidget> on State<T> {
+mixin FCMNotificationClickMixin<T extends StatefulWidget> on State<T> {
   @override
   void initState() {
     _clickListner.addListener(_onClick);
@@ -36,4 +36,56 @@ mixin FcmNotificationClickMixin<T extends StatefulWidget> on State<T> {
   void onClick(FCMNotification notification);
 
   void _onClick() => onClick(_clickListner.value);
+}
+
+class FCMNotificationLisner extends StatefulWidget {
+  final Widget child;
+  final Function(FCMNotification notification, VoidCallback setState)
+      onNotification;
+  const FCMNotificationLisner(
+      {Key key, @required this.child, this.onNotification})
+      : super(key: key);
+  @override
+  _FCMNotificationLisnerState createState() => _FCMNotificationLisnerState();
+}
+
+class _FCMNotificationLisnerState extends State<FCMNotificationLisner>
+    with FCMNotificationMixin {
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
+
+  @override
+  void onNotify(FCMNotification notification) {
+    widget.onNotification(notification, () {
+      if (mounted) setState(() {});
+    });
+  }
+}
+
+class FCMNotificationClickLisner extends StatefulWidget {
+  final Widget child;
+  final Function(FCMNotification notification, VoidCallback setState)
+      onNotificationClick;
+  const FCMNotificationClickLisner(
+      {Key key, @required this.child, this.onNotificationClick})
+      : super(key: key);
+  @override
+  _FCMNotificationClickState createState() => _FCMNotificationClickState();
+}
+
+class _FCMNotificationClickState extends State<FCMNotificationClickLisner>
+    with FCMNotificationClickMixin {
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
+
+  @override
+  void onClick(FCMNotification notification) {
+    widget.onNotificationClick(notification, () {
+      if (mounted) setState(() {});
+    });
+  }
 }

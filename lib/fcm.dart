@@ -24,7 +24,7 @@ FlutterLocalNotificationsPlugin _localeNotification =
 
 typedef FcmNoticationCallBack = void Function(FCMNotification notification);
 
-class FireBaseConfig {
+class FCMConfig {
   static FCMNotification _luanchedNotification;
   static String _androidChannelId;
   static String _androidChannelName;
