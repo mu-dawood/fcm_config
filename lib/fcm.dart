@@ -29,6 +29,7 @@ class FCMConfig {
   static String _androidChannelId;
   static String _androidChannelName;
   static String _androidChannelDiscription;
+  static String Function(String key, List<String> args) _translateMessage;
   static FCMNotification get luanchedNotification {
     var _notify = _luanchedNotification;
     _luanchedNotification = null;
@@ -52,10 +53,13 @@ class FCMConfig {
     @required String androidChannelId,
     @required String androidChannelName,
     @required String androidChannelDiscription,
+    String Function(String key, List<String> args) translateMessage,
   }) {
     _androidChannelId = androidChannelId;
     _androidChannelName = androidChannelName;
     _androidChannelDiscription = androidChannelDiscription;
+    _translateMessage = translateMessage;
+
     _firebaseMessaging.configure(
       onMessage: _onForgroundNotification,
       onLaunch: _onNotificationTap,
@@ -90,27 +94,44 @@ class FCMConfig {
 
   static Future<dynamic> _onForgroundNotification(
       Map<String, dynamic> message) async {
-    var notify = FCMNotification.fromJson(message);
+    var notify = FCMNotification.fromJson(message, _translateMessage);
     _diplayNotification(notify);
     _listener.value = notify;
   }
 
   static void _diplayNotification(FCMNotification notification) {
-    if (notification.notification == null) return;
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        _androidChannelId, _androidChannelName, _androidChannelDiscription,
-        importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    _localeNotification.show(0, notification.notification.title,
-        notification.notification.body, platformChannelSpecifics,
+    var _notification = notification.notification;
+    if (_notification == null) return;
+
+    var _android = AndroidNotificationDetails(
+      _androidChannelId,
+      _androidChannelName,
+      _androidChannelDiscription,
+      importance: Importance.Max,
+      priority: Priority.High,
+      ticker: 'ticker',
+      groupKey: notification.collapseKey,
+      sound: _notification.isDefaultSound
+          ? null
+          : (_notification.isRemoteSound
+              ? UriAndroidNotificationSound(_notification.sound)
+              : RawResourceAndroidNotificationSound(_notification.sound)),
+    );
+    var _ios = IOSNotificationDetails(
+      badgeNumber: _notification.badge,
+      sound: _notification.isDefaultSound ? null : _notification.sound,
+    );
+
+    var _details = NotificationDetails(_android, _ios);
+
+    _localeNotification.show(
+        0, _notification.getTitle(), _notification.getBody(), _details,
         payload: jsonEncode(notification.toJsonString()));
   }
 
   static Future<dynamic> _onNotificationTap(
       Map<String, dynamic> message) async {
-    var notifictaion = FCMNotification.fromJson(message);
+    var notifictaion = FCMNotification.fromJson(message, _translateMessage);
     _clickListner.value = notifictaion;
   }
 }
