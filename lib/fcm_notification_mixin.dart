@@ -43,7 +43,7 @@ class FCMNotificationLisner extends StatefulWidget {
   final Function(FCMNotification notification, VoidCallback setState)
       onNotification;
   const FCMNotificationLisner(
-      {Key key, @required this.child, this.onNotification})
+      {Key key, @required this.child, @required this.onNotification})
       : super(key: key);
   @override
   _FCMNotificationLisnerState createState() => _FCMNotificationLisnerState();
@@ -69,7 +69,7 @@ class FCMNotificationClickLisner extends StatefulWidget {
   final Function(FCMNotification notification, VoidCallback setState)
       onNotificationClick;
   const FCMNotificationClickLisner(
-      {Key key, @required this.child, this.onNotificationClick})
+      {Key key, @required this.child, @required this.onNotificationClick})
       : super(key: key);
   @override
   _FCMNotificationClickState createState() => _FCMNotificationClickState();
