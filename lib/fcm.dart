@@ -104,7 +104,7 @@ class FCMConfig {
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     _localeNotification.show(0, notification.notification.title,
-        notification.notification.title, platformChannelSpecifics,
+        notification.notification.body, platformChannelSpecifics,
         payload: jsonEncode(notification.toJsonString()));
   }
 
