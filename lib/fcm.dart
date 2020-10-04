@@ -70,7 +70,7 @@ class FCMConfig {
         AndroidInitializationSettings(forGroundIconName);
     var initializationSettingsIOS = IOSInitializationSettings();
     var initializationSettings = InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
     _localeNotification.initialize(initializationSettings,
         onSelectNotification: (payload) => payload == null
             ? () async {}
@@ -107,8 +107,8 @@ class FCMConfig {
       _androidChannelId,
       _androidChannelName,
       _androidChannelDiscription,
-      importance: Importance.Max,
-      priority: Priority.High,
+      importance: Importance.max,
+      priority: Priority.high,
       ticker: 'ticker',
       groupKey: notification.collapseKey,
       sound: _notification.isDefaultSound
@@ -122,7 +122,7 @@ class FCMConfig {
       sound: _notification.isDefaultSound ? null : _notification.sound,
     );
 
-    var _details = NotificationDetails(_android, _ios);
+    var _details = NotificationDetails(android: _android, iOS: _ios);
 
     _localeNotification.show(
         0, _notification.getTitle(), _notification.getBody(), _details,
