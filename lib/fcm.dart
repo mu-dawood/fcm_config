@@ -28,7 +28,7 @@ class FCMConfig {
   static FCMNotification _luanchedNotification;
   static String _androidChannelId;
   static String _androidChannelName;
-  static String _androidChannelDiscription;
+  static String _androidChannelDescription;
   static String Function(String key, List<String> args) _translateMessage;
   static FCMNotification get luanchedNotification {
     var _notify = _luanchedNotification;
@@ -52,12 +52,12 @@ class FCMConfig {
     @required String forGroundIconName,
     @required String androidChannelId,
     @required String androidChannelName,
-    @required String androidChannelDiscription,
+    @required String androidChannelDescription,
     String Function(String key, List<String> args) translateMessage,
   }) {
     _androidChannelId = androidChannelId;
     _androidChannelName = androidChannelName;
-    _androidChannelDiscription = androidChannelDiscription;
+    _androidChannelDescription = androidChannelDescription;
     _translateMessage = translateMessage;
 
     _firebaseMessaging.configure(
@@ -106,7 +106,7 @@ class FCMConfig {
     var _android = AndroidNotificationDetails(
       _androidChannelId,
       _androidChannelName,
-      _androidChannelDiscription,
+      _androidChannelDescription,
       importance: Importance.max,
       priority: Priority.high,
       ticker: 'ticker',
