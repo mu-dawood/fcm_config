@@ -1,4 +1,4 @@
-library fcm_notifications;
+library fcm_config;
 
 import 'dart:async';
 import 'dart:convert';

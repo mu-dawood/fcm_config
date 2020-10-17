@@ -1,4 +1,4 @@
-part of fcm_notifications;
+part of fcm_config;
 
 mixin FCMNotificationMixin<T extends StatefulWidget> on State<T> {
   @override
