@@ -17,7 +17,45 @@ Initialize
     androidChannelDiscription: "Your channel channel",
     androidChannelId: "channel id",
     androidChannelName: "Channel name",
-    forGroundIconName: "ic_launcher" // important you has to ,
+    forgroundIconName: "ic_launcher" // must be in drawble android folder,
   );
 ```
 
+No if you need to get the incomming notification :
+### First option
+```dart
+class MyScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FCMNotificationLisner(
+      onNotification:
+          (FCMNotification notification, void Function() setState) {},
+      child: SizedBox(),
+    );
+  }
+}
+```
+### Second option
+
+```dart
+class MyScreen extends StatefulWidget {
+  @override
+  _MyScreenState createState() => _MyScreenState();
+}
+
+class _MyScreenState extends State<MyScreen>
+    with FCMNotificationMixin {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox();
+  }
+
+  @override
+  void onNotify(FCMNotification notification) {
+    // do some thing
+  }
+}
+
+```
+
+### To listen notification tap there is `FCMNotificationClickLisner` and `FCMNotificationClickMixin` but be aware that its recommended to use it in main screen

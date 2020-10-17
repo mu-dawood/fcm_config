@@ -49,7 +49,7 @@ class FCMConfig {
       _firebaseMessaging.deleteInstanceID();
 
   static void initialize({
-    @required String forGroundIconName,
+    @required String forgroundIconName,
     @required String androidChannelId,
     @required String androidChannelName,
     @required String androidChannelDescription,
@@ -67,7 +67,7 @@ class FCMConfig {
     );
     _iOSPermission();
     var initializationSettingsAndroid =
-        AndroidInitializationSettings(forGroundIconName);
+        AndroidInitializationSettings(forgroundIconName);
     var initializationSettingsIOS = IOSInitializationSettings();
     var initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
