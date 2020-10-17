@@ -30,11 +30,6 @@ class FCMConfig {
   static String _androidChannelName;
   static String _androidChannelDescription;
   static String Function(String key, List<String> args) _translateMessage;
-  static FCMNotification get luanchedNotification {
-    var _notify = _luanchedNotification;
-    _luanchedNotification = null;
-    return _notify;
-  }
 
   static Stream<IosNotificationSettings> get iosSettingsLisner =>
       _firebaseMessaging.onIosSettingsRegistered;
@@ -43,6 +38,17 @@ class FCMConfig {
 
   static Future<String> getToken() {
     return _firebaseMessaging.getToken();
+  }
+
+  static Future<FCMNotification> get() async {
+    if (_luanchedNotification != null) return _luanchedNotification;
+    var details = await _localeNotification.getNotificationAppLaunchDetails();
+    if (details != null &&
+        details.didNotificationLaunchApp &&
+        details.payload != null) {
+      return FCMNotification.fromJson(
+          jsonDecode(details.payload), _translateMessage);
+    }
   }
 
   static Future<bool> deleteInstanceID() =>
@@ -62,7 +68,7 @@ class FCMConfig {
 
     _firebaseMessaging.configure(
       onMessage: _onForgroundNotification,
-      onLaunch: _onNotificationTap,
+      onLaunch: _onNotificationLaunch,
       onResume: _onNotificationTap,
     );
     _iOSPermission();
@@ -133,5 +139,12 @@ class FCMConfig {
       Map<String, dynamic> message) async {
     var notifictaion = FCMNotification.fromJson(message, _translateMessage);
     _clickListner.value = notifictaion;
+  }
+
+  static Future<dynamic> _onNotificationLaunch(
+      Map<String, dynamic> message) async {
+    _luanchedNotification =
+        FCMNotification.fromJson(message, _translateMessage);
+    _clickListner.value = _luanchedNotification;
   }
 }

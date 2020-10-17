@@ -59,3 +59,5 @@ class _MyScreenState extends State<MyScreen>
 ```
 
 ### To listen notification tap there is `FCMNotificationClickLisner` and `FCMNotificationClickMixin` but be aware that its recommended to use it in main screen
+
+### additional property `translateMessage` that can be passed in intialize to translate `body_loc_key,title_loc_key` it currently support only forground notification
