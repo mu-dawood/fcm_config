@@ -6,18 +6,18 @@
 - Notification is an object
 
 ## Setup
-- Folow native setup in the intial https://pub.dev/packages/firebase_messaging
--
+### Native
+- Folow native setup in  https://pub.dev/packages/firebase_messaging (Just native code no need for dart code)
+- Folow native setup in  https://pub.dev/packages/flutter_local_notifications (Just native code no need for dart code)
 
-### Dart/Flutter Integration
-
+### Dart/Flutter
+Initialize
 ```dart
- 
   FCMConfig.initialize(
     androidChannelDiscription: "Your channel channel",
     androidChannelId: "channel id",
     androidChannelName: "Channel name",
-    forGroundIconName: "ic_launcher",
+    forGroundIconName: "ic_launcher" // important you has to ,
   );
 ```
 
