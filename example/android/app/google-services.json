@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "209398921538",
+    "firebase_url": "https://paromera-188017.firebaseio.com",
+    "project_id": "paromera-188017",
+    "storage_bucket": "paromera-188017.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209398921538:android:f520e498e0ba690ff6b0db",
+        "android_client_info": {
+          "package_name": "com.example.example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "209398921538-u94856q6uc0hdb1arhgssancvmt0l76m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlDhfSlGVzIjQuPOUPlTYoaDfIqTFRDpQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "209398921538-u94856q6uc0hdb1arhgssancvmt0l76m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209398921538:android:5c475f1d1dad4510",
+        "android_client_info": {
+          "package_name": "com.injazz.taxic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "209398921538-u94856q6uc0hdb1arhgssancvmt0l76m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlDhfSlGVzIjQuPOUPlTYoaDfIqTFRDpQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "209398921538-u94856q6uc0hdb1arhgssancvmt0l76m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209398921538:android:f6c9a54c0265d8d6",
+        "android_client_info": {
+          "package_name": "com.injazz.taxid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "209398921538-u94856q6uc0hdb1arhgssancvmt0l76m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlDhfSlGVzIjQuPOUPlTYoaDfIqTFRDpQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "209398921538-u94856q6uc0hdb1arhgssancvmt0l76m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

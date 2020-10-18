@@ -9,8 +9,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 export 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-part 'fcm_notification.dart';
-part 'fcm_notification_mixin.dart';
+part '../src/fcm_notification.dart';
+part 'fcm_notification_click_listener.dart';
+part 'fcm_notification_listener.dart';
 
 //!  lisner for forground notification
 final ValueNotifier<FCMNotification> _listener =
@@ -40,27 +41,27 @@ class FCMConfig {
     return _firebaseMessaging.getToken();
   }
 
-  static Future<FCMNotification> get() async {
-    if (_luanchedNotification != null) return _luanchedNotification;
-    var details = await _localeNotification.getNotificationAppLaunchDetails();
-    if (details != null &&
-        details.didNotificationLaunchApp &&
-        details.payload != null) {
-      return FCMNotification.fromJson(
-          jsonDecode(details.payload), _translateMessage);
-    }
-  }
+  static FCMNotification get luanchedNotification => _luanchedNotification;
 
   static Future<bool> deleteInstanceID() =>
       _firebaseMessaging.deleteInstanceID();
 
-  static void initialize({
+  static Future initialize({
+    //This is default icon that locale notification use
     @required String forgroundIconName,
+    //This is android channel id that locale notification use
     @required String androidChannelId,
+    //This is android channel name that locale notification use
     @required String androidChannelName,
+    //This is android channel description that locale notification use
     @required String androidChannelDescription,
+    //Some times you need a translated message so you can use this to translate body_loc_key,body_loc_title
+    // body_loc_key,body_loc_title are the default keys of google fcm
+    // but till now offecial fcm plugin did not depend on flutter locale as it depend on device locale
+    // so this method will work only in forground
     String Function(String key, List<String> args) translateMessage,
-  }) {
+  }) async {
+    WidgetsFlutterBinding.ensureInitialized();
     _androidChannelId = androidChannelId;
     _androidChannelName = androidChannelName;
     _androidChannelDescription = androidChannelDescription;
@@ -69,7 +70,7 @@ class FCMConfig {
     _firebaseMessaging.configure(
       onMessage: _onForgroundNotification,
       onLaunch: _onNotificationLaunch,
-      onResume: _onNotificationTap,
+      onResume: _onResume,
     );
     _iOSPermission();
     var initializationSettingsAndroid =
@@ -78,9 +79,16 @@ class FCMConfig {
     var initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
     _localeNotification.initialize(initializationSettings,
-        onSelectNotification: (payload) => payload == null
-            ? () async {}
-            : _onNotificationTap(jsonDecode(payload)));
+        onSelectNotification: _onSelectLocaleNotification);
+    var luanchDetails =
+        await _localeNotification.getNotificationAppLaunchDetails();
+    if (luanchDetails != null &&
+        _luanchedNotification == null &&
+        luanchDetails.didNotificationLaunchApp &&
+        luanchDetails.payload != null) {
+      _luanchedNotification = FCMNotification.fromJson(
+          jsonDecode(luanchDetails.payload), _translateMessage);
+    }
   }
 
   static void subscribeToTopic(String topic) {
@@ -117,6 +125,7 @@ class FCMConfig {
       priority: Priority.high,
       ticker: 'ticker',
       groupKey: notification.collapseKey,
+      showProgress: true,
       sound: _notification.isDefaultSound
           ? null
           : (_notification.isRemoteSound
@@ -132,12 +141,20 @@ class FCMConfig {
 
     _localeNotification.show(
         0, _notification.getTitle(), _notification.getBody(), _details,
-        payload: jsonEncode(notification.toJsonString()));
+        payload: notification.toJsonString());
   }
 
-  static Future<dynamic> _onNotificationTap(
-      Map<String, dynamic> message) async {
+  static Future<dynamic> _onSelectLocaleNotification(String payload) async {
+    if (payload != null) {
+      var json = jsonDecode(payload);
+      var notifictaion = FCMNotification.fromJson(json, _translateMessage);
+      _clickListner.value = notifictaion;
+    }
+  }
+
+  static Future<dynamic> _onResume(Map<String, dynamic> message) async {
     var notifictaion = FCMNotification.fromJson(message, _translateMessage);
+    print(message);
     _clickListner.value = notifictaion;
   }
 

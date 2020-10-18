@@ -14,7 +14,7 @@
 Initialize
 ```dart
   FCMConfig.initialize(
-    androidChannelDiscription: "Your channel channel",
+    androidChannelDescription: "Your channel channel",
     androidChannelId: "channel id",
     androidChannelName: "Channel name",
     forgroundIconName: "ic_launcher" // must be in drawble android folder,
@@ -27,7 +27,7 @@ No if you need to get the incomming notification :
 class MyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FCMNotificationLisner(
+    return FCMNotificationListener(
       onNotification:
           (FCMNotification notification, void Function() setState) {},
       child: SizedBox(),
@@ -58,6 +58,6 @@ class _MyScreenState extends State<MyScreen>
 
 ```
 
-### To listen notification tap there is `FCMNotificationClickLisner` and `FCMNotificationClickMixin` but be aware that its recommended to use it in main screen
+### To listen notification tap there is `FCMNotificationClickListener` and `FCMNotificationClickMixin` but be aware that its recommended to use it in main screen
 
 ### additional property `translateMessage` that can be passed in intialize to translate `body_loc_key,title_loc_key` it currently support only forground notification
