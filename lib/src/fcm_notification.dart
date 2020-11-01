@@ -4,6 +4,8 @@ part of fcm_config;
 // it will be parsed from notification payload
 // we will search on notification then base object then data
 class _Notification {
+  bool _fromNotification = false;
+  bool get fromNotification => _fromNotification;
   String title;
   String body;
   String action;
@@ -58,7 +60,7 @@ class _Notification {
     Map<String, String> dataJson,
     String key,
   ) =>
-      json[key] ?? baseJson[key] ?? dataJson[key];
+      json ?? baseJson[key] ?? dataJson[key];
   Map<String, String> toJson() {
     return {
       "title": title,
@@ -88,12 +90,15 @@ class FCMNotification {
 
       collapseKey = json["collapse_key"] ?? data["collapse_key"];
       Map<String, String> _notification = (json['notification'] as Map)
-          .map((key, value) => MapEntry("$key", "$value"));
+              ?.map((key, value) => MapEntry("$key", "$value")) ??
+          {};
       Map<String, String> _json =
           json.map((key, value) => MapEntry("$key", "$value"));
 
       notification =
-          _Notification.fromJson(_notification, _json, data, translateMessage);
+          _Notification.fromJson(_notification, _json, data, translateMessage)
+            .._fromNotification =
+                _notification.isEmpty && _json["title"] == null;
     } catch (e) {
       print(e);
     }

@@ -7,7 +7,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-export 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 part '../src/fcm_notification.dart';
 part 'fcm_notification_click_listener.dart';
@@ -115,7 +114,8 @@ class FCMConfig {
 
   static void _diplayNotification(FCMNotification notification) {
     var _notification = notification.notification;
-    if (_notification == null) return;
+    if (_notification == null || _notification.fromNotification == false)
+      return;
 
     var _android = AndroidNotificationDetails(
       _androidChannelId,

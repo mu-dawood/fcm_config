@@ -26,7 +26,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage>
     with FCMNotificationMixin, FCMNotificationClickMixin {
   FCMNotification _notification = FCMConfig.luanchedNotification;
-  final String serverToken = 'your key';
+  final String serverToken =
+      'AAAAMMEl-UI:APA91bFArrqT1c17s_JAZYLmRzIOne83kvt5AfNihIP1G5wXXgNTPFrfwume2INYAUmdt4MHDuY9OCoMDAjTEJFJpOfxt85bwp7VI0m5t4qpT0rOaRnlQXYENr3IBlLHI9yb8emiyZkr';
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage>
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.send_rounded),
         onPressed: () async {
           send();
         },
@@ -71,10 +73,10 @@ class _MyHomePageState extends State<MyHomePage>
       },
       body: jsonEncode(
         <String, dynamic>{
-          'notification': <String, dynamic>{
-            'body': 'this is a body',
-            'title': 'this is a title'
-          },
+          // 'notification': <String, dynamic>{
+          //   'body': 'this is a body',
+          //   'title': 'this is a title'
+          // },
           'priority': 'high',
           'data': <String, dynamic>{
             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
