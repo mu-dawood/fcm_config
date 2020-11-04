@@ -5,12 +5,6 @@ import 'package:fcm_config/fcm_config.dart';
 import 'package:http/http.dart' as http;
 
 void main() async {
-  await FCMConfig.initialize(
-    androidChannelDescription: "Example channel channel",
-    androidChannelId: "Example",
-    androidChannelName: "Example",
-    forgroundIconName: "ic_launcher",
-  );
   runApp(MaterialApp(
     home: MyHomePage(),
   ));
@@ -25,9 +19,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with FCMNotificationMixin, FCMNotificationClickMixin {
-  FCMNotification _notification = FCMConfig.luanchedNotification;
-  final String serverToken =
-      'AAAAMMEl-UI:APA91bFArrqT1c17s_JAZYLmRzIOne83kvt5AfNihIP1G5wXXgNTPFrfwume2INYAUmdt4MHDuY9OCoMDAjTEJFJpOfxt85bwp7VI0m5t4qpT0rOaRnlQXYENr3IBlLHI9yb8emiyZkr';
+  RemoteMessage _notification;
+  final String serverToken = 'your key here';
+  @override
+  void initState() {
+    FCmConfig.init(appAndroidIcon: 'ic_launcher').then((value) {
+      FirebaseMessaging.instance.getToken().then((value) {
+        print(value);
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +42,12 @@ class _MyHomePageState extends State<MyHomePage>
           children: <Widget>[
             ListTile(
               title: Text("title"),
-              subtitle: Text(
-                  _notification?.notification?.getTitle() ?? "No notification"),
+              subtitle: Text(_notification?.notification?.title ?? ""),
             ),
             ListTile(
               title: Text("Body"),
-              subtitle: Text(
-                  _notification?.notification?.getBody() ?? "No notification"),
+              subtitle:
+                  Text(_notification?.notification?.body ?? "No notification"),
             ),
             if (_notification != null)
               ListTile(
@@ -73,39 +75,34 @@ class _MyHomePageState extends State<MyHomePage>
       },
       body: jsonEncode(
         <String, dynamic>{
-          // 'notification': <String, dynamic>{
-          //   'body': 'this is a body',
-          //   'title': 'this is a title'
-          // },
+          'notification': <String, dynamic>{
+            'body': 'this is a body',
+            'title': 'this is a title'
+          },
           'priority': 'high',
           'data': <String, dynamic>{
-            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
             'id': '1',
             'status': 'done',
-            "title":
-                "Hello Notification API", //To handle on resume and  on luanch as they cannot read notification object
-            "body":
-                "Send From Notification API", //To handle on resume and  on luanch as they cannot read notification object
           },
-          'to': await FCMConfig.getToken(),
+          'to': await FirebaseMessaging.instance.getToken(),
         },
       ),
     );
   }
 
   @override
-  void onNotify(FCMNotification notification) {
+  void onNotify(RemoteMessage notification) {
     setState(() {
       _notification = notification;
     });
   }
 
   @override
-  void onClick(FCMNotification notification) {
+  void onClick(RemoteMessage notification) {
     setState(() {
       _notification = notification;
     });
     print(
-        "Notification clicked with title: ${notification.notification.getTitle()} && body: ${notification.notification.getBody()}");
+        "Notification clicked with title: ${notification.notification.title} && body: ${notification.notification.body}");
   }
 }

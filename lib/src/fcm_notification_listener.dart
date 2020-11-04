@@ -1,31 +1,34 @@
 part of fcm_config;
 
-// This mixin can listen to incomming notification
+/// This mixin can listen to incomming notification
 mixin FCMNotificationMixin<T extends StatefulWidget> on State<T> {
+  StreamSubscription<RemoteMessage> _subscription;
   @override
   void initState() {
-    _listener.addListener(_onNewNotify);
+    _subscription = FirebaseMessaging.onMessage.listen(_onNewNotify);
     super.initState();
   }
 
   @override
   void dispose() {
-    _listener.removeListener(_onNewNotify);
-
+    _subscription.cancel();
     super.dispose();
   }
 
-  // Will be called whenever a new notification come and app is in forground
-  void onNotify(FCMNotification notification);
+  /// Will be called whenever a new notification come and app is in forground
+  void onNotify(RemoteMessage notification);
 
-  void _onNewNotify() => onNotify(_listener.value);
+  void _onNewNotify(RemoteMessage notification) {
+    if (mounted) onNotify(notification);
+  }
 }
 
-// This mixin can listen to incomming notification instead of mixin
+/// This mixin can listen to incomming notification instead of mixin
 class FCMNotificationListener extends StatefulWidget {
   final Widget child;
-  // Will be called whenever a new notification come and app is in forground
-  final Function(FCMNotification notification, VoidCallback setState)
+
+  /// Will be called whenever a new notification come and app is in forground
+  final Function(RemoteMessage notification, VoidCallback setState)
       onNotification;
   const FCMNotificationListener(
       {Key key, @required this.child, @required this.onNotification})
@@ -43,8 +46,9 @@ class _FCMNotificationListenerState extends State<FCMNotificationListener>
   }
 
   @override
-  // Will be called whenever a new notification come and app is in forground
-  void onNotify(FCMNotification notification) {
+
+  /// Will be called whenever a new notification come and app is in forground
+  void onNotify(RemoteMessage notification) {
     widget.onNotification(notification, () {
       if (mounted) setState(() {});
     });

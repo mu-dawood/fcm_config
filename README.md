@@ -5,23 +5,31 @@
 - Easly recieve clicked  where you are
 - Notification is an object
 
-## Setup
-### Native
-- Folow native setup in  https://pub.dev/packages/firebase_messaging (Just native code no need for dart code)
-- Folow native setup in  https://pub.dev/packages/flutter_local_notifications (Just native code no need for dart code)
+# Setup
+### Android
+  Go here https://firebase.flutter.dev/docs/installation/android
+
+### Ios
+  Go here https://firebase.flutter.dev/docs/installation/ios
+
+### Android
+  Go here https://firebase.flutter.dev/docs/installation/macos
 
 ### Dart/Flutter
 Initialize
 ```dart
-  FCMConfig.initialize(
-    androidChannelDescription: "Your channel channel",
-    androidChannelId: "channel id",
-    androidChannelName: "Channel name",
-    forgroundIconName: "ic_launcher" // must be in drawble android folder,
-  );
+ await FCmConfig.init(appAndroidIcon: 'ic_launcher');
+ FirebaseMessaging.instance.getToken().then((token) {
+      print(token);
+ });
+```
+To get notification that launched the application
+```dart
+ await FCmConfig.getInitialMessage();
+ 
 ```
 
-No if you need to get the incomming notification :
+Now if you need to get the incomming notification :
 ### First option
 ```dart
 class MyScreen extends StatelessWidget {

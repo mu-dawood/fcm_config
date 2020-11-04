@@ -3,165 +3,276 @@ library fcm_config;
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-part '../src/fcm_notification.dart';
 part 'fcm_notification_click_listener.dart';
 part 'fcm_notification_listener.dart';
 
-//!  lisner for forground notification
-final ValueNotifier<FCMNotification> _listener =
-    ValueNotifier<FCMNotification>(null);
-final ValueNotifier<FCMNotification> _clickListner =
-    ValueNotifier<FCMNotification>(null);
+mixin FCmConfig implements FirebaseMessaging {
+  static StreamSubscription<RemoteMessage> _subscription;
+  static final StreamController<RemoteMessage> _onLocaleClick =
+      StreamController<RemoteMessage>.broadcast();
 
-final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-FlutterLocalNotificationsPlugin _localeNotification =
-    FlutterLocalNotificationsPlugin();
-
-typedef FcmNoticationCallBack = void Function(FCMNotification notification);
-
-class FCMConfig {
-  static FCMNotification _luanchedNotification;
-  static String _androidChannelId;
-  static String _androidChannelName;
-  static String _androidChannelDescription;
-  static String Function(String key, List<String> args) _translateMessage;
-
-  static Stream<IosNotificationSettings> get iosSettingsLisner =>
-      _firebaseMessaging.onIosSettingsRegistered;
-  static Stream<String> get tokenRefreshLisner =>
-      _firebaseMessaging.onTokenRefresh;
-
-  static Future<String> getToken() {
-    return _firebaseMessaging.getToken();
+  Future<RemoteMessage> getInitialMessage() async {
+    FlutterLocalNotificationsPlugin _localeNotification =
+        FlutterLocalNotificationsPlugin();
+    var payload = await _localeNotification.getNotificationAppLaunchDetails();
+    if (payload != null && payload.didNotificationLaunchApp) {
+      return RemoteMessage.fromMap(jsonDecode(payload.payload));
+    }
+    return await FirebaseMessaging.instance.getInitialMessage();
   }
 
-  static FCMNotification get luanchedNotification => _luanchedNotification;
+  static Future _onPayLoad(String payload) async {
+    var message = RemoteMessage.fromMap(jsonDecode(payload));
+    _onLocaleClick.add(message);
+  }
 
-  static Future<bool> deleteInstanceID() =>
-      _firebaseMessaging.deleteInstanceID();
+  static Future init({
+    /// Drawable icon works only in forground
+    @required String appAndroidIcon,
 
-  static Future initialize({
-    //This is default icon that locale notification use
-    @required String forgroundIconName,
-    //This is android channel id that locale notification use
-    @required String androidChannelId,
-    //This is android channel name that locale notification use
-    @required String androidChannelName,
-    //This is android channel description that locale notification use
-    @required String androidChannelDescription,
-    //Some times you need a translated message so you can use this to translate body_loc_key,body_loc_title
-    // body_loc_key,body_loc_title are the default keys of google fcm
-    // but till now offecial fcm plugin did not depend on flutter locale as it depend on device locale
-    // so this method will work only in forground
-    String Function(String key, List<String> args) translateMessage,
+    /// Required to show head up notification in foreground
+    String androidChannelId,
+
+    /// Required to show head up notification in foreground
+    String androidChannelName,
+
+    /// Required to show head up notification in foreground
+    String androidChannelDescription,
+
+    /// Request permission to display alerts. Defaults to `true`.
+    ///
+    /// iOS/macOS only.
+    bool alert = true,
+
+    /// Request permission for Siri to automatically read out notification messages over AirPods.
+    /// Defaults to `false`.
+    ///
+    /// iOS only.
+    bool announcement = false,
+
+    /// Request permission to update the application badge. Defaults to `true`.
+    ///
+    /// iOS/macOS only.
+    bool badge = true,
+
+    /// Request permission to display notifications in a CarPlay environment.
+    /// Defaults to `false`.
+    ///
+    /// iOS only.
+    bool carPlay = false,
+
+    /// Request permission for critical alerts. Defaults to `false`.
+    ///
+    /// Note; your application must explicitly state reasoning for enabling
+    /// critical alerts during the App Store review process or your may be
+    /// rejected.
+    ///
+    /// iOS only.
+    bool criticalAlert = false,
+
+    /// Request permission to provisionally create non-interrupting notifications.
+    /// Defaults to `false`.
+    ///
+    /// iOS only.
+    bool provisional = false,
+
+    /// Request permission to play sounds. Defaults to `true`.
+    ///
+    /// iOS/macOS only.
+    bool sound = true,
   }) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    _androidChannelId = androidChannelId;
-    _androidChannelName = androidChannelName;
-    _androidChannelDescription = androidChannelDescription;
-    _translateMessage = translateMessage;
+    await Firebase.initializeApp();
 
-    _firebaseMessaging.configure(
-      onMessage: _onForgroundNotification,
-      onLaunch: _onNotificationLaunch,
-      onResume: _onResume,
+    FirebaseMessaging.instance.requestPermission(
+        alert: alert,
+        announcement: announcement,
+        criticalAlert: criticalAlert,
+        badge: badge,
+        carPlay: carPlay,
+        sound: sound,
+        provisional: provisional);
+    FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: alert,
+      badge: badge,
+      sound: sound,
     );
-    _iOSPermission();
-    var initializationSettingsAndroid =
-        AndroidInitializationSettings(forgroundIconName);
-    var initializationSettingsIOS = IOSInitializationSettings();
-    var initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-    _localeNotification.initialize(initializationSettings,
-        onSelectNotification: _onSelectLocaleNotification);
-    var luanchDetails =
-        await _localeNotification.getNotificationAppLaunchDetails();
-    if (luanchDetails != null &&
-        _luanchedNotification == null &&
-        luanchDetails.didNotificationLaunchApp &&
-        luanchDetails.payload != null) {
-      _luanchedNotification = FCMNotification.fromJson(
-          jsonDecode(luanchDetails.payload), _translateMessage);
-    }
+
+    ///Handling forground android notification
+
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+    AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings(appAndroidIcon);
+    final InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: _onPayLoad);
+    if (_subscription != null) await _subscription.cancel();
+    //Listen to messages
+    _subscription = FirebaseMessaging.onMessage.listen((_notification) {
+      if (_notification.notification != null) {
+        _displayNotification(_notification, androidChannelId,
+            androidChannelName, androidChannelDescription);
+      }
+    });
   }
 
-  static void subscribeToTopic(String topic) {
-    _firebaseMessaging.subscribeToTopic(topic);
-  }
-
-  static void unsubscribeFromTopic(String topic) {
-    _firebaseMessaging.unsubscribeFromTopic(topic);
-  }
-
-  static void _iOSPermission() {
-    _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {});
-  }
-
-  static Future<dynamic> _onForgroundNotification(
-      Map<String, dynamic> message) async {
-    var notify = FCMNotification.fromJson(message, _translateMessage);
-    _diplayNotification(notify);
-    _listener.value = notify;
-  }
-
-  static void _diplayNotification(FCMNotification notification) {
-    var _notification = notification.notification;
-    if (_notification == null || _notification.fromNotification == false)
-      return;
-
+  static void _displayNotification(
+      RemoteMessage _notification,
+      String androidChannelId,
+      String androidChannelName,
+      String androidChannelDescription) {
+    FlutterLocalNotificationsPlugin _localeNotification =
+        FlutterLocalNotificationsPlugin();
     var _android = AndroidNotificationDetails(
-      _androidChannelId,
-      _androidChannelName,
-      _androidChannelDescription,
-      importance: Importance.max,
+      androidChannelId ?? "FCM_Config",
+      androidChannelName ?? "FCM_Config",
+      androidChannelDescription ?? "FCM_Config",
+      importance: _notification._getImportance(),
       priority: Priority.high,
-      ticker: 'ticker',
-      groupKey: notification.collapseKey,
-      showProgress: true,
-      sound: _notification.isDefaultSound
+      ticker: _notification.notification.android?.ticker,
+      icon: _notification.notification.android?.smallIcon,
+      category: _notification.category,
+      groupKey: _notification.collapseKey,
+      showProgress: false,
+      sound: _notification._isDefaultAndroidSound
           ? null
-          : (_notification.isRemoteSound
-              ? UriAndroidNotificationSound(_notification.sound)
-              : RawResourceAndroidNotificationSound(_notification.sound)),
+          : (_notification._isAndroidRemoteSound
+              ? UriAndroidNotificationSound(
+                  _notification.notification.android.sound)
+              : RawResourceAndroidNotificationSound(
+                  _notification.notification.android.sound)),
     );
-    var _ios = IOSNotificationDetails(
-      badgeNumber: _notification.badge,
-      sound: _notification.isDefaultSound ? null : _notification.sound,
-    );
+    var _details = NotificationDetails(android: _android);
+    _localeNotification.show(0, _notification.notification.title,
+        _notification.notification.body, _details,
+        payload: jsonEncode(_notification.toJson()));
+  }
+}
 
-    var _details = NotificationDetails(android: _android, iOS: _ios);
-
-    _localeNotification.show(
-        0, _notification.getTitle(), _notification.getBody(), _details,
-        payload: notification.toJsonString());
+extension MapExt on RemoteMessage {
+  bool get _isDefaultAndroidSound =>
+      notification.android.sound == null ||
+      notification.android.sound == "default";
+  bool get _isAndroidRemoteSound =>
+      !_isDefaultAndroidSound && notification.android.sound.contains("http");
+  Map<String, dynamic> toJson() {
+    return {
+      "senderId": senderId,
+      "category": category,
+      "collapseKey": collapseKey,
+      "contentAvailable": contentAvailable,
+      "data": data,
+      "from": from,
+      "messageId": messageId,
+      "mutableContent": mutableContent,
+      "notification": notification == null
+          ? null
+          : {
+              "title": notification.title,
+              "titleLocArgs": notification.titleLocArgs.length > 0
+                  ? notification.titleLocArgs
+                  : null,
+              "titleLocKey": notification.titleLocKey,
+              "body": notification.body,
+              "bodyLocArgs": notification.bodyLocArgs.length > 0
+                  ? notification.bodyLocArgs
+                  : null,
+              "bodyLocKey": notification.bodyLocKey,
+              "android": notification.android == null
+                  ? null
+                  : {
+                      "channelId": notification.android.channelId,
+                      "clickAction": notification.android.clickAction,
+                      "color": notification.android.color,
+                      "count": notification.android.count,
+                      "imageUrl": notification.android.imageUrl,
+                      "link": notification.android.link,
+                      "priority": _getPeriority(),
+                      "smallIcon": notification.android.smallIcon,
+                      "sound": notification.android.sound,
+                      "ticker": notification.android.ticker,
+                      "visibility": _getAndroidVisibility(),
+                    },
+              "apple": notification.apple == null
+                  ? null
+                  : {
+                      "badge": notification.apple.badge,
+                      "subtitle": notification.apple.subtitle,
+                      "subtitleLocArgs":
+                          notification.apple.subtitleLocArgs.length > 0
+                              ? notification.apple.subtitleLocArgs
+                              : null,
+                      "subtitleLocKey": notification.apple.subtitleLocKey,
+                      "sound": notification.apple.sound == null
+                          ? null
+                          : {
+                              "critical": notification.apple.sound.critical,
+                              "name": notification.apple.sound.name,
+                              "volume": notification.apple.sound.volume,
+                            }
+                    },
+            },
+      "sentTime": sentTime?.millisecondsSinceEpoch,
+      "threadId": threadId,
+      "ttl": ttl,
+    };
   }
 
-  static Future<dynamic> _onSelectLocaleNotification(String payload) async {
-    if (payload != null) {
-      var json = jsonDecode(payload);
-      var notifictaion = FCMNotification.fromJson(json, _translateMessage);
-      _clickListner.value = notifictaion;
+  int _getPeriority() {
+    if (notification.android.priority == null) return null;
+    switch (notification.android.priority) {
+      case AndroidNotificationPriority.minimumPriority:
+        return -2;
+      case AndroidNotificationPriority.lowPriority:
+        return -1;
+      case AndroidNotificationPriority.defaultPriority:
+        return 0;
+      case AndroidNotificationPriority.highPriority:
+        return 1;
+      case AndroidNotificationPriority.maximumPriority:
+        return 2;
+      default:
+        return 0;
     }
   }
 
-  static Future<dynamic> _onResume(Map<String, dynamic> message) async {
-    var notifictaion = FCMNotification.fromJson(message, _translateMessage);
-    print(message);
-    _clickListner.value = notifictaion;
+  int _getAndroidVisibility() {
+    if (notification.android.visibility == null) return null;
+
+    switch (notification.android.visibility) {
+      case AndroidNotificationVisibility.secret:
+        return -1;
+      case AndroidNotificationVisibility.private:
+        return 0;
+      case AndroidNotificationVisibility.public:
+        return 1;
+      default:
+        return 0;
+    }
   }
 
-  static Future<dynamic> _onNotificationLaunch(
-      Map<String, dynamic> message) async {
-    _luanchedNotification =
-        FCMNotification.fromJson(message, _translateMessage);
-    _clickListner.value = _luanchedNotification;
+  Importance _getImportance() {
+    if (notification.android.priority == null) return null;
+    switch (notification.android.priority) {
+      case AndroidNotificationPriority.minimumPriority:
+        return Importance.min;
+      case AndroidNotificationPriority.lowPriority:
+        return Importance.low;
+      case AndroidNotificationPriority.defaultPriority:
+        return Importance.defaultImportance;
+      case AndroidNotificationPriority.highPriority:
+        return Importance.high;
+      case AndroidNotificationPriority.maximumPriority:
+        return Importance.max;
+      default:
+        return Importance.max;
+    }
   }
 }
