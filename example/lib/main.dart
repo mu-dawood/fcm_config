@@ -23,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage>
   final String serverToken = 'your key here';
   @override
   void initState() {
-    FCmConfig.init(appAndroidIcon: 'ic_launcher').then((value) {
+    FCMConfig.init(appAndroidIcon: 'ic_launcher').then((value) {
       FirebaseMessaging.instance.getToken().then((value) {
         print(value);
       });

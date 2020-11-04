@@ -15,3 +15,7 @@
 * breaking changes
 * Update dependencies
 * Use new fcm api
+
+## [2.0.0-dev.2] - 4/11/2020
+
+* implements FirebaseMessaging instance method
