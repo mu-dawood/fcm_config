@@ -19,3 +19,7 @@
 ## [2.0.0-dev.2] - 4/11/2020
 
 * implements FirebaseMessaging instance method
+
+## [2.0.0-dev.3] - 4/11/2020
+
+* rename FcmConfig to FCMConfig 

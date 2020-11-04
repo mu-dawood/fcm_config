@@ -18,14 +18,14 @@
 ### Dart/Flutter
 Initialize
 ```dart
- await FCmConfig.init(appAndroidIcon: 'ic_launcher');
- FirebaseMessaging.instance.getToken().then((token) {
+ await FCMConfig.init(appAndroidIcon: 'ic_launcher');
+FCMConfig.getToken().then((token) {
       print(token);
  });
 ```
 To get notification that launched the application
 ```dart
- await FCmConfig.getInitialMessage();
+ await FCMConfig.getInitialMessage();
  
 ```
 
