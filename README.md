@@ -37,7 +37,7 @@ class MyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FCMNotificationListener(
       onNotification:
-          (FCMNotification notification, void Function() setState) {},
+          (RemoteMessage notification, void Function() setState) {},
       child: SizedBox(),
     );
   }
@@ -59,7 +59,7 @@ class _MyScreenState extends State<MyScreen>
   }
 
   @override
-  void onNotify(FCMNotification notification) {
+  void onNotify(RemoteMessage notification) {
     // do some thing
   }
 }

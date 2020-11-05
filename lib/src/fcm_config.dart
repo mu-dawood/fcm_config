@@ -14,7 +14,7 @@ part 'fcm_notification_click_listener.dart';
 part 'fcm_notification_listener.dart';
 
 class FCMConfig {
-  Future<RemoteMessage> getInitialMessage() async {
+  static Future<RemoteMessage> getInitialMessage() async {
     FlutterLocalNotificationsPlugin _localeNotification =
         FlutterLocalNotificationsPlugin();
     var payload = await _localeNotification.getNotificationAppLaunchDetails();

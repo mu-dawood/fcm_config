@@ -23,3 +23,8 @@
 ## [2.0.0-dev.3] - 4/11/2020
 
 * rename FcmConfig to FCMConfig 
+
+## [2.0.0-dev.4] - 5/11/2020
+
+* Update readme 
+* Make await FCMConfig.getInitialMessage(); static
