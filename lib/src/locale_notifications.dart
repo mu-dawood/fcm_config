@@ -51,6 +51,7 @@ class LocaleNotification {
       String androidChannelDescription) {
     FlutterLocalNotificationsPlugin _localeNotification =
         FlutterLocalNotificationsPlugin();
+    var smallIcon = _notification.notification.android?.smallIcon;
     var _android = AndroidNotificationDetails(
       androidChannelId ?? "FCM_Config",
       androidChannelName ?? "FCM_Config",
@@ -58,7 +59,7 @@ class LocaleNotification {
       importance: _notification._getImportance(),
       priority: Priority.high,
       ticker: _notification.notification.android?.ticker,
-      icon: _notification.notification.android?.smallIcon,
+      icon: smallIcon == "default" ? null : smallIcon,
       category: _notification.category,
       groupKey: _notification.collapseKey,
       showProgress: false,

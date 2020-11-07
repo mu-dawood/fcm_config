@@ -28,3 +28,8 @@
 
 * Update readme 
 * Make await FCMConfig.getInitialMessage(); static
+
+
+## [2.0.0-dev.5] - 7/11/2020
+
+* Fix small icon if fcm icon is default
