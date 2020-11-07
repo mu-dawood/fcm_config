@@ -29,7 +29,7 @@ class LocaleNotification {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
     AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings(appAndroidIcon);
+        AndroidInitializationSettings(appAndroidIcon ?? "@mipmap/ic_launcher");
     final InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
     flutterLocalNotificationsPlugin.initialize(initializationSettings,

@@ -4,7 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:fcm_config/fcm_config.dart';
 import 'package:http/http.dart' as http;
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling a background message: ${message.messageId}");
+}
+
 void main() async {
+  FCMConfig.init(onBackgroundMessage: _firebaseMessagingBackgroundHandler)
+      .then((value) {
+    FirebaseMessaging.instance.getToken().then((value) {
+      print(value);
+    });
+  });
   runApp(MaterialApp(
     home: MyHomePage(),
   ));
@@ -21,16 +31,6 @@ class _MyHomePageState extends State<MyHomePage>
     with FCMNotificationMixin, FCMNotificationClickMixin {
   RemoteMessage _notification;
   final String serverToken = 'your key here';
-  @override
-  void initState() {
-    FCMConfig.init(appAndroidIcon: 'ic_launcher').then((value) {
-      FirebaseMessaging.instance.getToken().then((value) {
-        print(value);
-      });
-    });
-
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

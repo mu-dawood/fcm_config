@@ -33,3 +33,8 @@
 ## [2.0.0-dev.5] - 7/11/2020
 
 * Fix small icon if fcm icon is default
+
+## [2.0.0-dev.6] - 8/11/2020
+
+* Update readme
+* Use default mipmap as default icon
