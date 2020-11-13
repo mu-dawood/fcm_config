@@ -13,14 +13,6 @@ import 'locale_notifications.dart';
 part 'fcm_notification_click_listener.dart';
 part 'fcm_notification_listener.dart';
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
-
-  print("Handling a background message: ${message.messageId}");
-}
-
 class FCMConfig {
   static Future<RemoteMessage> getInitialMessage() async {
     FlutterLocalNotificationsPlugin _localeNotification =
@@ -33,7 +25,7 @@ class FCMConfig {
   }
 
   static Future init({
-    /// this function will be excuted while application is in backgroun
+    /// this function will be excuted while application is in background
     BackgroundMessageHandler onBackgroundMessage,
 
     /// Drawable icon works only in forground
