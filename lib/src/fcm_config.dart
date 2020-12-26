@@ -81,9 +81,15 @@ class FCMConfig {
     ///
     /// iOS/macOS only.
     bool sound = true,
+
+    /// Options to pass to core intialization method
+    FirebaseOptions options,
+
+    ///Name of the firebase instance app
+    String name,
   }) async {
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(name: name, options: options);
 
     FirebaseMessaging.instance.requestPermission(
         alert: alert,
