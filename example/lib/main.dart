@@ -153,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   void onNotify(RemoteMessage notification) {
-    //_firebaseMessagingBackgroundHandler(notification);
+    _firebaseMessagingBackgroundHandler(notification);
     setState(() {
       _notification = notification;
     });
