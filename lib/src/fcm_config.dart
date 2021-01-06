@@ -92,13 +92,14 @@ class FCMConfig {
     await Firebase.initializeApp(name: name, options: options);
 
     FirebaseMessaging.instance.requestPermission(
-        alert: alert,
-        announcement: announcement,
-        criticalAlert: criticalAlert,
-        badge: badge,
-        carPlay: carPlay,
-        sound: sound,
-        provisional: provisional);
+      alert: alert,
+      announcement: announcement,
+      criticalAlert: criticalAlert,
+      badge: badge,
+      carPlay: carPlay,
+      sound: sound,
+      provisional: provisional,
+    );
     FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: alert,
       badge: badge,
@@ -108,10 +109,13 @@ class FCMConfig {
       FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
 
     ///Handling forground android notification
-    if (Platform.isAndroid) {
-      LocaleNotification.init(appAndroidIcon, androidChannelId,
-          androidChannelName, androidChannelDescription);
-    }
+    LocaleNotification.init(
+      appAndroidIcon,
+      androidChannelId,
+      androidChannelName,
+      androidChannelDescription,
+      Platform.isAndroid,
+    );
   }
 
   ///Call to FirebaseMessaging.instance.deleteToken();
@@ -149,12 +153,13 @@ class FCMConfig {
           String messageType,
           int ttl}) =>
       FirebaseMessaging.instance.sendMessage(
-          to: to,
-          data: data,
-          collapseKey: collapseKey,
-          messageId: messageId,
-          messageType: messageType,
-          ttl: ttl);
+        to: to,
+        data: data,
+        collapseKey: collapseKey,
+        messageId: messageId,
+        messageType: messageType,
+        ttl: ttl,
+      );
 
   ///Call to FirebaseMessaging.instance.subscribeToTopic();
   static Future<void> subscribeToTopic(String topic) =>
@@ -163,4 +168,38 @@ class FCMConfig {
   ///Call to FirebaseMessaging.instance.unsubscribeFromTopic();
   static Future<void> unsubscribeFromTopic(String topic) =>
       FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+
+  static void displayNotification({
+    @required String title,
+    @required String body,
+    String category,
+    String collapseKey,
+    AndroidNotificationSound sound,
+    String androidChannelId,
+    String androidChannelName,
+    String androidChannelDescription,
+    Map<String, dynamic> data,
+  }) {
+    FlutterLocalNotificationsPlugin _localeNotification =
+        FlutterLocalNotificationsPlugin();
+    var _android = AndroidNotificationDetails(
+      androidChannelId ?? "FCM_Config",
+      androidChannelName ?? "FCM_Config",
+      androidChannelDescription ?? "FCM_Config",
+      importance: Importance.high,
+      priority: Priority.high,
+      category: category,
+      groupKey: collapseKey,
+      showProgress: false,
+      sound: sound,
+    );
+    var _details = NotificationDetails(android: _android);
+    _localeNotification.show(
+      0,
+      title,
+      body,
+      _details,
+      payload: jsonEncode({"data": data}),
+    );
+  }
 }

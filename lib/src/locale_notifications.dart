@@ -25,23 +25,33 @@ class LocaleNotification {
 
     /// Required to show head up notification in foreground
     String androidChannelDescription,
+    bool displayIncomming,
   ) async {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
+    //! Android settings
     AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings(appAndroidIcon ?? "@mipmap/ic_launcher");
+    //! Ios setings
+    final IOSInitializationSettings initializationSettingsIOS =
+        IOSInitializationSettings();
+
     final InitializationSettings initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: _onPayLoad);
     if (_subscription != null) await _subscription.cancel();
     //Listen to messages
-    _subscription = FirebaseMessaging.onMessage.listen((_notification) {
-      if (_notification.notification != null) {
-        _displayNotification(_notification, androidChannelId,
-            androidChannelName, androidChannelDescription);
-      }
-    });
+    if (displayIncomming == true)
+      _subscription = FirebaseMessaging.onMessage.listen((_notification) {
+        if (_notification.notification != null) {
+          _displayNotification(_notification, androidChannelId,
+              androidChannelName, androidChannelDescription);
+        }
+      });
   }
 
   static void _displayNotification(
@@ -72,9 +82,13 @@ class LocaleNotification {
                   _notification.notification.android.sound)),
     );
     var _details = NotificationDetails(android: _android);
-    _localeNotification.show(0, _notification.notification.title,
-        _notification.notification.body, _details,
-        payload: jsonEncode(_notification.toJson()));
+    _localeNotification.show(
+      0,
+      _notification.notification.title,
+      _notification.notification.body,
+      _details,
+      payload: jsonEncode(_notification.toJson()),
+    );
   }
 }
 

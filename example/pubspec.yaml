@@ -23,8 +23,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-    
+  flutter_localizations: # Add this line
+    sdk: flutter 
+     
   http: ^0.12.2
+  shared_preferences: ^0.5.12+4
   fcm_config:
     path: ../
   # The following adds the Cupertino Icons font to your application.
