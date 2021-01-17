@@ -16,6 +16,10 @@
 * Update dependencies
 * Use new fcm api
 
+## [2.0.0-dev.11] - 17/01/2021
+
+* Update dependencies
+
 ## [2.0.0-dev.2] - 4/11/2020
 
 * implements FirebaseMessaging instance method
@@ -28,7 +32,6 @@
 
 * Update readme 
 * Make await FCMConfig.getInitialMessage(); static
-
 
 ## [2.0.0-dev.5] - 7/11/2020
 
