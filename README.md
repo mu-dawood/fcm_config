@@ -46,6 +46,7 @@ if you are faceing multidex error while building your app you can do one of this
 ## Ios
 - > Follow steps here https://firebase.flutter.dev/docs/installation/ios
 - > Then  here https://firebase.flutter.dev/docs/messaging/apple-integration
+- iOS 10 is now the minimum supported version by FlutterFire. Please update your build target version.
   
 ## MacOs
 - > Follow steps here https://firebase.flutter.dev/docs/installation/macos
