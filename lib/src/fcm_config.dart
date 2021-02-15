@@ -179,7 +179,6 @@ class FCMConfig {
     String androidChannelName,
     String androidChannelDescription,
     Map<String, dynamic> data,
-    StyleInformation styleInformation,
     AndroidNotificationDetails android,
     IOSNotificationDetails iOS,
   }) {
@@ -197,13 +196,16 @@ class FCMConfig {
           groupKey: collapseKey,
           showProgress: false,
           sound: sound,
-          styleInformation: styleInformation ?? BigTextStyleInformation(''),
+          styleInformation: BigTextStyleInformation(
+            body,
+            htmlFormatBigText: true,
+          ),
         );
     var _details = NotificationDetails(android: _android, iOS: _iOS);
     _localeNotification.show(
       0,
       title,
-      body,
+      Platform.isAndroid ? "" : body,
       _details,
       payload: jsonEncode({"data": data}),
     );

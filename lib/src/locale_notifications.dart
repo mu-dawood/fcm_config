@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -68,7 +69,8 @@ class LocaleNotification {
       androidChannelDescription ?? "FCM_Config",
       importance: _notification._getImportance(),
       priority: Priority.high,
-      styleInformation: BigTextStyleInformation(''),
+      styleInformation: BigTextStyleInformation(_notification.notification.body,
+          htmlFormatBigText: true),
       ticker: _notification.notification.android?.ticker,
       icon: smallIcon == "default" ? null : smallIcon,
       category: _notification.category,
@@ -86,7 +88,7 @@ class LocaleNotification {
     _localeNotification.show(
       0,
       _notification.notification.title,
-      _notification.notification.body,
+      Platform.isAndroid ? "" : _notification.notification.body,
       _details,
       payload: jsonEncode(_notification.toJson()),
     );
