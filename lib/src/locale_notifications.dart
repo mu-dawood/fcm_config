@@ -68,6 +68,7 @@ class LocaleNotification {
       androidChannelDescription ?? "FCM_Config",
       importance: _notification._getImportance(),
       priority: Priority.high,
+      styleInformation: BigTextStyleInformation(''),
       ticker: _notification.notification.android?.ticker,
       icon: smallIcon == "default" ? null : smallIcon,
       category: _notification.category,

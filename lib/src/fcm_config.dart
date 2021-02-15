@@ -179,21 +179,27 @@ class FCMConfig {
     String androidChannelName,
     String androidChannelDescription,
     Map<String, dynamic> data,
+    StyleInformation styleInformation,
+    AndroidNotificationDetails android,
+    IOSNotificationDetails iOS,
   }) {
     FlutterLocalNotificationsPlugin _localeNotification =
         FlutterLocalNotificationsPlugin();
-    var _android = AndroidNotificationDetails(
-      androidChannelId ?? "FCM_Config",
-      androidChannelName ?? "FCM_Config",
-      androidChannelDescription ?? "FCM_Config",
-      importance: Importance.high,
-      priority: Priority.high,
-      category: category,
-      groupKey: collapseKey,
-      showProgress: false,
-      sound: sound,
-    );
-    var _details = NotificationDetails(android: _android);
+    IOSNotificationDetails _iOS = iOS ?? IOSNotificationDetails();
+    var _android = android ??
+        AndroidNotificationDetails(
+          androidChannelId ?? "FCM_Config",
+          androidChannelName ?? "FCM_Config",
+          androidChannelDescription ?? "FCM_Config",
+          importance: Importance.high,
+          priority: Priority.high,
+          category: category,
+          groupKey: collapseKey,
+          showProgress: false,
+          sound: sound,
+          styleInformation: styleInformation ?? BigTextStyleInformation(''),
+        );
+    var _details = NotificationDetails(android: _android, iOS: _iOS);
     _localeNotification.show(
       0,
       title,
