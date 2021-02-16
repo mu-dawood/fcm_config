@@ -180,7 +180,6 @@ class FCMConfig {
     String androidChannelName,
     String androidChannelDescription,
     Map<String, dynamic> data,
-    StyleInformation androidStyleInformation,
   }) {
     FlutterLocalNotificationsPlugin _localeNotification =
         FlutterLocalNotificationsPlugin();
@@ -195,7 +194,45 @@ class FCMConfig {
       groupKey: collapseKey,
       showProgress: false,
       sound: sound,
-      styleInformation: androidStyleInformation,
+      subText: subTitle,
+    );
+    var _details = NotificationDetails(android: _android, iOS: _iOS);
+    _localeNotification.show(
+      0,
+      title,
+      body,
+      _details,
+      payload: jsonEncode({"data": data}),
+    );
+  }
+
+  static void displayNotificationWithAndroidStyle({
+    @required String title,
+    @required StyleInformation styleInformation,
+    @required String body,
+    String subTitle,
+    String category,
+    String collapseKey,
+    AndroidNotificationSound sound,
+    String androidChannelId,
+    String androidChannelName,
+    String androidChannelDescription,
+    Map<String, dynamic> data,
+  }) {
+    FlutterLocalNotificationsPlugin _localeNotification =
+        FlutterLocalNotificationsPlugin();
+    IOSNotificationDetails _iOS = IOSNotificationDetails(subtitle: subTitle);
+    var _android = AndroidNotificationDetails(
+      androidChannelId ?? "FCM_Config",
+      androidChannelName ?? "FCM_Config",
+      androidChannelDescription ?? "FCM_Config",
+      importance: Importance.high,
+      priority: Priority.high,
+      category: category,
+      groupKey: collapseKey,
+      sound: sound,
+      subText: subTitle,
+      styleInformation: styleInformation,
     );
     var _details = NotificationDetails(android: _android, iOS: _iOS);
     _localeNotification.show(
