@@ -195,12 +195,7 @@ class FCMConfig {
       groupKey: collapseKey,
       showProgress: false,
       sound: sound,
-      styleInformation: androidStyleInformation ??
-          BigTextStyleInformation(
-            body,
-            htmlFormatBigText: true,
-            contentTitle: subTitle,
-          ),
+      styleInformation: androidStyleInformation,
     );
     var _details = NotificationDetails(android: _android, iOS: _iOS);
     _localeNotification.show(
