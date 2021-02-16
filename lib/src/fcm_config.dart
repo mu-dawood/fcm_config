@@ -206,7 +206,7 @@ class FCMConfig {
     _localeNotification.show(
       0,
       title,
-      Platform.isAndroid ? "" : body,
+      body,
       _details,
       payload: jsonEncode({"data": data}),
     );
@@ -225,7 +225,7 @@ class FCMConfig {
     _localeNotification.show(
       0,
       title,
-      android.styleInformation != null ? "" : body,
+      body,
       _details,
       payload: jsonEncode({"data": data}),
     );
