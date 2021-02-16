@@ -172,6 +172,7 @@ class FCMConfig {
   static void displayNotification({
     @required String title,
     @required String body,
+    String subTitle,
     String category,
     String collapseKey,
     AndroidNotificationSound sound,
@@ -179,33 +180,52 @@ class FCMConfig {
     String androidChannelName,
     String androidChannelDescription,
     Map<String, dynamic> data,
-    AndroidNotificationDetails android,
-    IOSNotificationDetails iOS,
+    StyleInformation androidStyleInformation,
   }) {
     FlutterLocalNotificationsPlugin _localeNotification =
         FlutterLocalNotificationsPlugin();
-    IOSNotificationDetails _iOS = iOS ?? IOSNotificationDetails();
-    var _android = android ??
-        AndroidNotificationDetails(
-          androidChannelId ?? "FCM_Config",
-          androidChannelName ?? "FCM_Config",
-          androidChannelDescription ?? "FCM_Config",
-          importance: Importance.high,
-          priority: Priority.high,
-          category: category,
-          groupKey: collapseKey,
-          showProgress: false,
-          sound: sound,
-          styleInformation: BigTextStyleInformation(
+    IOSNotificationDetails _iOS = IOSNotificationDetails(subtitle: subTitle);
+    var _android = AndroidNotificationDetails(
+      androidChannelId ?? "FCM_Config",
+      androidChannelName ?? "FCM_Config",
+      androidChannelDescription ?? "FCM_Config",
+      importance: Importance.high,
+      priority: Priority.high,
+      category: category,
+      groupKey: collapseKey,
+      showProgress: false,
+      sound: sound,
+      styleInformation: androidStyleInformation ??
+          BigTextStyleInformation(
             body,
             htmlFormatBigText: true,
+            contentTitle: subTitle,
           ),
-        );
+    );
     var _details = NotificationDetails(android: _android, iOS: _iOS);
     _localeNotification.show(
       0,
       title,
       Platform.isAndroid ? "" : body,
+      _details,
+      payload: jsonEncode({"data": data}),
+    );
+  }
+
+  static void displayNotificationWith({
+    @required String title,
+    String body,
+    Map<String, dynamic> data,
+    @required AndroidNotificationDetails android,
+    @required IOSNotificationDetails iOS,
+  }) {
+    FlutterLocalNotificationsPlugin _localeNotification =
+        FlutterLocalNotificationsPlugin();
+    var _details = NotificationDetails(android: android, iOS: iOS);
+    _localeNotification.show(
+      0,
+      title,
+      android.styleInformation != null ? "" : body,
       _details,
       payload: jsonEncode({"data": data}),
     );
