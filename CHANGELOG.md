@@ -16,6 +16,10 @@
 * Update dependencies
 * Use new fcm api
 
+## [3.0.0-nullsafety.0] - 28/02/2021
+
+* Update dependencies
+
 ## [2.0.0-dev.11] - 17/01/2021
 
 * Update dependencies
