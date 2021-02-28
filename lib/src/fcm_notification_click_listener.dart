@@ -2,8 +2,8 @@ part of fcm_config;
 
 /// This mixin can listen to notification tap
 mixin FCMNotificationClickMixin<T extends StatefulWidget> on State<T> {
-  StreamSubscription<RemoteMessage> _clickSubscription;
-  StreamSubscription<RemoteMessage> _clickLocaleSubscription;
+  StreamSubscription<RemoteMessage>? _clickSubscription;
+  StreamSubscription<RemoteMessage>? _clickLocaleSubscription;
   @override
   void initState() {
     _clickSubscription = FirebaseMessaging.onMessageOpenedApp.listen(_onClick);
@@ -14,8 +14,8 @@ mixin FCMNotificationClickMixin<T extends StatefulWidget> on State<T> {
 
   @override
   void dispose() {
-    _clickSubscription.cancel();
-    _clickLocaleSubscription.cancel();
+    _clickSubscription?.cancel();
+    _clickLocaleSubscription?.cancel();
     super.dispose();
   }
 
@@ -31,9 +31,11 @@ class FCMNotificationClickListener extends StatefulWidget {
   /// Will be called whenever user taps on notification
   final Function(RemoteMessage notification, VoidCallback setState)
       onNotificationClick;
-  const FCMNotificationClickListener(
-      {Key key, @required this.child, @required this.onNotificationClick})
-      : super(key: key);
+  const FCMNotificationClickListener({
+    Key? key,
+    required this.child,
+    required this.onNotificationClick,
+  }) : super(key: key);
   @override
   _FCMNotificationClickState createState() => _FCMNotificationClickState();
 }

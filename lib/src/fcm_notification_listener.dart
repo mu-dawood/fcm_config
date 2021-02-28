@@ -2,7 +2,7 @@ part of fcm_config;
 
 /// This mixin can listen to incomming notification
 mixin FCMNotificationMixin<T extends StatefulWidget> on State<T> {
-  StreamSubscription<RemoteMessage> _subscription;
+  StreamSubscription<RemoteMessage>? _subscription;
   @override
   void initState() {
     _subscription = FirebaseMessaging.onMessage.listen(_onNewNotify);
@@ -11,7 +11,7 @@ mixin FCMNotificationMixin<T extends StatefulWidget> on State<T> {
 
   @override
   void dispose() {
-    _subscription.cancel();
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -31,7 +31,7 @@ class FCMNotificationListener extends StatefulWidget {
   final Function(RemoteMessage notification, VoidCallback setState)
       onNotification;
   const FCMNotificationListener(
-      {Key key, @required this.child, @required this.onNotification})
+      {Key? key, required this.child, required this.onNotification})
       : super(key: key);
   @override
   _FCMNotificationListenerState createState() =>

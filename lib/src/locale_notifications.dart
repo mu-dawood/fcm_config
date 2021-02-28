@@ -6,26 +6,27 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class LocaleNotification {
-  static StreamSubscription<RemoteMessage> _subscription;
+  static StreamSubscription<RemoteMessage>? _subscription;
   static final StreamController<RemoteMessage> onLocaleClick =
       StreamController<RemoteMessage>.broadcast();
-  static Future _onPayLoad(String payload) async {
+  static Future _onPayLoad(String? payload) async {
+    if (payload == null) return;
     var message = RemoteMessage.fromMap(jsonDecode(payload));
     onLocaleClick.add(message);
   }
 
   static Future init(
     /// Drawable icon works only in forground
-    String appAndroidIcon,
+    String? appAndroidIcon,
 
     /// Required to show head up notification in foreground
-    String androidChannelId,
+    String? androidChannelId,
 
     /// Required to show head up notification in foreground
-    String androidChannelName,
+    String? androidChannelName,
 
     /// Required to show head up notification in foreground
-    String androidChannelDescription,
+    String? androidChannelDescription,
     bool displayIncomming,
   ) async {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -42,9 +43,11 @@ class LocaleNotification {
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: _onPayLoad);
-    if (_subscription != null) await _subscription.cancel();
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onSelectNotification: _onPayLoad,
+    );
+    await _subscription?.cancel();
     //Listen to messages
     if (displayIncomming == true)
       _subscription = FirebaseMessaging.onMessage.listen((_notification) {
@@ -56,22 +59,26 @@ class LocaleNotification {
   }
 
   static void _displayNotification(
-      RemoteMessage _notification,
-      String androidChannelId,
-      String androidChannelName,
-      String androidChannelDescription) {
+    RemoteMessage _notification,
+    String? androidChannelId,
+    String? androidChannelName,
+    String? androidChannelDescription,
+  ) {
+    if (_notification.notification == null) return;
     FlutterLocalNotificationsPlugin _localeNotification =
         FlutterLocalNotificationsPlugin();
-    var smallIcon = _notification.notification.android?.smallIcon;
+    var smallIcon = _notification.notification?.android?.smallIcon;
     var _android = AndroidNotificationDetails(
       androidChannelId ?? "FCM_Config",
       androidChannelName ?? "FCM_Config",
       androidChannelDescription ?? "FCM_Config",
       importance: _notification._getImportance(),
       priority: Priority.high,
-      styleInformation: BigTextStyleInformation(_notification.notification.body,
-          htmlFormatBigText: true),
-      ticker: _notification.notification.android?.ticker,
+      styleInformation: BigTextStyleInformation(
+        _notification.notification?.body ?? "",
+        htmlFormatBigText: true,
+      ),
+      ticker: _notification.notification?.android?.ticker,
       icon: smallIcon == "default" ? null : smallIcon,
       category: _notification.category,
       groupKey: _notification.collapseKey,
@@ -80,15 +87,15 @@ class LocaleNotification {
           ? null
           : (_notification._isAndroidRemoteSound
               ? UriAndroidNotificationSound(
-                  _notification.notification.android.sound)
+                  _notification.notification!.android!.sound!)
               : RawResourceAndroidNotificationSound(
-                  _notification.notification.android.sound)),
+                  _notification.notification!.android!.sound)),
     );
     var _details = NotificationDetails(android: _android);
     _localeNotification.show(
       0,
-      _notification.notification.title,
-      Platform.isAndroid ? "" : _notification.notification.body,
+      _notification.notification!.title,
+      Platform.isAndroid ? "" : _notification.notification!.body,
       _details,
       payload: jsonEncode(_notification.toJson()),
     );
@@ -97,10 +104,11 @@ class LocaleNotification {
 
 extension MapExt on RemoteMessage {
   bool get _isDefaultAndroidSound =>
-      notification.android.sound == null ||
-      notification.android.sound == "default";
+      notification?.android?.sound == null ||
+      notification?.android?.sound == "default";
   bool get _isAndroidRemoteSound =>
-      !_isDefaultAndroidSound && notification.android.sound.contains("http");
+      !_isDefaultAndroidSound &&
+      notification?.android?.sound?.contains("http") == true;
   Map<String, dynamic> toJson() {
     return {
       "senderId": senderId,
@@ -114,47 +122,43 @@ extension MapExt on RemoteMessage {
       "notification": notification == null
           ? null
           : {
-              "title": notification.title,
-              "titleLocArgs": notification.titleLocArgs.length > 0
-                  ? notification.titleLocArgs
-                  : null,
-              "titleLocKey": notification.titleLocKey,
-              "body": notification.body,
-              "bodyLocArgs": notification.bodyLocArgs.length > 0
-                  ? notification.bodyLocArgs
-                  : null,
-              "bodyLocKey": notification.bodyLocKey,
-              "android": notification.android == null
+              "title": notification?.title,
+              "titleLocArgs": notification?.titleLocArgs,
+              "titleLocKey": notification?.titleLocKey,
+              "body": notification?.body,
+              "bodyLocArgs": notification?.bodyLocArgs,
+              "bodyLocKey": notification?.bodyLocKey,
+              "android": notification?.android == null
                   ? null
                   : {
-                      "channelId": notification.android.channelId,
-                      "clickAction": notification.android.clickAction,
-                      "color": notification.android.color,
-                      "count": notification.android.count,
-                      "imageUrl": notification.android.imageUrl,
-                      "link": notification.android.link,
+                      "channelId": notification!.android!.channelId,
+                      "clickAction": notification!.android!.clickAction,
+                      "color": notification!.android!.color,
+                      "count": notification!.android!.count,
+                      "imageUrl": notification!.android!.imageUrl,
+                      "link": notification!.android!.link,
                       "priority": _getPeriority(),
-                      "smallIcon": notification.android.smallIcon,
-                      "sound": notification.android.sound,
-                      "ticker": notification.android.ticker,
+                      "smallIcon": notification!.android!.smallIcon,
+                      "sound": notification!.android!.sound,
+                      "ticker": notification!.android!.ticker,
                       "visibility": _getAndroidVisibility(),
                     },
-              "apple": notification.apple == null
+              "apple": notification?.apple == null
                   ? null
                   : {
-                      "badge": notification.apple.badge,
-                      "subtitle": notification.apple.subtitle,
+                      "badge": notification!.apple!.badge,
+                      "subtitle": notification!.apple!.subtitle,
                       "subtitleLocArgs":
-                          notification.apple.subtitleLocArgs.length > 0
-                              ? notification.apple.subtitleLocArgs
+                          notification!.apple!.subtitleLocArgs.length > 0
+                              ? notification!.apple!.subtitleLocArgs
                               : null,
-                      "subtitleLocKey": notification.apple.subtitleLocKey,
-                      "sound": notification.apple.sound == null
+                      "subtitleLocKey": notification!.apple!.subtitleLocKey,
+                      "sound": notification!.apple!.sound == null
                           ? null
                           : {
-                              "critical": notification.apple.sound.critical,
-                              "name": notification.apple.sound.name,
-                              "volume": notification.apple.sound.volume,
+                              "critical": notification!.apple!.sound?.critical,
+                              "name": notification!.apple!.sound?.name,
+                              "volume": notification!.apple!.sound?.volume,
                             }
                     },
             },
@@ -164,9 +168,9 @@ extension MapExt on RemoteMessage {
     };
   }
 
-  int _getPeriority() {
-    if (notification.android.priority == null) return null;
-    switch (notification.android.priority) {
+  int? _getPeriority() {
+    if (notification?.android?.priority == null) return null;
+    switch (notification!.android!.priority) {
       case AndroidNotificationPriority.minimumPriority:
         return -2;
       case AndroidNotificationPriority.lowPriority:
@@ -182,10 +186,10 @@ extension MapExt on RemoteMessage {
     }
   }
 
-  int _getAndroidVisibility() {
-    if (notification.android.visibility == null) return null;
+  int? _getAndroidVisibility() {
+    if (notification?.android?.visibility == null) return null;
 
-    switch (notification.android.visibility) {
+    switch (notification!.android!.visibility) {
       case AndroidNotificationVisibility.secret:
         return -1;
       case AndroidNotificationVisibility.private:
@@ -198,8 +202,8 @@ extension MapExt on RemoteMessage {
   }
 
   Importance _getImportance() {
-    if (notification.android.priority == null) return null;
-    switch (notification.android.priority) {
+    if (notification?.android?.priority == null) return Importance.high;
+    switch (notification!.android!.priority) {
       case AndroidNotificationPriority.minimumPriority:
         return Importance.min;
       case AndroidNotificationPriority.lowPriority:

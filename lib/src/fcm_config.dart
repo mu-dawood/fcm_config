@@ -14,31 +14,31 @@ part 'fcm_notification_click_listener.dart';
 part 'fcm_notification_listener.dart';
 
 class FCMConfig {
-  static Future<RemoteMessage> getInitialMessage() async {
+  static Future<RemoteMessage?> getInitialMessage() async {
     FlutterLocalNotificationsPlugin _localeNotification =
         FlutterLocalNotificationsPlugin();
     var payload = await _localeNotification.getNotificationAppLaunchDetails();
     if (payload != null && payload.didNotificationLaunchApp) {
-      return RemoteMessage.fromMap(jsonDecode(payload.payload));
+      return RemoteMessage.fromMap(jsonDecode(payload.payload ?? ""));
     }
     return await FirebaseMessaging.instance.getInitialMessage();
   }
 
   static Future init({
     /// this function will be excuted while application is in background
-    BackgroundMessageHandler onBackgroundMessage,
+    BackgroundMessageHandler? onBackgroundMessage,
 
     /// Drawable icon works only in forground
-    String appAndroidIcon,
+    String? appAndroidIcon,
 
     /// Required to show head up notification in foreground
-    String androidChannelId,
+    String? androidChannelId,
 
     /// Required to show head up notification in foreground
-    String androidChannelName,
+    String? androidChannelName,
 
     /// Required to show head up notification in foreground
-    String androidChannelDescription,
+    String? androidChannelDescription,
 
     /// Request permission to display alerts. Defaults to `true`.
     ///
@@ -83,10 +83,10 @@ class FCMConfig {
     bool sound = true,
 
     /// Options to pass to core intialization method
-    FirebaseOptions options,
+    FirebaseOptions? options,
 
     ///Name of the firebase instance app
-    String name,
+    String? name,
   }) async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(name: name, options: options);
@@ -122,7 +122,7 @@ class FCMConfig {
   static Future<void> deleteToken() => FirebaseMessaging.instance.deleteToken();
 
   ///Call to FirebaseMessaging.instance.getAPNSToken();
-  static Future<String> getAPNSToken() =>
+  static Future<String?> getAPNSToken() =>
       FirebaseMessaging.instance.getAPNSToken();
 
   ///Call to FirebaseMessaging.instance.getNotificationSettings();
@@ -130,7 +130,7 @@ class FCMConfig {
       FirebaseMessaging.instance.getNotificationSettings();
 
   ///Call to FirebaseMessaging.instance.getToken();
-  static Future<String> getToken({String vapidKey}) =>
+  static Future<String?> getToken({String? vapidKey}) =>
       FirebaseMessaging.instance.getToken(vapidKey: vapidKey);
 
   ///Call to FirebaseMessaging.instance.isAutoInitEnabled();
@@ -145,13 +145,14 @@ class FCMConfig {
   static Map get pluginConstants => FirebaseMessaging.instance.pluginConstants;
 
   ///Call to FirebaseMessaging.instance.sendMessage();
-  static Future<void> sendMessage(
-          {String to,
-          Map<String, String> data,
-          String collapseKey,
-          String messageId,
-          String messageType,
-          int ttl}) =>
+  static Future<void> sendMessage({
+    String? to,
+    Map<String, String>? data,
+    String? collapseKey,
+    String? messageId,
+    String? messageType,
+    int? ttl,
+  }) =>
       FirebaseMessaging.instance.sendMessage(
         to: to,
         data: data,
@@ -170,16 +171,16 @@ class FCMConfig {
       FirebaseMessaging.instance.unsubscribeFromTopic(topic);
 
   static void displayNotification({
-    @required String title,
-    @required String body,
-    String subTitle,
-    String category,
-    String collapseKey,
-    AndroidNotificationSound sound,
-    String androidChannelId,
-    String androidChannelName,
-    String androidChannelDescription,
-    Map<String, dynamic> data,
+    required String title,
+    required String body,
+    String? subTitle,
+    String? category,
+    String? collapseKey,
+    AndroidNotificationSound? sound,
+    String? androidChannelId,
+    String? androidChannelName,
+    String? androidChannelDescription,
+    Map<String, dynamic>? data,
   }) {
     FlutterLocalNotificationsPlugin _localeNotification =
         FlutterLocalNotificationsPlugin();
@@ -207,17 +208,17 @@ class FCMConfig {
   }
 
   static void displayNotificationWithAndroidStyle({
-    @required String title,
-    @required StyleInformation styleInformation,
-    @required String body,
-    String subTitle,
-    String category,
-    String collapseKey,
-    AndroidNotificationSound sound,
-    String androidChannelId,
-    String androidChannelName,
-    String androidChannelDescription,
-    Map<String, dynamic> data,
+    required String title,
+    required StyleInformation styleInformation,
+    required String body,
+    String? subTitle,
+    String? category,
+    String? collapseKey,
+    AndroidNotificationSound? sound,
+    String? androidChannelId,
+    String? androidChannelName,
+    String? androidChannelDescription,
+    Map<String, dynamic>? data,
   }) {
     FlutterLocalNotificationsPlugin _localeNotification =
         FlutterLocalNotificationsPlugin();
@@ -245,11 +246,11 @@ class FCMConfig {
   }
 
   static void displayNotificationWith({
-    @required String title,
-    String body,
-    Map<String, dynamic> data,
-    @required AndroidNotificationDetails android,
-    @required IOSNotificationDetails iOS,
+    required String title,
+    String? body,
+    Map<String, dynamic>? data,
+    required AndroidNotificationDetails android,
+    required IOSNotificationDetails iOS,
   }) {
     FlutterLocalNotificationsPlugin _localeNotification =
         FlutterLocalNotificationsPlugin();
