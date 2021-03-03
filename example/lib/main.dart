@@ -56,9 +56,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage>
     with FCMNotificationMixin, FCMNotificationClickMixin {
   RemoteMessage _notification;
-  //final String serverToken = 'your key here';
-  final String serverToken =
-      'AAAAMMEl-UI:APA91bFArrqT1c17s_JAZYLmRzIOne83kvt5AfNihIP1G5wXXgNTPFrfwume2INYAUmdt4MHDuY9OCoMDAjTEJFJpOfxt85bwp7VI0m5t4qpT0rOaRnlQXYENr3IBlLHI9yb8emiyZkr';
+  final String serverToken = 'your key here';
   Locale locale;
   @override
   void initState() {

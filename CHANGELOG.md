@@ -16,6 +16,10 @@
 * Update dependencies
 * Use new fcm api
 
+## [3.0.0-nullsafety.1] - 03/03/2021
+
+* add toMap extension method to notification object
+
 ## [3.0.0-nullsafety.0] - 28/02/2021
 
 * Update dependencies
