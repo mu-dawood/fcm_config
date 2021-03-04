@@ -30,33 +30,31 @@ class LocaleNotification {
     String? androidChannelDescription,
     bool displayIncomming,
   ) async {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
+    var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     //! Android settings
-    AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings(appAndroidIcon ?? "@mipmap/ic_launcher");
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings(appAndroidIcon ?? '@mipmap/ic_launcher');
     //! Ios setings
-    final IOSInitializationSettings initializationSettingsIOS =
-        IOSInitializationSettings();
+    final initializationSettingsIOS = IOSInitializationSettings();
 
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
+    final initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
-    flutterLocalNotificationsPlugin.initialize(
+    await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onSelectNotification: _onPayLoad,
     );
     await _subscription?.cancel();
     //Listen to messages
-    if (displayIncomming == true)
+    if (displayIncomming == true) {
       _subscription = FirebaseMessaging.onMessage.listen((_notification) {
         if (_notification.notification != null) {
           _displayNotification(_notification, androidChannelId,
               androidChannelName, androidChannelDescription);
         }
       });
+    }
   }
 
   static void _displayNotification(
@@ -66,27 +64,26 @@ class LocaleNotification {
     String? androidChannelDescription,
   ) {
     if (_notification.notification == null) return;
-    FlutterLocalNotificationsPlugin _localeNotification =
-        FlutterLocalNotificationsPlugin();
+    var _localeNotification = FlutterLocalNotificationsPlugin();
     var smallIcon = _notification.notification?.android?.smallIcon;
     var _android = AndroidNotificationDetails(
-      androidChannelId ?? "FCM_Config",
-      androidChannelName ?? "FCM_Config",
-      androidChannelDescription ?? "FCM_Config",
-      importance: _notification._getImportance(),
+      androidChannelId ?? 'FCM_Config',
+      androidChannelName ?? 'FCM_Config',
+      androidChannelDescription ?? 'FCM_Config',
+      importance: _getImportance(_notification.notification!),
       priority: Priority.high,
       styleInformation: BigTextStyleInformation(
-        _notification.notification?.body ?? "",
+        _notification.notification?.body ?? '',
         htmlFormatBigText: true,
       ),
       ticker: _notification.notification?.android?.ticker,
-      icon: smallIcon == "default" ? null : smallIcon,
+      icon: smallIcon == 'default' ? null : smallIcon,
       category: _notification.category,
       groupKey: _notification.collapseKey,
       showProgress: false,
-      sound: _notification._isDefaultAndroidSound
+      sound: _notification.isDefaultAndroidSound
           ? null
-          : (_notification._isAndroidRemoteSound
+          : (_notification.isAndroidRemoteSound
               ? UriAndroidNotificationSound(
                   _notification.notification!.android!.sound!)
               : RawResourceAndroidNotificationSound(
@@ -96,9 +93,27 @@ class LocaleNotification {
     _localeNotification.show(
       0,
       _notification.notification!.title,
-      Platform.isAndroid ? "" : _notification.notification!.body,
+      Platform.isAndroid ? '' : _notification.notification!.body,
       _details,
       payload: jsonEncode(_notification.toMap()),
     );
+  }
+
+  static Importance _getImportance(RemoteNotification notification) {
+    if (notification.android?.priority == null) return Importance.high;
+    switch (notification.android!.priority) {
+      case AndroidNotificationPriority.minimumPriority:
+        return Importance.min;
+      case AndroidNotificationPriority.lowPriority:
+        return Importance.low;
+      case AndroidNotificationPriority.defaultPriority:
+        return Importance.defaultImportance;
+      case AndroidNotificationPriority.highPriority:
+        return Importance.high;
+      case AndroidNotificationPriority.maximumPriority:
+        return Importance.max;
+      default:
+        return Importance.max;
+    }
   }
 }

@@ -15,11 +15,10 @@ part 'fcm_notification_listener.dart';
 
 class FCMConfig {
   static Future<RemoteMessage?> getInitialMessage() async {
-    FlutterLocalNotificationsPlugin _localeNotification =
-        FlutterLocalNotificationsPlugin();
+    var _localeNotification = FlutterLocalNotificationsPlugin();
     var payload = await _localeNotification.getNotificationAppLaunchDetails();
     if (payload != null && payload.didNotificationLaunchApp) {
-      return RemoteMessage.fromMap(jsonDecode(payload.payload ?? ""));
+      return RemoteMessage.fromMap(jsonDecode(payload.payload ?? ''));
     }
     return await FirebaseMessaging.instance.getInitialMessage();
   }
@@ -90,8 +89,7 @@ class FCMConfig {
   }) async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(name: name, options: options);
-
-    FirebaseMessaging.instance.requestPermission(
+    await FirebaseMessaging.instance.requestPermission(
       alert: alert,
       announcement: announcement,
       criticalAlert: criticalAlert,
@@ -100,16 +98,18 @@ class FCMConfig {
       sound: sound,
       provisional: provisional,
     );
-    FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       alert: alert,
       badge: badge,
       sound: sound,
     );
-    if (onBackgroundMessage != null)
+    if (onBackgroundMessage != null) {
       FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
+    }
 
     ///Handling forground android notification
-    LocaleNotification.init(
+    await LocaleNotification.init(
       appAndroidIcon,
       androidChannelId,
       androidChannelName,
@@ -182,13 +182,12 @@ class FCMConfig {
     String? androidChannelDescription,
     Map<String, dynamic>? data,
   }) {
-    FlutterLocalNotificationsPlugin _localeNotification =
-        FlutterLocalNotificationsPlugin();
-    IOSNotificationDetails _iOS = IOSNotificationDetails(subtitle: subTitle);
+    var _localeNotification = FlutterLocalNotificationsPlugin();
+    var _iOS = IOSNotificationDetails(subtitle: subTitle);
     var _android = AndroidNotificationDetails(
-      androidChannelId ?? "FCM_Config",
-      androidChannelName ?? "FCM_Config",
-      androidChannelDescription ?? "FCM_Config",
+      androidChannelId ?? 'FCM_Config',
+      androidChannelName ?? 'FCM_Config',
+      androidChannelDescription ?? 'FCM_Config',
       importance: Importance.high,
       priority: Priority.high,
       category: category,
@@ -203,7 +202,7 @@ class FCMConfig {
       title,
       body,
       _details,
-      payload: jsonEncode({"data": data}),
+      payload: jsonEncode({'data': data}),
     );
   }
 
@@ -220,13 +219,12 @@ class FCMConfig {
     String? androidChannelDescription,
     Map<String, dynamic>? data,
   }) {
-    FlutterLocalNotificationsPlugin _localeNotification =
-        FlutterLocalNotificationsPlugin();
-    IOSNotificationDetails _iOS = IOSNotificationDetails(subtitle: subTitle);
+    var _localeNotification = FlutterLocalNotificationsPlugin();
+    var _iOS = IOSNotificationDetails(subtitle: subTitle);
     var _android = AndroidNotificationDetails(
-      androidChannelId ?? "FCM_Config",
-      androidChannelName ?? "FCM_Config",
-      androidChannelDescription ?? "FCM_Config",
+      androidChannelId ?? 'FCM_Config',
+      androidChannelName ?? 'FCM_Config',
+      androidChannelDescription ?? 'FCM_Config',
       importance: Importance.high,
       priority: Priority.high,
       category: category,
@@ -241,7 +239,7 @@ class FCMConfig {
       title,
       body,
       _details,
-      payload: jsonEncode({"data": data}),
+      payload: jsonEncode({'data': data}),
     );
   }
 
@@ -252,15 +250,14 @@ class FCMConfig {
     required AndroidNotificationDetails android,
     required IOSNotificationDetails iOS,
   }) {
-    FlutterLocalNotificationsPlugin _localeNotification =
-        FlutterLocalNotificationsPlugin();
+    var _localeNotification = FlutterLocalNotificationsPlugin();
     var _details = NotificationDetails(android: android, iOS: iOS);
     _localeNotification.show(
       0,
       title,
       body,
       _details,
-      payload: jsonEncode({"data": data}),
+      payload: jsonEncode({'data': data}),
     );
   }
 }

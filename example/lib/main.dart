@@ -8,36 +8,36 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 Map<String, Map<String, String>> translations = {
-  "ar": {
-    "New_Order_Title": "طلب جديد",
-    "New_Order_Body": "لديك طلب جديد برقم{args}",
+  'ar': {
+    'New_Order_Title': 'طلب جديد',
+    'New_Order_Body': 'لديك طلب جديد برقم{args}',
   },
-  "en": {
-    "New_Order_Title": "New order",
-    "New_Order_Body": "You has new order with number {args}",
+  'en': {
+    'New_Order_Title': 'New order',
+    'New_Order_Body': 'You has new order with number {args}',
   }
 };
 Future<void> _firebaseMessagingBackgroundHandler(
     RemoteMessage _notification) async {
   var strings = translations[(await getSavedLocale()).languageCode];
-  if (strings == null) strings = translations["en"];
-  String title = strings[_notification.data["title_key"]];
-  String body = strings[_notification.data["body_key"]]
-      .replaceAll("{args}", _notification.data["body_args"]);
+  strings ??= translations['en'];
+  var title = strings[_notification.data['title_key']];
+  var body = strings[_notification.data['body_key']]
+      .replaceAll('{args}', _notification.data['body_args']);
   FCMConfig.displayNotification(title: title, body: body);
 }
 
 Future<Locale> getSavedLocale() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var prefs = await SharedPreferences.getInstance();
   await prefs.reload();
-  var locale = prefs.containsKey("locale") ? prefs.getString("locale") : null;
+  var locale = prefs.containsKey('locale') ? prefs.getString('locale') : null;
   return Locale(locale ?? Platform.localeName);
 }
 
 void main() async {
-  FCMConfig.init(onBackgroundMessage: _firebaseMessagingBackgroundHandler)
+  await FCMConfig.init(onBackgroundMessage: _firebaseMessagingBackgroundHandler)
       .then((value) {
-    FCMConfig.subscribeToTopic("test_fcm_topic");
+    FCMConfig.subscribeToTopic('test_fcm_topic');
   });
 
   runApp(
@@ -70,28 +70,28 @@ class _MyHomePageState extends State<MyHomePage>
       locale: locale,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: [
-        Locale("ar"),
-        Locale("en"),
+        Locale('ar'),
+        Locale('en'),
       ],
       home: Scaffold(
-        appBar: AppBar(title: Text("Notifications")),
+        appBar: AppBar(title: Text('Notifications')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               ListTile(
-                title: Text("title"),
-                subtitle: Text(_notification?.notification?.title ?? ""),
+                title: Text('title'),
+                subtitle: Text(_notification?.notification?.title ?? ''),
               ),
               ListTile(
-                title: Text("Body"),
+                title: Text('Body'),
                 subtitle: Text(
-                    _notification?.notification?.body ?? "No notification"),
+                    _notification?.notification?.body ?? 'No notification'),
               ),
               if (_notification != null)
                 ListTile(
-                  title: Text("data"),
-                  subtitle: Text(_notification?.data?.toString() ?? ""),
+                  title: Text('data'),
+                  subtitle: Text(_notification?.data?.toString() ?? ''),
                 )
             ],
           ),
@@ -99,26 +99,26 @@ class _MyHomePageState extends State<MyHomePage>
         persistentFooterButtons: [
           TextButton(
             onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
+              var prefs = await SharedPreferences.getInstance();
               setState(() {
                 locale =
-                    locale.languageCode == "ar" ? Locale("en") : Locale("ar");
+                    locale.languageCode == 'ar' ? Locale('en') : Locale('ar');
               });
-              prefs.setString("locale", locale.languageCode);
+              await prefs.setString('locale', locale.languageCode);
             },
-            child: Text("Toggle language"),
+            child: Text('Toggle language'),
           ),
           TextButton(
             onPressed: () {
               send();
             },
-            child: Text("Send with notification"),
+            child: Text('Send with notification'),
           ),
           TextButton(
             onPressed: () async {
               print(await FCMConfig.getToken());
             },
-            child: Text("Get token"),
+            child: Text('Get token'),
           )
         ],
       ),
@@ -163,6 +163,6 @@ class _MyHomePageState extends State<MyHomePage>
       _notification = notification;
     });
     print(
-        "Notification clicked with title: ${notification.notification.title} && body: ${notification.notification.body}");
+        'Notification clicked with title: ${notification.notification.title} && body: ${notification.notification.body}');
   }
 }

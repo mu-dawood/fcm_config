@@ -1,68 +1,68 @@
 import 'package:fcm_config/fcm_config.dart';
 
 extension MapExt on RemoteMessage {
-  bool get _isDefaultAndroidSound =>
+  bool get isDefaultAndroidSound =>
       notification?.android?.sound == null ||
-      notification?.android?.sound == "default";
-  bool get _isAndroidRemoteSound =>
-      !_isDefaultAndroidSound &&
-      notification?.android?.sound?.contains("http") == true;
+      notification?.android?.sound == 'default';
+  bool get isAndroidRemoteSound =>
+      !isDefaultAndroidSound &&
+      notification?.android?.sound?.contains('http') == true;
   Map<String, dynamic> toMap() {
     return {
-      "senderId": senderId,
-      "category": category,
-      "collapseKey": collapseKey,
-      "contentAvailable": contentAvailable,
-      "data": data,
-      "from": from,
-      "messageId": messageId,
-      "mutableContent": mutableContent,
-      "notification": notification == null
+      'senderId': senderId,
+      'category': category,
+      'collapseKey': collapseKey,
+      'contentAvailable': contentAvailable,
+      'data': data,
+      'from': from,
+      'messageId': messageId,
+      'mutableContent': mutableContent,
+      'notification': notification == null
           ? null
           : {
-              "title": notification?.title,
-              "titleLocArgs": notification?.titleLocArgs,
-              "titleLocKey": notification?.titleLocKey,
-              "body": notification?.body,
-              "bodyLocArgs": notification?.bodyLocArgs,
-              "bodyLocKey": notification?.bodyLocKey,
-              "android": notification?.android == null
+              'title': notification?.title,
+              'titleLocArgs': notification?.titleLocArgs,
+              'titleLocKey': notification?.titleLocKey,
+              'body': notification?.body,
+              'bodyLocArgs': notification?.bodyLocArgs,
+              'bodyLocKey': notification?.bodyLocKey,
+              'android': notification?.android == null
                   ? null
                   : {
-                      "channelId": notification!.android!.channelId,
-                      "clickAction": notification!.android!.clickAction,
-                      "color": notification!.android!.color,
-                      "count": notification!.android!.count,
-                      "imageUrl": notification!.android!.imageUrl,
-                      "link": notification!.android!.link,
-                      "priority": _getPeriority(),
-                      "smallIcon": notification!.android!.smallIcon,
-                      "sound": notification!.android!.sound,
-                      "ticker": notification!.android!.ticker,
-                      "visibility": _getAndroidVisibility(),
+                      'channelId': notification!.android!.channelId,
+                      'clickAction': notification!.android!.clickAction,
+                      'color': notification!.android!.color,
+                      'count': notification!.android!.count,
+                      'imageUrl': notification!.android!.imageUrl,
+                      'link': notification!.android!.link,
+                      'priority': _getPeriority(),
+                      'smallIcon': notification!.android!.smallIcon,
+                      'sound': notification!.android!.sound,
+                      'ticker': notification!.android!.ticker,
+                      'visibility': _getAndroidVisibility(),
                     },
-              "apple": notification?.apple == null
+              'apple': notification?.apple == null
                   ? null
                   : {
-                      "badge": notification!.apple!.badge,
-                      "subtitle": notification!.apple!.subtitle,
-                      "subtitleLocArgs":
-                          notification!.apple!.subtitleLocArgs.length > 0
+                      'badge': notification!.apple!.badge,
+                      'subtitle': notification!.apple!.subtitle,
+                      'subtitleLocArgs':
+                          notification!.apple!.subtitleLocArgs.isNotEmpty
                               ? notification!.apple!.subtitleLocArgs
                               : null,
-                      "subtitleLocKey": notification!.apple!.subtitleLocKey,
-                      "sound": notification!.apple!.sound == null
+                      'subtitleLocKey': notification!.apple!.subtitleLocKey,
+                      'sound': notification!.apple!.sound == null
                           ? null
                           : {
-                              "critical": notification!.apple!.sound?.critical,
-                              "name": notification!.apple!.sound?.name,
-                              "volume": notification!.apple!.sound?.volume,
+                              'critical': notification!.apple!.sound?.critical,
+                              'name': notification!.apple!.sound?.name,
+                              'volume': notification!.apple!.sound?.volume,
                             }
                     },
             },
-      "sentTime": sentTime?.millisecondsSinceEpoch,
-      "threadId": threadId,
-      "ttl": ttl,
+      'sentTime': sentTime?.millisecondsSinceEpoch,
+      'threadId': threadId,
+      'ttl': ttl,
     };
   }
 
@@ -96,24 +96,6 @@ extension MapExt on RemoteMessage {
         return 1;
       default:
         return 0;
-    }
-  }
-
-  Importance _getImportance() {
-    if (notification?.android?.priority == null) return Importance.high;
-    switch (notification!.android!.priority) {
-      case AndroidNotificationPriority.minimumPriority:
-        return Importance.min;
-      case AndroidNotificationPriority.lowPriority:
-        return Importance.low;
-      case AndroidNotificationPriority.defaultPriority:
-        return Importance.defaultImportance;
-      case AndroidNotificationPriority.highPriority:
-        return Importance.high;
-      case AndroidNotificationPriority.maximumPriority:
-        return Importance.max;
-      default:
-        return Importance.max;
     }
   }
 }
