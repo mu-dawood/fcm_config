@@ -147,4 +147,48 @@ class FCMConfig {
   ///Not supported in web
   static Future<void> unsubscribeFromTopic(String topic) =>
       FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+
+  /// Not work in web
+  static void displayNotification({
+    required String title,
+    required String body,
+    String? subTitle,
+    String? category,
+    String? collapseKey,
+    dynamic? sound,
+    String? androidChannelId,
+    String? androidChannelName,
+    String? androidChannelDescription,
+    Map<String, dynamic>? data,
+  }) {
+    throw UnimplementedError();
+  }
+
+  /// Not work in web
+  static void displayNotificationWithAndroidStyle({
+    required String title,
+    required dynamic styleInformation,
+    required String body,
+    String? subTitle,
+    String? category,
+    String? collapseKey,
+    dynamic? sound,
+    String? androidChannelId,
+    String? androidChannelName,
+    String? androidChannelDescription,
+    Map<String, dynamic>? data,
+  }) {
+    throw UnimplementedError();
+  }
+
+  /// Not work in web
+  static void displayNotificationWith({
+    required String title,
+    String? body,
+    Map<String, dynamic>? data,
+    required dynamic android,
+    required dynamic iOS,
+  }) {
+    throw UnimplementedError();
+  }
 }

@@ -1,5 +1,3 @@
-library fcm_config;
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -12,9 +10,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'locale_notifications_Manager.dart';
-
-part 'fcm_notification_click_listener.dart';
-part 'fcm_notification_listener.dart';
 
 class FCMConfig {
   static Future<RemoteMessage?> getInitialMessage() async {
@@ -177,6 +172,7 @@ class FCMConfig {
   static Future<void> unsubscribeFromTopic(String topic) =>
       FirebaseMessaging.instance.unsubscribeFromTopic(topic);
 
+  /// Not work in web
   static void displayNotification({
     required String title,
     required String body,
@@ -213,6 +209,7 @@ class FCMConfig {
     );
   }
 
+  /// Not work in web
   static void displayNotificationWithAndroidStyle({
     required String title,
     required StyleInformation styleInformation,
@@ -250,6 +247,7 @@ class FCMConfig {
     );
   }
 
+  /// Not work in web
   static void displayNotificationWith({
     required String title,
     String? body,

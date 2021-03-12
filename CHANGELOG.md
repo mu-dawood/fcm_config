@@ -1,20 +1,6 @@
-## [1.0.0-beta.1] - 18/10/2020
+## [3.0.0-nullsafety.6] - 12/03/2021
 
-* Initial release
-
-## [1.0.0-beta.2] - 18/10/2020
-
-* Add example
-
-## [1.0.0-beta.3] - 18/10/2020
-
-* Add comments
-
-## [2.0.0-dev.1] - 4/11/2020
-
-* breaking changes
-* Update dependencies
-* Use new fcm api
+* conditional import for web
 
 ## [3.0.0-nullsafety.5] - 12/03/2021
 
@@ -58,3 +44,21 @@
 
 * Update readme
 * Use default mipmap as default icon
+
+## [1.0.0-beta.1] - 18/10/2020
+
+* Initial release
+
+## [1.0.0-beta.2] - 18/10/2020
+
+* Add example
+
+## [1.0.0-beta.3] - 18/10/2020
+
+* Add comments
+
+## [2.0.0-dev.1] - 4/11/2020
+
+* breaking changes
+* Update dependencies
+* Use new fcm api

@@ -118,9 +118,11 @@ class _MyHomePageState extends State<MyHomePage>
           ),
           TextButton(
             onPressed: () async {
-              print(await FCMConfig.getToken(
-                  vapidKey:
-                      'BK0qRCI_WjVXGl4IthkQ4zLP7ijGBVtDTBQEjYUI3TScW1xaxLruOM-_IX754iouldACW6Kn7CHD26KvMcyBAyg'));
+              FCMConfig.displayNotification(title: "sss", body: "ssss");
+
+              // print(await FCMConfig.getToken(
+              //     vapidKey:
+              //         'BK0qRCI_WjVXGl4IthkQ4zLP7ijGBVtDTBQEjYUI3TScW1xaxLruOM-_IX754iouldACW6Kn7CHD26KvMcyBAyg'));
             },
             child: Text('Get token'),
           )

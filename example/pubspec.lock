@@ -63,7 +63,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.0.0-nullsafety.5"
+    version: "3.0.0-nullsafety.6"
   ffi:
     dependency: transitive
     description:

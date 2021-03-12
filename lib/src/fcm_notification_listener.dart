@@ -1,4 +1,7 @@
-part of fcm_config;
+import 'dart:async';
+
+import 'package:fcm_config/fcm_config.dart';
+import 'package:flutter/material.dart';
 
 /// This mixin can listen to incomming notification
 mixin FCMNotificationMixin<T extends StatefulWidget> on State<T> {
