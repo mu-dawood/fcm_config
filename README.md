@@ -148,7 +148,7 @@ Future<void> _firebaseMessagingBackgroundHandler(
   String title = strings[_notification.data["title_key"]];
   String body = strings[_notification.data["body_key"]]
       .replaceAll("{args}", _notification.data["body_args"]);
-  FCMConfig.displayNotification(title: title, body: body);
+  LocaleNotification.displayNotification(title: title, body: body);
 }
 
 Future<Locale> getSavedLocale() async {

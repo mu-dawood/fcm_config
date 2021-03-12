@@ -8,7 +8,7 @@ mixin FCMNotificationClickMixin<T extends StatefulWidget> on State<T> {
   void initState() {
     _clickSubscription = FirebaseMessaging.onMessageOpenedApp.listen(_onClick);
     _clickLocaleSubscription =
-        LocaleNotification.onLocaleClick.stream.listen(_onClick);
+        LocaleNotificationManager.onLocaleClick.stream.listen(_onClick);
     super.initState();
   }
 

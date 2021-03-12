@@ -40,7 +40,6 @@ void main() async {
     if (!kIsWeb) {
       FCMConfig.subscribeToTopic('test_fcm_topic');
     }
-    FCMConfig.getToken(vapidKey: '...Web push certificate');
   });
 
   runApp(
@@ -120,7 +119,8 @@ class _MyHomePageState extends State<MyHomePage>
           TextButton(
             onPressed: () async {
               print(await FCMConfig.getToken(
-                  vapidKey: '...Web push certificate'));
+                  vapidKey:
+                      'BK0qRCI_WjVXGl4IthkQ4zLP7ijGBVtDTBQEjYUI3TScW1xaxLruOM-_IX754iouldACW6Kn7CHD26KvMcyBAyg'));
             },
             child: Text('Get token'),
           )

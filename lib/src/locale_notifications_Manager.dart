@@ -6,7 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'fcm_extension.dart';
 
-class LocaleNotification {
+class LocaleNotificationManager {
   static StreamSubscription<RemoteMessage>? _subscription;
   static final StreamController<RemoteMessage> onLocaleClick =
       StreamController<RemoteMessage>.broadcast();
@@ -14,6 +14,14 @@ class LocaleNotification {
     if (payload == null) return;
     var message = RemoteMessage.fromMap(jsonDecode(payload));
     onLocaleClick.add(message);
+  }
+
+  static Future<RemoteMessage?> getInitialMessage() async {
+    var _localeNotification = FlutterLocalNotificationsPlugin();
+    var payload = await _localeNotification.getNotificationAppLaunchDetails();
+    if (payload != null && payload.didNotificationLaunchApp) {
+      return RemoteMessage.fromMap(jsonDecode(payload.payload ?? ''));
+    }
   }
 
   static Future init(
