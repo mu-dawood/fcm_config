@@ -118,11 +118,7 @@ class _MyHomePageState extends State<MyHomePage>
           ),
           TextButton(
             onPressed: () async {
-              FCMConfig.displayNotification(title: "sss", body: "ssss");
-
-              // print(await FCMConfig.getToken(
-              //     vapidKey:
-              //         'BK0qRCI_WjVXGl4IthkQ4zLP7ijGBVtDTBQEjYUI3TScW1xaxLruOM-_IX754iouldACW6Kn7CHD26KvMcyBAyg'));
+              print(await FCMConfig.getToken(vapidKey: 'your web token'));
             },
             child: Text('Get token'),
           )

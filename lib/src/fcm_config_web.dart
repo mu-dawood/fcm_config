@@ -148,7 +148,6 @@ class FCMConfig {
   static Future<void> unsubscribeFromTopic(String topic) =>
       FirebaseMessaging.instance.unsubscribeFromTopic(topic);
 
-  /// Not work in web
   static void displayNotification({
     required String title,
     required String body,
@@ -164,7 +163,6 @@ class FCMConfig {
     throw UnimplementedError();
   }
 
-  /// Not work in web
   static void displayNotificationWithAndroidStyle({
     required String title,
     required dynamic styleInformation,
@@ -181,7 +179,6 @@ class FCMConfig {
     throw UnimplementedError();
   }
 
-  /// Not work in web
   static void displayNotificationWith({
     required String title,
     String? body,
