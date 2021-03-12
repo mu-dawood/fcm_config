@@ -7,41 +7,7 @@
 
 # Setup
 ## Android
->  android/build.gradle
-  ```gradle
-    buildscript {
-      dependencies {
-        // ... other dependencies
-        classpath 'com.google.gms:google-services:4.3.3'
-      }
-    }
-  ```
->  android/app/build.gradle
-  ```gradle
-    // under apply plugin: 'com.android.application' or at the end of file
-    apply plugin: 'com.google.gms.google-services'
-  ```
-if you are faceing multidex error while building your app you can do one of this
-
-  ``` 
-    minSdkVersion 21 
-  ```
-  or 
-
-  ```gradle
-     android {
-         defaultConfig {
-             // ...
-             minSdkVersion 16
-             targetSdkVersion 28
-             multiDexEnabled true 
-         }
-     }
-     
-     dependencies {
-       implementation 'com.android.support:multidex:1.0.3'
-     }
-  ```
+- > Follow steps here https://firebase.flutter.dev/docs/installation/android
 
 ## Ios
 - > Follow steps here https://firebase.flutter.dev/docs/installation/ios
@@ -52,6 +18,10 @@ if you are faceing multidex error while building your app you can do one of this
 - > Follow steps here https://firebase.flutter.dev/docs/installation/macos
 - > Then  here https://firebase.flutter.dev/docs/messaging/apple-integration
 
+## Web
+- > Follow steps here https://firebase.flutter.dev/docs/installation/web
+- > Add fcm js liberary like here https://firebase.flutter.dev/docs/messaging/overview#5-web-only-add-the-sdk
+- > Add firebase-messaging-sw.js in your web folder see the example to see what this file contains
 
 ## Dart/Flutter
 

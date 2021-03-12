@@ -16,6 +16,11 @@
 * Update dependencies
 * Use new fcm api
 
+## [3.0.0-nullsafety.5] - 12/03/2021
+
+* add web to example
+* update readme
+
 ## [3.0.0-nullsafety.3] - 03/03/2021
 
 * use pedantic
