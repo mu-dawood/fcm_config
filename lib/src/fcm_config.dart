@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -109,17 +110,20 @@ class FCMConfig {
     }
 
     ///Handling forground android notification
-    await LocaleNotification.init(
-      appAndroidIcon,
-      androidChannelId,
-      androidChannelName,
-      androidChannelDescription,
-      Platform.isAndroid,
-    );
+    if (!kIsWeb) {
+      await LocaleNotification.init(
+        appAndroidIcon,
+        androidChannelId,
+        androidChannelName,
+        androidChannelDescription,
+        Platform.isAndroid,
+      );
+    }
   }
 
   ///Call to FirebaseMessaging.instance.deleteToken();
-  static Future<void> deleteToken() => FirebaseMessaging.instance.deleteToken();
+  static Future<void> deleteToken({String? senderId}) =>
+      FirebaseMessaging.instance.deleteToken(senderId: senderId);
 
   ///Call to FirebaseMessaging.instance.getAPNSToken();
   static Future<String?> getAPNSToken() =>
@@ -163,10 +167,12 @@ class FCMConfig {
       );
 
   ///Call to FirebaseMessaging.instance.subscribeToTopic();
+  ///Not supported in web
   static Future<void> subscribeToTopic(String topic) =>
       FirebaseMessaging.instance.subscribeToTopic(topic);
 
   ///Call to FirebaseMessaging.instance.unsubscribeFromTopic();
+  ///Not supported in web
   static Future<void> unsubscribeFromTopic(String topic) =>
       FirebaseMessaging.instance.unsubscribeFromTopic(topic);
 

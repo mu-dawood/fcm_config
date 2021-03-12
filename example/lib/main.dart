@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fcm_config/fcm_config.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -31,13 +31,16 @@ Future<Locale> getSavedLocale() async {
   var prefs = await SharedPreferences.getInstance();
   await prefs.reload();
   var locale = prefs.containsKey('locale') ? prefs.getString('locale') : null;
-  return Locale(locale ?? Platform.localeName);
+  return Locale(locale ?? 'ar');
 }
 
 void main() async {
   await FCMConfig.init(onBackgroundMessage: _firebaseMessagingBackgroundHandler)
       .then((value) {
-    FCMConfig.subscribeToTopic('test_fcm_topic');
+    if (!kIsWeb) {
+      FCMConfig.subscribeToTopic('test_fcm_topic');
+    }
+    FCMConfig.getToken(vapidKey: '...Web push certificate');
   });
 
   runApp(
@@ -116,7 +119,8 @@ class _MyHomePageState extends State<MyHomePage>
           ),
           TextButton(
             onPressed: () async {
-              print(await FCMConfig.getToken());
+              print(await FCMConfig.getToken(
+                  vapidKey: '...Web push certificate'));
             },
             child: Text('Get token'),
           )
