@@ -1,0 +1,22 @@
+name: fcm_localization
+description: Package that depends on fcm_config package to localize firbasemessaging notifications
+version: 1.0.0-nullsafety.0
+homepage: https://github.com/mo-ah-dawood/fcm_config
+
+environment:
+  sdk: '>=2.12.0-0 <3.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  fcm_config: ^3.0.0-nullsafety.8
+  shared_preferences: ^2.0.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+

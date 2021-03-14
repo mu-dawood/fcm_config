@@ -1,3 +1,7 @@
+## [3.0.0-nullsafety.8] - 14/03/2021
+
+* Fix exports
+
 ## [3.0.0-nullsafety.6] - 12/03/2021
 
 * conditional import for web

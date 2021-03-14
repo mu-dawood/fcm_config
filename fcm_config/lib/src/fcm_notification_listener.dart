@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:fcm_config/fcm_config.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 /// This mixin can listen to incomming notification

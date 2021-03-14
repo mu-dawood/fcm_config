@@ -1,14 +1,29 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import 'locale_notifications_Manager.dart';
+import 'web/web_notification_manager.dart';
 
 class FCMConfig {
   static Future<RemoteMessage?> getInitialMessage() async {
+    if (!kIsWeb) {
+      var intial = await LocaleNotificationManager.getInitialMessage();
+      if (intial != null) return intial;
+    }
     return await FirebaseMessaging.instance.getInitialMessage();
   }
 
   static Future init({
     /// this function will be excuted while application is in background
+    /// Not work on the web
     BackgroundMessageHandler? onBackgroundMessage,
 
     /// Drawable icon works only in forground
@@ -70,6 +85,7 @@ class FCMConfig {
 
     ///Name of the firebase instance app
     String? name,
+    bool displayInForeground = true,
   }) async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(name: name, options: options);
@@ -82,14 +98,27 @@ class FCMConfig {
       sound: sound,
       provisional: provisional,
     );
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-      alert: alert,
-      badge: badge,
-      sound: sound,
-    );
+    if (displayInForeground) {
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: alert,
+        badge: badge,
+        sound: sound,
+      );
+    }
     if (onBackgroundMessage != null) {
       FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
+    }
+
+    ///Handling forground android notification
+    if (!kIsWeb) {
+      await LocaleNotificationManager.init(
+        appAndroidIcon,
+        androidChannelId,
+        androidChannelName,
+        androidChannelDescription,
+        Platform.isAndroid && displayInForeground,
+      );
     }
   }
 
@@ -148,44 +177,105 @@ class FCMConfig {
   static Future<void> unsubscribeFromTopic(String topic) =>
       FirebaseMessaging.instance.unsubscribeFromTopic(topic);
 
+  /// Not work in web
   static void displayNotification({
     required String title,
     required String body,
+
+    ///This is required to display in the web you can pass null if you dont need to diplay in web
+    required BuildContext? context,
     String? subTitle,
     String? category,
     String? collapseKey,
-    dynamic? sound,
+    AndroidNotificationSound? sound,
     String? androidChannelId,
     String? androidChannelName,
     String? androidChannelDescription,
     Map<String, dynamic>? data,
   }) {
-    throw UnimplementedError();
+    var _localeNotification = FlutterLocalNotificationsPlugin();
+    var _iOS = IOSNotificationDetails(subtitle: subTitle);
+    var _android = AndroidNotificationDetails(
+      androidChannelId ?? 'FCM_Config',
+      androidChannelName ?? 'FCM_Config',
+      androidChannelDescription ?? 'FCM_Config',
+      importance: Importance.high,
+      priority: Priority.high,
+      category: category,
+      groupKey: collapseKey,
+      showProgress: false,
+      sound: sound,
+      subText: subTitle,
+    );
+    var _details = NotificationDetails(android: _android, iOS: _iOS);
+    _localeNotification.show(
+      0,
+      title,
+      body,
+      _details,
+      payload: jsonEncode({'data': data}),
+    );
   }
 
   static void displayNotificationWithAndroidStyle({
     required String title,
-    required dynamic styleInformation,
+    required StyleInformation styleInformation,
     required String body,
     String? subTitle,
+
+    ///This is required to display in the web you can pass null if you dont need to diplay in web
+    required BuildContext? context,
     String? category,
     String? collapseKey,
-    dynamic? sound,
+    AndroidNotificationSound? sound,
     String? androidChannelId,
     String? androidChannelName,
     String? androidChannelDescription,
     Map<String, dynamic>? data,
   }) {
-    throw UnimplementedError();
+    var _localeNotification = FlutterLocalNotificationsPlugin();
+    var _iOS = IOSNotificationDetails(subtitle: subTitle);
+    var _android = AndroidNotificationDetails(
+      androidChannelId ?? 'FCM_Config',
+      androidChannelName ?? 'FCM_Config',
+      androidChannelDescription ?? 'FCM_Config',
+      importance: Importance.high,
+      priority: Priority.high,
+      category: category,
+      groupKey: collapseKey,
+      sound: sound,
+      subText: subTitle,
+      styleInformation: styleInformation,
+    );
+    var _details = NotificationDetails(android: _android, iOS: _iOS);
+    _localeNotification.show(
+      0,
+      title,
+      body,
+      _details,
+      payload: jsonEncode({'data': data}),
+    );
   }
 
   static void displayNotificationWith({
     required String title,
     String? body,
     Map<String, dynamic>? data,
-    required dynamic android,
-    required dynamic iOS,
+    required AndroidNotificationDetails android,
+    required IOSNotificationDetails iOS,
+    required WebNotificationDetails? web,
+
+    ///This is required to display in the web you can pass null if you dont need to diplay in web
+    required BuildContext? context,
   }) {
-    throw UnimplementedError();
+    var _localeNotification = FlutterLocalNotificationsPlugin();
+    var _details = NotificationDetails(android: android, iOS: iOS);
+    _localeNotification.show(
+      0,
+      title,
+      body,
+      _details,
+      payload: jsonEncode({'data': data}),
+    );
   }
 }

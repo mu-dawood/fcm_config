@@ -1,4 +1,4 @@
-import 'package:fcm_config/fcm_config.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 extension MapExt on RemoteMessage {
   bool get isDefaultAndroidSound =>

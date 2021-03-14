@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fcm_config/src/web/web_notification_manager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,8 @@ mixin FCMNotificationClickMixin<T extends StatefulWidget> on State<T> {
   @override
   void initState() {
     _clickSubscription = FirebaseMessaging.onMessageOpenedApp.listen(_onClick);
-
+    _clickLocaleSubscription =
+        WebNotificationManager.onLocaleClick.stream.listen(_onClick);
     super.initState();
   }
 

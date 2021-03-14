@@ -36,7 +36,7 @@ class LocaleNotificationManager {
 
     /// Required to show head up notification in foreground
     String? androidChannelDescription,
-    bool displayIncomming,
+    bool displayInForeground,
   ) async {
     var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     //! Android settings
@@ -55,7 +55,7 @@ class LocaleNotificationManager {
     );
     await _subscription?.cancel();
     //Listen to messages
-    if (displayIncomming == true) {
+    if (displayInForeground == true) {
       _subscription = FirebaseMessaging.onMessage.listen((_notification) {
         if (_notification.notification != null) {
           _displayNotification(_notification, androidChannelId,
