@@ -1,4 +1,4 @@
-## [3.0.0-nullsafety.8] - 15/03/2021
+## [3.0.0-nullsafety.10] - 15/03/2021
 
 * allow display native notification in the web
 
