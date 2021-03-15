@@ -43,13 +43,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2"
   fake_async:
     dependency: transitive
     description:
@@ -63,7 +56,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.0.0-nullsafety.9"
+    version: "3.0.0-nullsafety.10"
   ffi:
     dependency: transitive
     description:

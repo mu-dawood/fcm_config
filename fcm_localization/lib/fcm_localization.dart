@@ -1,4 +1,2 @@
-library fcm_localization;
-
-const String _localeKey = "fcm_localization_locale_key";
-const String _messagesKey = "fcm_localization_locale_key";
+export 'package:fcm_config/fcm_config.dart';
+export './src/fcm_localization.dart';

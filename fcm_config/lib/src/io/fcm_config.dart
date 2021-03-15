@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:fcm_config/src/fcm_config_interface.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -10,10 +11,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'locale_notifications_Manager.dart';
-import 'web/web_notification_manager.dart';
+import 'fcm_extension.dart';
+import '../web/details.dart';
 
-class FCMConfig {
-  static Future<RemoteMessage?> getInitialMessage() async {
+class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
+    IOSNotificationDetails, AndroidNotificationSound, StyleInformation> {
+  @override
+  Future<RemoteMessage?> getInitialMessage() async {
     if (!kIsWeb) {
       var intial = await LocaleNotificationManager.getInitialMessage();
       if (intial != null) return intial;
@@ -21,7 +25,8 @@ class FCMConfig {
     return await FirebaseMessaging.instance.getInitialMessage();
   }
 
-  static Future init({
+  @override
+  Future init({
     /// this function will be excuted while application is in background
     /// Not work on the web
     BackgroundMessageHandler? onBackgroundMessage,
@@ -123,34 +128,40 @@ class FCMConfig {
   }
 
   ///Call to FirebaseMessaging.instance.deleteToken();
-  static Future<void> deleteToken({String? senderId}) =>
+  @override
+  Future<void> deleteToken({String? senderId}) =>
       FirebaseMessaging.instance.deleteToken(senderId: senderId);
 
   ///Call to FirebaseMessaging.instance.getAPNSToken();
-  static Future<String?> getAPNSToken() =>
-      FirebaseMessaging.instance.getAPNSToken();
+  @override
+  Future<String?> getAPNSToken() => FirebaseMessaging.instance.getAPNSToken();
 
   ///Call to FirebaseMessaging.instance.getNotificationSettings();
-  static Future<NotificationSettings> getNotificationSettings() =>
+  @override
+  Future<NotificationSettings> getNotificationSettings() =>
       FirebaseMessaging.instance.getNotificationSettings();
 
   ///Call to FirebaseMessaging.instance.getToken();
-  static Future<String?> getToken({String? vapidKey}) =>
+  @override
+  Future<String?> getToken({String? vapidKey}) =>
       FirebaseMessaging.instance.getToken(vapidKey: vapidKey);
 
   ///Call to FirebaseMessaging.instance.isAutoInitEnabled();
-  static bool get isAutoInitEnabled =>
-      FirebaseMessaging.instance.isAutoInitEnabled;
+  @override
+  bool get isAutoInitEnabled => FirebaseMessaging.instance.isAutoInitEnabled;
 
   ///Call to FirebaseMessaging.instance.onTokenRefresh();
-  static Stream<String> get onTokenRefresh =>
+  @override
+  Stream<String> get onTokenRefresh =>
       FirebaseMessaging.instance.onTokenRefresh;
 
   ///Call to FirebaseMessaging.instance.pluginConstants;
-  static Map get pluginConstants => FirebaseMessaging.instance.pluginConstants;
+  @override
+  Map get pluginConstants => FirebaseMessaging.instance.pluginConstants;
 
   ///Call to FirebaseMessaging.instance.sendMessage();
-  static Future<void> sendMessage({
+  @override
+  Future<void> sendMessage({
     String? to,
     Map<String, String>? data,
     String? collapseKey,
@@ -169,21 +180,19 @@ class FCMConfig {
 
   ///Call to FirebaseMessaging.instance.subscribeToTopic();
   ///Not supported in web
-  static Future<void> subscribeToTopic(String topic) =>
+  @override
+  Future<void> subscribeToTopic(String topic) =>
       FirebaseMessaging.instance.subscribeToTopic(topic);
 
   ///Call to FirebaseMessaging.instance.unsubscribeFromTopic();
   ///Not supported in web
-  static Future<void> unsubscribeFromTopic(String topic) =>
+  @override
+  Future<void> unsubscribeFromTopic(String topic) =>
       FirebaseMessaging.instance.unsubscribeFromTopic(topic);
-
-  /// Not work in web
-  static void displayNotification({
+  @override
+  void displayNotification({
     required String title,
     required String body,
-
-    ///This is required to display in the web you can pass null if you dont need to diplay in web
-    required BuildContext? context,
     String? subTitle,
     String? category,
     String? collapseKey,
@@ -208,23 +217,31 @@ class FCMConfig {
       subText: subTitle,
     );
     var _details = NotificationDetails(android: _android, iOS: _iOS);
+    var notify = RemoteMessage(
+        data: data ?? {},
+        from: 'locale',
+        sentTime: DateTime.now(),
+        contentAvailable: true,
+        notification: RemoteNotification(
+          title: title,
+          body: body,
+        ));
+
     _localeNotification.show(
       0,
       title,
       body,
       _details,
-      payload: jsonEncode({'data': data}),
+      payload: jsonEncode(notify.toMap()),
     );
   }
 
-  static void displayNotificationWithAndroidStyle({
+  @override
+  void displayNotificationWithAndroidStyle({
     required String title,
     required StyleInformation styleInformation,
     required String body,
     String? subTitle,
-
-    ///This is required to display in the web you can pass null if you dont need to diplay in web
-    required BuildContext? context,
     String? category,
     String? collapseKey,
     AndroidNotificationSound? sound,
@@ -248,34 +265,52 @@ class FCMConfig {
       styleInformation: styleInformation,
     );
     var _details = NotificationDetails(android: _android, iOS: _iOS);
+    var notify = RemoteMessage(
+        data: data ?? {},
+        from: 'locale',
+        sentTime: DateTime.now(),
+        contentAvailable: true,
+        notification: RemoteNotification(
+          title: title,
+          body: body,
+        ));
+
     _localeNotification.show(
       0,
       title,
       body,
       _details,
-      payload: jsonEncode({'data': data}),
+      payload: jsonEncode(notify.toMap()),
     );
   }
 
-  static void displayNotificationWith({
+  @override
+  void displayNotificationWith({
     required String title,
     String? body,
     Map<String, dynamic>? data,
     required AndroidNotificationDetails android,
     required IOSNotificationDetails iOS,
     required WebNotificationDetails? web,
-
-    ///This is required to display in the web you can pass null if you dont need to diplay in web
-    required BuildContext? context,
   }) {
     var _localeNotification = FlutterLocalNotificationsPlugin();
     var _details = NotificationDetails(android: android, iOS: iOS);
+    var notify = RemoteMessage(
+        data: data ?? {},
+        from: 'locale',
+        sentTime: DateTime.now(),
+        contentAvailable: true,
+        notification: RemoteNotification(
+          title: title,
+          body: body,
+        ));
+
     _localeNotification.show(
       0,
       title,
       body,
       _details,
-      payload: jsonEncode({'data': data}),
+      payload: jsonEncode(notify.toMap()),
     );
   }
 }

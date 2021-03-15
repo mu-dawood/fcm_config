@@ -1,3 +1,9 @@
+## [3.0.0-nullsafety.8] - 15/03/2021
+
+* allow display native notification in the web
+
+* remove static functions
+
 ## [3.0.0-nullsafety.8] - 14/03/2021
 
 * Fix exports

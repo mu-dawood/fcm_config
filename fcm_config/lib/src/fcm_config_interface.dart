@@ -2,21 +2,15 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 
-import '../fcm_config_interface.dart';
-import 'details.dart';
-import 'web_notification_manager.dart';
+import 'web/details.dart';
 
-class FCMConfig extends FCMConfigInterface {
-  @override
-  Future<RemoteMessage?> getInitialMessage() async {
-    return await FirebaseMessaging.instance.getInitialMessage();
-  }
+abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
+  Future<RemoteMessage?> getInitialMessage();
 
-  @override
   Future init({
     /// this function will be excuted while application is in background
+    /// Not work on the web
     BackgroundMessageHandler? onBackgroundMessage,
 
     /// Drawable icon works only in forground
@@ -78,66 +72,31 @@ class FCMConfig extends FCMConfigInterface {
 
     ///Name of the firebase instance app
     String? name,
-
-    /// if false the notification will not show on forground
     bool displayInForeground = true,
-  }) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(name: name, options: options);
-    await FirebaseMessaging.instance.requestPermission(
-      alert: alert,
-      announcement: announcement,
-      criticalAlert: criticalAlert,
-      badge: badge,
-      carPlay: carPlay,
-      sound: sound,
-      provisional: provisional,
-    );
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-      alert: alert,
-      badge: badge,
-      sound: sound,
-    );
-    if (onBackgroundMessage != null) {
-      FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
-    }
-  }
+  });
 
   ///Call to FirebaseMessaging.instance.deleteToken();
-  @override
-  Future<void> deleteToken({String? senderId}) =>
-      FirebaseMessaging.instance.deleteToken(senderId: senderId);
+  Future<void> deleteToken({String? senderId});
 
   ///Call to FirebaseMessaging.instance.getAPNSToken();
-  @override
-  Future<String?> getAPNSToken() => FirebaseMessaging.instance.getAPNSToken();
+  Future<String?> getAPNSToken();
 
   ///Call to FirebaseMessaging.instance.getNotificationSettings();
-  @override
-  Future<NotificationSettings> getNotificationSettings() =>
-      FirebaseMessaging.instance.getNotificationSettings();
+  Future<NotificationSettings> getNotificationSettings();
 
   ///Call to FirebaseMessaging.instance.getToken();
-  @override
-  Future<String?> getToken({String? vapidKey}) =>
-      FirebaseMessaging.instance.getToken(vapidKey: vapidKey);
+  Future<String?> getToken({String? vapidKey});
 
   ///Call to FirebaseMessaging.instance.isAutoInitEnabled();
-  @override
-  bool get isAutoInitEnabled => FirebaseMessaging.instance.isAutoInitEnabled;
+  bool get isAutoInitEnabled;
 
   ///Call to FirebaseMessaging.instance.onTokenRefresh();
-  @override
-  Stream<String> get onTokenRefresh =>
-      FirebaseMessaging.instance.onTokenRefresh;
+  Stream<String> get onTokenRefresh;
 
   ///Call to FirebaseMessaging.instance.pluginConstants;
-  @override
-  Map get pluginConstants => FirebaseMessaging.instance.pluginConstants;
+  Map get pluginConstants;
 
   ///Call to FirebaseMessaging.instance.sendMessage();
-  @override
   Future<void> sendMessage({
     String? to,
     Map<String, String>? data,
@@ -145,77 +104,49 @@ class FCMConfig extends FCMConfigInterface {
     String? messageId,
     String? messageType,
     int? ttl,
-  }) =>
-      FirebaseMessaging.instance.sendMessage(
-        to: to,
-        data: data,
-        collapseKey: collapseKey,
-        messageId: messageId,
-        messageType: messageType,
-        ttl: ttl,
-      );
+  });
 
   ///Call to FirebaseMessaging.instance.subscribeToTopic();
   ///Not supported in web
-  @override
-  Future<void> subscribeToTopic(String topic) =>
-      FirebaseMessaging.instance.subscribeToTopic(topic);
+  Future<void> subscribeToTopic(String topic);
 
   ///Call to FirebaseMessaging.instance.unsubscribeFromTopic();
   ///Not supported in web
-  @override
-  Future<void> unsubscribeFromTopic(String topic) =>
-      FirebaseMessaging.instance.unsubscribeFromTopic(topic);
-  @override
+  Future<void> unsubscribeFromTopic(String topic);
+
   void displayNotification({
     required String title,
     required String body,
     String? subTitle,
     String? category,
     String? collapseKey,
-    dynamic? sound,
+    TSound? sound,
     String? androidChannelId,
     String? androidChannelName,
     String? androidChannelDescription,
     Map<String, dynamic>? data,
-  }) {
-    var details = WebNotificationDetails(
-      title: title,
-      body: body,
-    );
-    WebNotificationManager.show(details, data);
-  }
+  });
 
-  @override
   void displayNotificationWithAndroidStyle({
     required String title,
-    required dynamic styleInformation,
+    required TStyle styleInformation,
     required String body,
     String? subTitle,
     String? category,
     String? collapseKey,
-    dynamic? sound,
+    TSound? sound,
     String? androidChannelId,
     String? androidChannelName,
     String? androidChannelDescription,
     Map<String, dynamic>? data,
-  }) {
-    var details = WebNotificationDetails(
-      title: title,
-      body: body,
-    );
-    WebNotificationManager.show(details, data);
-  }
+  });
 
-  @override
   void displayNotificationWith({
     required String title,
     String? body,
     Map<String, dynamic>? data,
-    required android,
-    required iOS,
+    required TAndroid android,
+    required TIos iOS,
     required WebNotificationDetails? web,
-  }) {
-    WebNotificationManager.show(web!, data);
-  }
+  });
 }
