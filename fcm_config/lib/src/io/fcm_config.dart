@@ -11,7 +11,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'locale_notifications_Manager.dart';
-import 'fcm_extension.dart';
+import '../fcm_extension.dart';
 import '../web/details.dart';
 
 class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
@@ -103,28 +103,24 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
       sound: sound,
       provisional: provisional,
     );
-    if (displayInForeground) {
-      await FirebaseMessaging.instance
-          .setForegroundNotificationPresentationOptions(
-        alert: alert,
-        badge: badge,
-        sound: sound,
-      );
-    }
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: false,
+      badge: false,
+      sound: false,
+    );
+
     if (onBackgroundMessage != null) {
       FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
     }
 
-    ///Handling forground android notification
-    if (!kIsWeb) {
-      await LocaleNotificationManager.init(
-        appAndroidIcon,
-        androidChannelId,
-        androidChannelName,
-        androidChannelDescription,
-        Platform.isAndroid && displayInForeground,
-      );
-    }
+    await LocaleNotificationManager.init(
+      appAndroidIcon,
+      androidChannelId,
+      androidChannelName,
+      androidChannelDescription,
+      displayInForeground,
+    );
   }
 
   ///Call to FirebaseMessaging.instance.deleteToken();
@@ -194,6 +190,7 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     required String title,
     required String body,
     String? subTitle,
+    int? id,
     String? category,
     String? collapseKey,
     AndroidNotificationSound? sound,
@@ -217,10 +214,14 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
       subText: subTitle,
     );
     var _details = NotificationDetails(android: _android, iOS: _iOS);
+    var _id = id ?? DateTime.now().difference(DateTime(2021)).inSeconds;
     var notify = RemoteMessage(
         data: data ?? {},
         from: 'locale',
         sentTime: DateTime.now(),
+        collapseKey: collapseKey,
+        messageId: _id.toString(),
+        category: category,
         contentAvailable: true,
         notification: RemoteNotification(
           title: title,
@@ -228,7 +229,7 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
         ));
 
     _localeNotification.show(
-      0,
+      _id,
       title,
       body,
       _details,
@@ -242,6 +243,7 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     required StyleInformation styleInformation,
     required String body,
     String? subTitle,
+    int? id,
     String? category,
     String? collapseKey,
     AndroidNotificationSound? sound,
@@ -265,18 +267,21 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
       styleInformation: styleInformation,
     );
     var _details = NotificationDetails(android: _android, iOS: _iOS);
+    var _id = id ?? DateTime.now().difference(DateTime(2021)).inSeconds;
     var notify = RemoteMessage(
         data: data ?? {},
         from: 'locale',
+        category: category,
+        collapseKey: collapseKey,
+        messageId: _id.toString(),
         sentTime: DateTime.now(),
         contentAvailable: true,
         notification: RemoteNotification(
           title: title,
           body: body,
         ));
-
     _localeNotification.show(
-      0,
+      _id,
       title,
       body,
       _details,
@@ -288,6 +293,7 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
   void displayNotificationWith({
     required String title,
     String? body,
+    int? id,
     Map<String, dynamic>? data,
     required AndroidNotificationDetails android,
     required IOSNotificationDetails iOS,
@@ -295,22 +301,36 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
   }) {
     var _localeNotification = FlutterLocalNotificationsPlugin();
     var _details = NotificationDetails(android: android, iOS: iOS);
+    var _id = id ?? DateTime.now().difference(DateTime(2021)).inSeconds;
     var notify = RemoteMessage(
         data: data ?? {},
         from: 'locale',
         sentTime: DateTime.now(),
         contentAvailable: true,
+        category: android.category,
+        collapseKey: Platform.isIOS ? iOS.threadIdentifier : android.groupKey,
+        messageId: _id.toString(),
         notification: RemoteNotification(
           title: title,
           body: body,
         ));
-
     _localeNotification.show(
-      0,
+      _id,
       title,
       body,
       _details,
       payload: jsonEncode(notify.toMap()),
     );
   }
+
+  @override
+  void displayNotificationFrom({
+    required RemoteMessage notification,
+    int? id,
+    String? androidChannelId,
+    String? androidChannelName,
+    String? androidChannelDescription,
+  }) =>
+      LocaleNotificationManager.displayNotification(notification,
+          androidChannelId, androidChannelName, androidChannelDescription, id);
 }

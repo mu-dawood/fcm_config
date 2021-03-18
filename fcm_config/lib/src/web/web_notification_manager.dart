@@ -24,6 +24,7 @@ class WebNotificationManager {
       icon: details.icon ?? '/icons/icon-192.png',
       dir: details.dir,
       tag: details.tag,
+      lang: details.lang,
     );
     var notify = RemoteMessage(
         collapseKey: details.tag,

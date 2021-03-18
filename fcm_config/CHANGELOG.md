@@ -1,3 +1,11 @@
+## [3.0.0-nullsafety.14] - 18/03/2021
+
+* change home page
+
+## [3.0.0-nullsafety.12] - 18/03/2021
+
+* add id property to ovveride the notification
+
 ## [3.0.0-nullsafety.10] - 15/03/2021
 
 * allow display native notification in the web

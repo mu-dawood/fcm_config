@@ -1,6 +1,7 @@
 class WebNotificationDetails {
   final String? dir;
   final String? tag;
+  final String? lang;
   final String title;
   final String body;
   final String? icon;
@@ -11,5 +12,6 @@ class WebNotificationDetails {
     required this.title,
     this.dir,
     this.tag,
+    this.lang,
   });
 }

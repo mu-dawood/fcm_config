@@ -172,6 +172,7 @@ class FCMConfig extends FCMConfigInterface {
     required String body,
     String? subTitle,
     String? category,
+    int? id,
     String? collapseKey,
     dynamic? sound,
     String? androidChannelId,
@@ -182,6 +183,7 @@ class FCMConfig extends FCMConfigInterface {
     var details = WebNotificationDetails(
       title: title,
       body: body,
+      tag: collapseKey ?? id?.toString(),
     );
     WebNotificationManager.show(details, data);
   }
@@ -191,6 +193,7 @@ class FCMConfig extends FCMConfigInterface {
     required String title,
     required dynamic styleInformation,
     required String body,
+    int? id,
     String? subTitle,
     String? category,
     String? collapseKey,
@@ -203,6 +206,7 @@ class FCMConfig extends FCMConfigInterface {
     var details = WebNotificationDetails(
       title: title,
       body: body,
+      tag: collapseKey ?? id?.toString(),
     );
     WebNotificationManager.show(details, data);
   }
@@ -211,11 +215,29 @@ class FCMConfig extends FCMConfigInterface {
   void displayNotificationWith({
     required String title,
     String? body,
+    int? id,
     Map<String, dynamic>? data,
     required android,
     required iOS,
     required WebNotificationDetails? web,
   }) {
     WebNotificationManager.show(web!, data);
+  }
+
+  @override
+  void displayNotificationFrom({
+    required RemoteMessage notification,
+    int? id,
+    String? androidChannelId,
+    String? androidChannelName,
+    String? androidChannelDescription,
+  }) {
+    if (notification.notification == null) return;
+    var details = WebNotificationDetails(
+      title: notification.notification!.title ?? '',
+      body: notification.notification!.body ?? '',
+      tag: notification.collapseKey ?? id?.toString(),
+    );
+    WebNotificationManager.show(details, notification.data);
   }
 }

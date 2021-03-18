@@ -117,6 +117,7 @@ abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
   void displayNotification({
     required String title,
     required String body,
+    int? id,
     String? subTitle,
     String? category,
     String? collapseKey,
@@ -131,6 +132,7 @@ abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
     required String title,
     required TStyle styleInformation,
     required String body,
+    int? id,
     String? subTitle,
     String? category,
     String? collapseKey,
@@ -142,11 +144,20 @@ abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
   });
 
   void displayNotificationWith({
+    int? id,
     required String title,
     String? body,
     Map<String, dynamic>? data,
     required TAndroid android,
     required TIos iOS,
     required WebNotificationDetails? web,
+  });
+
+  void displayNotificationFrom({
+    required RemoteMessage notification,
+    int? id,
+    String? androidChannelId,
+    String? androidChannelName,
+    String? androidChannelDescription,
   });
 }

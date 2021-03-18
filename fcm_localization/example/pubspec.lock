@@ -51,12 +51,19 @@ packages:
     source: hosted
     version: "1.2.0"
   fcm_config:
+    dependency: transitive
+    description:
+      name: fcm_config
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0-nullsafety.14"
+  fcm_localization:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.0.0-nullsafety.14"
+    version: "1.0.0-nullsafety.0"
   ffi:
     dependency: transitive
     description:
@@ -100,11 +107,13 @@ packages:
     source: hosted
     version: "9.0.0"
   firebase_messaging_platform_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: firebase_messaging_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "packages/firebase_messaging/firebase_messaging_platform_interface"
+      ref: HEAD
+      resolved-ref: d097629da32044a25a1639826e8a309b7f14ce50
+      url: "https://github.com/mo-ah-dawood/flutterfire.git"
+    source: git
     version: "2.0.0"
   firebase_messaging_web:
     dependency: transitive
@@ -147,20 +156,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  http:
-    dependency: "direct main"
-    description:
-      name: http
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.13.0"
-  http_parser:
-    dependency: transitive
-    description:
-      name: http_parser
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.0.0"
   intl:
     dependency: transitive
     description:
@@ -217,13 +212,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  pedantic:
-    dependency: transitive
-    description:
-      name: pedantic
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.11.0"
   platform:
     dependency: transitive
     description:
@@ -246,12 +234,12 @@ packages:
     source: hosted
     version: "4.1.0"
   shared_preferences:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   shared_preferences_linux:
     dependency: transitive
     description:
@@ -361,7 +349,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.4"
   xdg_directories:
     dependency: transitive
     description:

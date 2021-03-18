@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'fcm_extension.dart';
+import '../fcm_extension.dart';
 
 class LocaleNotificationManager {
   static StreamSubscription<RemoteMessage>? _subscription;
@@ -40,14 +40,18 @@ class LocaleNotificationManager {
   ) async {
     var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     //! Android settings
-    var initializationSettingsAndroid =
-        AndroidInitializationSettings(appAndroidIcon ?? '@mipmap/ic_launcher');
+    var initializationSettingsAndroid = AndroidInitializationSettings(
+      appAndroidIcon ?? '@mipmap/ic_launcher',
+    );
     //! Ios setings
     final initializationSettingsIOS = IOSInitializationSettings();
+    //! macos setings
+    final initializationSettingsMac = MacOSInitializationSettings();
 
     final initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
+      macOS: initializationSettingsMac,
     );
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
@@ -58,26 +62,34 @@ class LocaleNotificationManager {
     if (displayInForeground == true) {
       _subscription = FirebaseMessaging.onMessage.listen((_notification) {
         if (_notification.notification != null) {
-          _displayNotification(_notification, androidChannelId,
+          displayNotification(_notification, androidChannelId,
               androidChannelName, androidChannelDescription);
         }
       });
     }
   }
 
-  static void _displayNotification(
-    RemoteMessage _notification,
-    String? androidChannelId,
-    String? androidChannelName,
-    String? androidChannelDescription,
-  ) {
+  static void displayNotification(
+      RemoteMessage _notification,
+      String? androidChannelId,
+      String? androidChannelName,
+      String? androidChannelDescription,
+      [int? id]) {
     if (_notification.notification == null) return;
     var _localeNotification = FlutterLocalNotificationsPlugin();
     var smallIcon = _notification.notification?.android?.smallIcon;
+
+    //! Android settings
     var _android = AndroidNotificationDetails(
-      androidChannelId ?? 'FCM_Config',
-      androidChannelName ?? 'FCM_Config',
-      androidChannelDescription ?? 'FCM_Config',
+      androidChannelId ??
+          _notification.notification?.android?.channelId ??
+          'FCM_Config',
+      androidChannelName ??
+          _notification.notification?.android?.channelId ??
+          'FCM_Config',
+      androidChannelDescription ??
+          _notification.notification?.android?.channelId ??
+          'FCM_Config',
       importance: _getImportance(_notification.notification!),
       priority: Priority.high,
       styleInformation: BigTextStyleInformation(
@@ -97,9 +109,29 @@ class LocaleNotificationManager {
               : RawResourceAndroidNotificationSound(
                   _notification.notification!.android!.sound)),
     );
-    var _details = NotificationDetails(android: _android);
+    var badge = int.tryParse(_notification.notification?.apple?.badge ?? '');
+    var _ios = IOSNotificationDetails(
+      threadIdentifier: _notification.collapseKey,
+      sound: _notification.notification?.apple?.sound?.name,
+      badgeNumber: badge,
+      subtitle: _notification.notification?.apple?.subtitle,
+      presentBadge: badge == null ? null : true,
+    );
+    var _mac = MacOSNotificationDetails(
+      threadIdentifier: _notification.collapseKey,
+      sound: _notification.notification?.apple?.sound?.name,
+      badgeNumber: badge,
+      subtitle: _notification.notification?.apple?.subtitle,
+      presentBadge: badge == null ? null : true,
+    );
+    var _details = NotificationDetails(
+      android: _android,
+      iOS: _ios,
+      macOS: _mac,
+    );
+    var _id = id ?? DateTime.now().difference(DateTime(2021)).inSeconds;
     _localeNotification.show(
-      0,
+      _id,
       _notification.notification!.title,
       Platform.isAndroid ? '' : _notification.notification!.body,
       _details,
