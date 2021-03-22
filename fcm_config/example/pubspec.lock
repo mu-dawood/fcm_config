@@ -100,11 +100,13 @@ packages:
     source: hosted
     version: "9.0.0"
   firebase_messaging_platform_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: firebase_messaging_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "packages/firebase_messaging/firebase_messaging_platform_interface"
+      ref: HEAD
+      resolved-ref: d097629da32044a25a1639826e8a309b7f14ce50
+      url: "https://github.com/mo-ah-dawood/flutterfire.git"
+    source: git
     version: "2.0.0"
   firebase_messaging_web:
     dependency: transitive

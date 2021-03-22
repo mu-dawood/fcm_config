@@ -1,4 +1,22 @@
 # fcm_config
+
+## add pcakage
+
+```yaml
+
+dependencies:
+  flutter:
+    sdk: flutter
+  fcm_config: ^3.0.0-nullsafety.17
+# firbase_messaging has unresolved issue that prevent onMessage to be triggered so to solve this you has to add this 
+# it is very important to listen to incomming notification
+dependency_overrides:
+  firebase_messaging_platform_interface:
+    git:
+      url: https://github.com/mo-ah-dawood/flutterfire.git
+      path: packages/firebase_messaging/firebase_messaging_platform_interface
+```
+
 ## What can this  packge do
 - Show fcm notification while app is in forground
 - Easly recieve incoming notification where you are
