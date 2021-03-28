@@ -1,3 +1,8 @@
+## [3.0.2] - 28/03/2021
+
+* update readme
+* migrate to nullsafety
+
 ## [3.0.0-nullsafety.17] - 22/03/2021
 
 * add read me ovveride hint
