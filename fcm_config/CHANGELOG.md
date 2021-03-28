@@ -1,4 +1,4 @@
-## [3.0.2] - 28/03/2021
+## [3.0.3] - 28/03/2021
 
 * update readme
 * migrate to nullsafety
