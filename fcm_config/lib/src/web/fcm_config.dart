@@ -9,6 +9,7 @@ import 'details.dart';
 import 'web_notification_manager.dart';
 
 class FCMConfig extends FCMConfigInterface {
+  static FCMConfig get instance => FCMConfig();
   @override
   Future<RemoteMessage?> getInitialMessage() async {
     return await FirebaseMessaging.instance.getInitialMessage();

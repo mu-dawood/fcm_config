@@ -32,12 +32,6 @@ dependencies:
     path: ../
 
 
-dependency_overrides:
-  firebase_messaging_platform_interface:
-    git:
-      url: https://github.com/mo-ah-dawood/flutterfire.git
-      path: packages/firebase_messaging/firebase_messaging_platform_interface
-
 
 dev_dependencies:
   flutter_test:

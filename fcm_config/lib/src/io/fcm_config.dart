@@ -16,6 +16,7 @@ import '../web/details.dart';
 
 class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     IOSNotificationDetails, AndroidNotificationSound, StyleInformation> {
+  static FCMConfig get instance => FCMConfig();
   @override
   Future<RemoteMessage?> getInitialMessage() async {
     if (!kIsWeb) {

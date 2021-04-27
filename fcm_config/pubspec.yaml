@@ -1,6 +1,6 @@
 name: fcm_config
 description: This flutter package is made to merge between firebase_messaging package and flutter_local_notifications 
-version: 3.0.3
+version: 3.0.4
 homepage: https://github.com/mo-ah-dawood/fcm_config/tree/master/fcm_config
 
 environment:
@@ -10,9 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^1.0.2
-  firebase_messaging: ^9.1.0
-  flutter_local_notifications: ^5.0.0
+  firebase_core: ^1.1.0
+  firebase_messaging: ^9.1.3
+  flutter_local_notifications: ^5.0.0+2
 
 dev_dependencies:
   pedantic: ^1.11.0
