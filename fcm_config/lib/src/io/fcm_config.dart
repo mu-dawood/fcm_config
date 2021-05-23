@@ -16,7 +16,9 @@ import '../web/details.dart';
 
 class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     IOSNotificationDetails, AndroidNotificationSound, StyleInformation> {
-  static FCMConfig get instance => FCMConfig();
+  FCMConfig._();
+  static FCMConfig get instance => FCMConfig._();
+  static FirebaseMessaging get messaging => FirebaseMessaging.instance;
   @override
   Future<RemoteMessage?> getInitialMessage() async {
     if (!kIsWeb) {
@@ -124,68 +126,6 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     );
   }
 
-  ///Call to FirebaseMessaging.instance.deleteToken();
-  @override
-  Future<void> deleteToken({String? senderId}) =>
-      FirebaseMessaging.instance.deleteToken(senderId: senderId);
-
-  ///Call to FirebaseMessaging.instance.getAPNSToken();
-  @override
-  Future<String?> getAPNSToken() => FirebaseMessaging.instance.getAPNSToken();
-
-  ///Call to FirebaseMessaging.instance.getNotificationSettings();
-  @override
-  Future<NotificationSettings> getNotificationSettings() =>
-      FirebaseMessaging.instance.getNotificationSettings();
-
-  ///Call to FirebaseMessaging.instance.getToken();
-  @override
-  Future<String?> getToken({String? vapidKey}) =>
-      FirebaseMessaging.instance.getToken(vapidKey: vapidKey);
-
-  ///Call to FirebaseMessaging.instance.isAutoInitEnabled();
-  @override
-  bool get isAutoInitEnabled => FirebaseMessaging.instance.isAutoInitEnabled;
-
-  ///Call to FirebaseMessaging.instance.onTokenRefresh();
-  @override
-  Stream<String> get onTokenRefresh =>
-      FirebaseMessaging.instance.onTokenRefresh;
-
-  ///Call to FirebaseMessaging.instance.pluginConstants;
-  @override
-  Map get pluginConstants => FirebaseMessaging.instance.pluginConstants;
-
-  ///Call to FirebaseMessaging.instance.sendMessage();
-  @override
-  Future<void> sendMessage({
-    String? to,
-    Map<String, String>? data,
-    String? collapseKey,
-    String? messageId,
-    String? messageType,
-    int? ttl,
-  }) =>
-      FirebaseMessaging.instance.sendMessage(
-        to: to,
-        data: data,
-        collapseKey: collapseKey,
-        messageId: messageId,
-        messageType: messageType,
-        ttl: ttl,
-      );
-
-  ///Call to FirebaseMessaging.instance.subscribeToTopic();
-  ///Not supported in web
-  @override
-  Future<void> subscribeToTopic(String topic) =>
-      FirebaseMessaging.instance.subscribeToTopic(topic);
-
-  ///Call to FirebaseMessaging.instance.unsubscribeFromTopic();
-  ///Not supported in web
-  @override
-  Future<void> unsubscribeFromTopic(String topic) =>
-      FirebaseMessaging.instance.unsubscribeFromTopic(topic);
   @override
   void displayNotification({
     required String title,

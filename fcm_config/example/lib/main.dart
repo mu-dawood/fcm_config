@@ -26,7 +26,7 @@ Future<void> _firebaseMessagingBackgroundHandler(
   var title = strings[_notification.data['title_key']];
   var body = strings[_notification.data['body_key']]
       ?.replaceAll('{args}', _notification.data['body_args']);
-  FCMConfig().displayNotification(title: title ?? '', body: body ?? '');
+  FCMConfig.instance.displayNotification(title: title ?? '', body: body ?? '');
 }
 
 Future<Locale> getSavedLocale() async {
@@ -37,11 +37,11 @@ Future<Locale> getSavedLocale() async {
 }
 
 void main() async {
-  await FCMConfig()
+  await FCMConfig.instance
       .init(onBackgroundMessage: _firebaseMessagingBackgroundHandler)
       .then((value) {
     if (!kIsWeb) {
-      FCMConfig().subscribeToTopic('test_fcm_topic');
+      FCMConfig.messaging.subscribeToTopic('test_fcm_topic');
     }
   });
 
@@ -105,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage>
           persistentFooterButtons: [
             TextButton(
               onPressed: () async {
-                FCMConfig().displayNotification(
+                FCMConfig.instance.displayNotification(
                     title: 'title', body: DateTime.now().toString());
               },
               child: Text('Display notification'),
@@ -130,7 +130,8 @@ class _MyHomePageState extends State<MyHomePage>
             ),
             TextButton(
               onPressed: () async {
-                print(await FCMConfig().getToken(vapidKey: 'your web token'));
+                print(await FCMConfig.messaging
+                    .getToken(vapidKey: 'your web token'));
               },
               child: Text('Get token'),
             )

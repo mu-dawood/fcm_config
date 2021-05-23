@@ -1,3 +1,7 @@
+## [3.0.5] - 23/05/2021
+
+* Update dependencies
+
 ## [3.0.4] - 27/04/2021
 
 * Update dependencies

@@ -7,7 +7,6 @@ import 'web/details.dart';
 
 abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
   Future<RemoteMessage?> getInitialMessage();
-
   Future init({
     /// this function will be excuted while application is in background
     /// Not work on the web
@@ -74,45 +73,6 @@ abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
     String? name,
     bool displayInForeground = true,
   });
-
-  ///Call to FirebaseMessaging.instance.deleteToken();
-  Future<void> deleteToken({String? senderId});
-
-  ///Call to FirebaseMessaging.instance.getAPNSToken();
-  Future<String?> getAPNSToken();
-
-  ///Call to FirebaseMessaging.instance.getNotificationSettings();
-  Future<NotificationSettings> getNotificationSettings();
-
-  ///Call to FirebaseMessaging.instance.getToken();
-  Future<String?> getToken({String? vapidKey});
-
-  ///Call to FirebaseMessaging.instance.isAutoInitEnabled();
-  bool get isAutoInitEnabled;
-
-  ///Call to FirebaseMessaging.instance.onTokenRefresh();
-  Stream<String> get onTokenRefresh;
-
-  ///Call to FirebaseMessaging.instance.pluginConstants;
-  Map get pluginConstants;
-
-  ///Call to FirebaseMessaging.instance.sendMessage();
-  Future<void> sendMessage({
-    String? to,
-    Map<String, String>? data,
-    String? collapseKey,
-    String? messageId,
-    String? messageType,
-    int? ttl,
-  });
-
-  ///Call to FirebaseMessaging.instance.subscribeToTopic();
-  ///Not supported in web
-  Future<void> subscribeToTopic(String topic);
-
-  ///Call to FirebaseMessaging.instance.unsubscribeFromTopic();
-  ///Not supported in web
-  Future<void> unsubscribeFromTopic(String topic);
 
   void displayNotification({
     required String title,

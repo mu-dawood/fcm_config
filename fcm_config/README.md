@@ -34,7 +34,7 @@
 > Initialize
 ```dart
   void main() async {
-      await FCMConfig().init();
+      await FCMConfig.instance.init();
       runApp(MaterialApp(
         home: MyHomePage(),
       ));
@@ -51,7 +51,7 @@
     }
       
     void main() async {
-      FCMConfig().init(onBackgroundMessage:_firebaseMessagingBackgroundHandler);
+      FCMConfig.instance.init(onBackgroundMessage:_firebaseMessagingBackgroundHandler);
       runApp(MaterialApp(
         home: MyHomePage(),
       ));
@@ -61,13 +61,13 @@
 
 > Get token
 ```dart
-   FCMConfig().getToken().then((token) {
+  FCMConfig.messaging.getToken().then((token) {
         print(token);
    });
  ```
 >To get notification that launched the application 
 ```dart
-  await FCMConfig().getInitialMessage();// may be null
+  await  FCMConfig.instance.getInitialMessage();// may be null
  
 ```
 
