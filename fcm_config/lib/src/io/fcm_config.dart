@@ -106,12 +106,14 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
       sound: sound,
       provisional: provisional,
     );
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-      alert: alert,
-      badge: badge,
-      sound: sound,
-    );
+    if (displayInForeground) {
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: alert,
+        badge: badge,
+        sound: sound,
+      );
+    }
 
     if (onBackgroundMessage != null) {
       FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
@@ -122,7 +124,7 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
       androidChannelId,
       androidChannelName,
       androidChannelDescription,
-      displayInForeground,
+      displayInForeground && !Platform.isIOS,
     );
   }
 
