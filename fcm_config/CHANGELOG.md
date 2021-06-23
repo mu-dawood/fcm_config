@@ -1,3 +1,7 @@
+## [3.0.6] - 23/06/2021
+
+* Fix ios twice alert
+
 ## [3.0.5] - 23/05/2021
 
 * Update dependencies
