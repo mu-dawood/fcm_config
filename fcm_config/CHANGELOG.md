@@ -1,3 +1,7 @@
+## [3.0.7] -30/06/2021
+
+* Handling notification image
+
 ## [3.0.6] - 23/06/2021
 
 * Fix ios twice alert
