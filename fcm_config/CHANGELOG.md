@@ -1,3 +1,6 @@
+## [3.0.8] -3/008/2021
+
+* Fix adroid notificatio color
 ## [3.0.7] -30/06/2021
 
 * Handling notification image

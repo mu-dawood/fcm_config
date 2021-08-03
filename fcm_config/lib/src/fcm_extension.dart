@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 
 extension MapExt on RemoteMessage {
   bool get isDefaultAndroidSound =>
@@ -82,6 +83,22 @@ extension MapExt on RemoteMessage {
       default:
         return 0;
     }
+  }
+
+  Color? getAndroidColor() {
+    if (notification?.android?.color == null) return null;
+    try {
+      return _fromHex(notification!.android!.color!);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Color _fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
   }
 
   int? _getAndroidVisibility() {

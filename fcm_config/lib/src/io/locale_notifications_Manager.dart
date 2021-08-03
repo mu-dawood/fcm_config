@@ -135,6 +135,7 @@ class LocaleNotificationManager {
       category: _notification.category,
       groupKey: _notification.collapseKey,
       showProgress: false,
+      color: _notification.getAndroidColor(),
       sound: _notification.isDefaultAndroidSound
           ? null
           : (_notification.isAndroidRemoteSound
