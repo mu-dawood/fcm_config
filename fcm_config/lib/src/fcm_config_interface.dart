@@ -3,10 +3,14 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'web/details.dart';
+import 'details.dart';
 
 abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
   Future<RemoteMessage?> getInitialMessage();
+  StreamSubscription<RemoteMessage> listen(
+      Function(RemoteMessage event) onData);
+  ClickStreamSubscription listenClick(Function(RemoteMessage event) onData);
+
   Future init({
     /// this function will be excuted while application is in background
     /// Not work on the web
@@ -120,4 +124,47 @@ abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
     String? androidChannelName,
     String? androidChannelDescription,
   });
+}
+
+class ClickStreamSubscription {
+  final List<StreamSubscription<RemoteMessage>> subscriptions;
+  ClickStreamSubscription(this.subscriptions);
+
+  Future<void> cancel() async {
+    for (var s in subscriptions) {
+      await s.cancel();
+    }
+  }
+
+  bool get isPaused => subscriptions.any((element) => element.isPaused);
+
+  void onData(void Function(RemoteMessage data) handleData) {
+    for (var s in subscriptions) {
+      s.onData(handleData);
+    }
+  }
+
+  void onDone(void Function() handleDone) {
+    for (var s in subscriptions) {
+      s.onDone(handleDone);
+    }
+  }
+
+  void onError(Function? handleError) {
+    for (var s in subscriptions) {
+      s.onError(handleError);
+    }
+  }
+
+  void pause([Future<void>? resumeSignal]) {
+    for (var s in subscriptions) {
+      s.pause(resumeSignal);
+    }
+  }
+
+  void resume() {
+    for (var s in subscriptions) {
+      s.resume();
+    }
+  }
 }

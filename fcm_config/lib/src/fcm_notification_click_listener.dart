@@ -1,28 +1,22 @@
-import 'dart:async';
-
+import 'package:fcm_config/fcm_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'locale_notifications_Manager.dart';
+import 'fcm_config_interface.dart';
 
 /// This mixin can listen to notification tap
 mixin FCMNotificationClickMixin<T extends StatefulWidget> on State<T> {
-  StreamSubscription<RemoteMessage>? _clickSubscription;
-  StreamSubscription<RemoteMessage>? _clickLocaleSubscription;
+  late ClickStreamSubscription _subscription;
   @override
   void initState() {
-    _clickSubscription = FirebaseMessaging.onMessageOpenedApp.listen(_onClick);
-    _clickLocaleSubscription =
-        LocaleNotificationManager.onLocaleClick.stream.listen(_onClick);
-
+    _subscription = FCMConfig.instance.listenClick(_onClick);
     super.initState();
   }
 
   @override
   void dispose() {
-    _clickSubscription?.cancel();
-    _clickLocaleSubscription?.cancel();
+    _subscription.cancel();
     super.dispose();
   }
 

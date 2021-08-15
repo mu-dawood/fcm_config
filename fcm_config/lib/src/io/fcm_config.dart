@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:fcm_config/src/fcm_config_interface.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -9,10 +9,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-import 'locale_notifications_Manager.dart';
+import 'package:path_provider/path_provider.dart';
 import '../fcm_extension.dart';
-import '../web/details.dart';
+import '../details.dart';
+part 'locale_notifications_Manager.dart';
 
 class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     IOSNotificationDetails, AndroidNotificationSound, StyleInformation> {
@@ -276,4 +276,17 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
   }) =>
       LocaleNotificationManager.displayNotification(notification,
           androidChannelId, androidChannelName, androidChannelDescription, id);
+  @override
+  StreamSubscription<RemoteMessage> listen(
+      Function(RemoteMessage event) onData) {
+    return FirebaseMessaging.onMessage.listen(onData);
+  }
+
+  @override
+  ClickStreamSubscription listenClick(Function(RemoteMessage event) onData) {
+    return ClickStreamSubscription([
+      FirebaseMessaging.onMessageOpenedApp.listen(onData),
+      LocaleNotificationManager.onLocaleClick.stream.listen(onData),
+    ]);
+  }
 }

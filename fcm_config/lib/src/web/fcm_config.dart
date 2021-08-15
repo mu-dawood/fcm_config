@@ -1,12 +1,13 @@
 import 'dart:async';
-
+import 'dart:html' as html;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import '../fcm_config_interface.dart';
-import 'details.dart';
-import 'web_notification_manager.dart';
+import '../details.dart';
+
+part 'web_notification_manager.dart';
 
 class FCMConfig extends FCMConfigInterface {
   FCMConfig._();
@@ -181,5 +182,19 @@ class FCMConfig extends FCMConfigInterface {
       tag: notification.collapseKey ?? id?.toString(),
     );
     WebNotificationManager.show(details, notification.data);
+  }
+
+  @override
+  StreamSubscription<RemoteMessage> listen(
+      Function(RemoteMessage event) onData) {
+    return FirebaseMessaging.onMessage.listen(onData);
+  }
+
+  @override
+  ClickStreamSubscription listenClick(Function(RemoteMessage event) onData) {
+    return ClickStreamSubscription([
+      FirebaseMessaging.onMessageOpenedApp.listen(onData),
+      WebNotificationManager.onLocaleClick.stream.listen(onData),
+    ]);
   }
 }

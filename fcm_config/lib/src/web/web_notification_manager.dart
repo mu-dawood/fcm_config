@@ -1,11 +1,4 @@
-library web_forground_notification;
-
-import 'dart:async';
-import 'dart:html' as html;
-
-import 'package:firebase_messaging/firebase_messaging.dart';
-
-import 'details.dart';
+part of 'fcm_config.dart';
 
 class WebNotificationManager {
   static final StreamController<RemoteMessage> onLocaleClick =
