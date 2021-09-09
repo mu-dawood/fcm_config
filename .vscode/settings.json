@@ -1,0 +1,18 @@
+{
+    "actionButtons": {
+        "commands": [
+            {
+                "name": "Puplish fcm_config",
+                "color": "orange",
+                "command": "flutter pub publish",
+                "cwd": "${workspaceFolder}/fcm_config"
+            },
+            {
+                "name": "Puplish localizations",
+                "color": "orange",
+                "command": "flutter pub publish",
+                "cwd": "${workspaceFolder}/fcm_localization"
+            },
+        ]
+    },
+}

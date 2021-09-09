@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 0.32.4">
+  <meta name="description" content="fcm_config API docs, for the Dart programming language.">
+  <title>fcm_config - Dart API docs</title>
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500,400i,400,300|Source+Sans+Pro:400,300,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="static-assets/github.css">
+  <link rel="stylesheet" href="static-assets/styles.css">
+  <link rel="icon" href="static-assets/favicon.png">
+
+</head>
+
+<body data-base-href=""
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/mo-ah-dawood/fcm_config">fcm_config package</a></li>
+  </ol>
+  <div class="self-name">fcm_config</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+  <div id="dartdoc-sidebar-left" class="col-xs-6 col-sm-3 col-md-2 sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+      <form class="search-sidebar" role="search">
+        <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+      </form>
+    </header>
+    
+    <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+      <li><a href="https://github.com/mo-ah-dawood/fcm_config">fcm_config package</a></li>
+    </ol>
+    
+    <h5 class="hidden-xs"><span class="package-name">fcm_config</span> <span class="package-kind">package</span></h5>
+    <ol>
+          <li class="section-title">Libraries</li>
+          <li><a href="fcm_config/fcm_config-library.html">fcm_config</a></li>
+    </ol>
+  </div>
+
+  <div id="dartdoc-main-content" class="col-xs-12 col-sm-9 col-md-8 main-content">
+      <section class="desc markdown">
+        <h1 id="fcm_config">fcm_config</h1>
+<h2 id="what-can-this--packge-do">What can this  packge do</h2>
+<ul>
+<li>Show fcm notification while app is in forground</li>
+<li>Easly recieve incoming notification where you are</li>
+<li>Easly recieve clicked  where you are</li>
+<li>Notification is an object</li>
+</ul>
+<h2 id="setup">Setup</h2>
+<h3 id="native">Native</h3>
+<ul>
+<li>Folow native setup in  <a href="https://pub.dev/packages/firebase_messaging">https://pub.dev/packages/firebase_messaging</a> (Just native code no need for dart code)</li>
+<li>Folow native setup in  <a href="https://pub.dev/packages/flutter_local_notifications">https://pub.dev/packages/flutter_local_notifications</a> (Just native code no need for dart code)</li>
+</ul>
+<h3 id="dartflutter">Dart/Flutter</h3>
+<p>Initialize</p>
+<pre class="language-dart"><code class="language-dart">  FCMConfig.initialize(
+    androidChannelDescription: "Your channel channel",
+    androidChannelId: "channel id",
+    androidChannelName: "Channel name",
+    forgroundIconName: "ic_launcher" // must be in drawble android folder,
+  );
+</code></pre>
+<p>No if you need to get the incomming notification :</p>
+<h3 id="first-option">First option</h3>
+<pre class="language-dart"><code class="language-dart">class MyScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FCMNotificationListener(
+      onNotification:
+          (FCMNotification notification, void Function() setState) {},
+      child: SizedBox(),
+    );
+  }
+}
+</code></pre>
+<h3 id="second-option">Second option</h3>
+<pre class="language-dart"><code class="language-dart">class MyScreen extends StatefulWidget {
+  @override
+  _MyScreenState createState() =&gt; _MyScreenState();
+}
+
+class _MyScreenState extends State&lt;MyScreen&gt;
+    with FCMNotificationMixin {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox();
+  }
+
+  @override
+  void onNotify(FCMNotification notification) {
+    // do some thing
+  }
+}
+
+</code></pre>
+<h3 id="to-listen-notification-tap-there-is-fcmnotificationclicklistener-and-fcmnotificationclickmixin-but-be-aware-that-its-recommended-to-use-it-in-main-screen">To listen notification tap there is <code>FCMNotificationClickListener</code> and <code>FCMNotificationClickMixin</code> but be aware that its recommended to use it in main screen</h3>
+<h3 id="additional-property-translatemessage-that-can-be-passed-in-intialize-to-translate-body_loc_keytitle_loc_key-it-currently-support-only-forground-notification">additional property <code>translateMessage</code> that can be passed in intialize to translate <code>body_loc_key,title_loc_key</code> it currently support only forground notification</h3>
+      </section>
+      
+        <section class="summary">
+            <h2>Libraries</h2>
+          <dl>
+            <dt id="fcm_config">
+              <span class="name"><a href="fcm_config/fcm_config-library.html">fcm_config</a></span>             
+            </dt>
+            <dd>
+               
+            </dd>
+          </dl>
+        </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-right" class="col-xs-6 col-sm-6 col-md-2 sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    fcm_config
+      1.0.0-beta.2
+  </span>
+
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="static-assets/typeahead.bundle.min.js"></script>
+<script src="static-assets/highlight.pack.js"></script>
+<script src="static-assets/URI.js"></script>
+<script src="static-assets/script.js"></script>
+
+
+</body>
+
+</html>
