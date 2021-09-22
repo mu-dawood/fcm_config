@@ -57,7 +57,7 @@
     },
     {
       "name": "firebase_messaging",
-      "rootUri": "file:///Users/dawood/Desktop/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging-10.0.6",
+      "rootUri": "file:///Users/dawood/Desktop/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging-10.0.7",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -242,7 +242,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-09-09T16:29:51.611869Z",
+  "generated": "2021-09-10T11:54:22.356132Z",
   "generator": "pub",
   "generatorVersion": "2.14.0"
 }
