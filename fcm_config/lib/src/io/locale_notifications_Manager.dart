@@ -112,9 +112,7 @@ class LocaleNotificationManager {
       androidChannelName ??
           _notification.notification?.android?.channelId ??
           'FCM_Config',
-      androidChannelDescription ??
-          _notification.notification?.android?.channelId ??
-          'FCM_Config',
+      channelDescription: androidChannelDescription,
       importance: _getImportance(_notification.notification!),
       priority: Priority.high,
       styleInformation: bigPictureStyleInformation ??

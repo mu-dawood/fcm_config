@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
+
 import 'package:fcm_config/src/fcm_config_interface.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -9,9 +9,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import '../fcm_extension.dart';
+
 import '../details.dart';
+import '../fcm_extension.dart';
+
 part 'locale_notifications_Manager.dart';
 
 class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
@@ -147,7 +150,7 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     var _android = AndroidNotificationDetails(
       androidChannelId ?? 'FCM_Config',
       androidChannelName ?? 'FCM_Config',
-      androidChannelDescription ?? 'FCM_Config',
+      channelDescription: androidChannelDescription,
       importance: Importance.high,
       priority: Priority.high,
       category: category,
@@ -200,7 +203,7 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     var _android = AndroidNotificationDetails(
       androidChannelId ?? 'FCM_Config',
       androidChannelName ?? 'FCM_Config',
-      androidChannelDescription ?? 'FCM_Config',
+      channelDescription: androidChannelDescription,
       importance: Importance.high,
       priority: Priority.high,
       category: category,
