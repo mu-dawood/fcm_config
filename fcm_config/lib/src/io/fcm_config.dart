@@ -20,8 +20,11 @@ part 'locale_notifications_Manager.dart';
 class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     IOSNotificationDetails, AndroidNotificationSound, StyleInformation> {
   FCMConfig._();
+
   static FCMConfig get instance => FCMConfig._();
+
   static FirebaseMessaging get messaging => FirebaseMessaging.instance;
+
   @override
   Future<RemoteMessage?> getInitialMessage() async {
     if (!kIsWeb) {
@@ -41,13 +44,13 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     String? appAndroidIcon,
 
     /// Required to show head up notification in foreground
-    String? androidChannelId,
+    required String? androidChannelId,
 
     /// Required to show head up notification in foreground
-    String? androidChannelName,
+    required String? androidChannelName,
 
     /// Required to show head up notification in foreground
-    String? androidChannelDescription,
+    required String? androidChannelDescription,
 
     /// Request permission to display alerts. Defaults to `true`.
     ///
@@ -279,6 +282,7 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
   }) =>
       LocaleNotificationManager.displayNotification(notification,
           androidChannelId, androidChannelName, androidChannelDescription, id);
+
   @override
   StreamSubscription<RemoteMessage> listen(
       Function(RemoteMessage event) onData) {
