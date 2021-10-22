@@ -38,7 +38,14 @@ Future<Locale> getSavedLocale() async {
 
 void main() async {
   await FCMConfig.instance
-      .init(onBackgroundMessage: _firebaseMessagingBackgroundHandler)
+      .init(
+    onBackgroundMessage: _firebaseMessagingBackgroundHandler,
+    defaultAndroidChannel: AndroidNotificationChannel(
+      'fcm',
+      'Fcm config',
+      importance: Importance.high,
+    ),
+  )
       .then((value) {
     if (!kIsWeb) {
       FCMConfig.messaging.subscribeToTopic('test_fcm_topic');

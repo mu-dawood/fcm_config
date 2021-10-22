@@ -24,20 +24,17 @@ class LocaleNotificationManager {
     String? appAndroidIcon,
 
     /// Required to show head up notification in foreground
-    String? androidChannelId,
-
-    /// Required to show head up notification in foreground
-    String? androidChannelName,
-
-    /// Required to show head up notification in foreground
-    String? androidChannelDescription,
+    AndroidNotificationChannel defaultAndroidChannel,
     bool displayInForeground,
   ) async {
     var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     //! Android settings
-    var initializationSettingsAndroid = AndroidInitializationSettings(
-      appAndroidIcon ?? '@mipmap/ic_launcher',
-    );
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings(appAndroidIcon ?? '@mipmap/ic_launcher');
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(defaultAndroidChannel);
     //! Ios setings
     final initializationSettingsIOS = IOSInitializationSettings();
     //! macos setings
@@ -57,12 +54,7 @@ class LocaleNotificationManager {
     if (displayInForeground == true) {
       _subscription = FirebaseMessaging.onMessage.listen((_notification) {
         if (_notification.notification != null) {
-          displayNotification(
-            _notification,
-            androidChannelId,
-            androidChannelName,
-            androidChannelDescription,
-          );
+          displayNotification(_notification, defaultAndroidChannel);
         }
       });
     }
@@ -81,11 +73,8 @@ class LocaleNotificationManager {
     return filePath;
   }
 
-  static void displayNotification(
-      RemoteMessage _notification,
-      String? androidChannelId,
-      String? androidChannelName,
-      String? androidChannelDescription) async {
+  static void displayNotification(RemoteMessage _notification,
+      AndroidNotificationChannel defaultAndroidChannel) async {
     if (_notification.notification == null) return;
     var _localeNotification = FlutterLocalNotificationsPlugin();
     var smallIcon = _notification.notification?.android?.smallIcon;
@@ -109,13 +98,10 @@ class LocaleNotificationManager {
 
     //! Android settings
     var _android = AndroidNotificationDetails(
-      androidChannelId ??
-          _notification.notification?.android?.channelId ??
-          'FCM_Config',
-      androidChannelName ??
-          _notification.notification?.android?.channelId ??
-          'FCM_Config',
-      channelDescription: androidChannelDescription,
+      _notification.notification?.android?.channelId ??
+          defaultAndroidChannel.id,
+      defaultAndroidChannel.name,
+      channelDescription: defaultAndroidChannel.description,
       importance: _getImportance(_notification.notification!),
       priority: Priority.high,
       styleInformation: bigPictureStyleInformation ??

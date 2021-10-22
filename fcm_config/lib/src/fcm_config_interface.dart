@@ -5,7 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'details.dart';
 
-abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
+abstract class FCMConfigInterface<TAndroid, TChannel, TIos, TSound, TStyle> {
   Future<RemoteMessage?> getInitialMessage();
 
   StreamSubscription<RemoteMessage> listen(
@@ -22,13 +22,7 @@ abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
     String? appAndroidIcon,
 
     /// Required to show head up notification in foreground
-    required String? androidChannelId,
-
-    /// Required to show head up notification in foreground
-    required String? androidChannelName,
-
-    /// Required to show head up notification in foreground
-    required String? androidChannelDescription,
+    required TChannel defaultAndroidChannel,
 
     /// Request permission to display alerts. Defaults to `true`.
     ///
@@ -88,9 +82,6 @@ abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
     String? category,
     String? collapseKey,
     TSound? sound,
-    String? androidChannelId,
-    String? androidChannelName,
-    String? androidChannelDescription,
     Map<String, dynamic>? data,
   });
 
@@ -103,9 +94,6 @@ abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
     String? category,
     String? collapseKey,
     TSound? sound,
-    String? androidChannelId,
-    String? androidChannelName,
-    String? androidChannelDescription,
     Map<String, dynamic>? data,
   });
 
@@ -119,13 +107,7 @@ abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
     required WebNotificationDetails? web,
   });
 
-  void displayNotificationFrom({
-    required RemoteMessage notification,
-    int? id,
-    String? androidChannelId,
-    String? androidChannelName,
-    String? androidChannelDescription,
-  });
+  void displayNotificationFrom({required RemoteMessage notification});
 }
 
 class ClickStreamSubscription {

@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:html' as html;
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-import '../fcm_config_interface.dart';
 import '../details.dart';
+import '../fcm_config_interface.dart';
 
 part 'web_notification_manager.dart';
 
@@ -28,13 +29,7 @@ class FCMConfig extends FCMConfigInterface {
     String? appAndroidIcon,
 
     /// Required to show head up notification in foreground
-    String? androidChannelId,
-
-    /// Required to show head up notification in foreground
-    String? androidChannelName,
-
-    /// Required to show head up notification in foreground
-    String? androidChannelDescription,
+    required dynamic defaultAndroidChannel,
 
     /// Request permission to display alerts. Defaults to `true`.
     ///
@@ -118,9 +113,7 @@ class FCMConfig extends FCMConfigInterface {
     int? id,
     String? collapseKey,
     dynamic sound,
-    String? androidChannelId,
-    String? androidChannelName,
-    String? androidChannelDescription,
+    dynamic androidChannel,
     Map<String, dynamic>? data,
   }) {
     var details = WebNotificationDetails(

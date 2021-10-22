@@ -34,12 +34,27 @@
 > Initialize
 ```dart
   void main() async {
-      await FCMConfig.instance.init();
+      await FCMConfig.instance
+      .init(
+          defaultAndroidChannel: AndroidNotificationChannel(
+            'high_importance_channel',// This will be used in the next section
+            'Fcm config',
+            importance: Importance.high,
+          ),
+      );
       runApp(MaterialApp(
         home: MyHomePage(),
       ));
   }
 
+```
+> - open android/app/src/main/AndroidManifest.xml file
+> - Add the following meta-data schema within the application component:
+
+```xml
+<meta-data
+  android:name="com.google.firebase.messaging.default_notification_channel_id"
+  android:value="high_importance_channel" /> 
 ```
 > Background messages(Web not supported)
 
