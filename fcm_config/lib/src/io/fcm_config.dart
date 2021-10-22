@@ -17,11 +17,18 @@ import '../fcm_extension.dart';
 
 part 'locale_notifications_Manager.dart';
 
-class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
-    IOSNotificationDetails, AndroidNotificationSound, StyleInformation> {
+class FCMConfig extends FCMConfigInterface<
+    AndroidNotificationDetails,
+    AndroidNotificationChannel,
+    IOSNotificationDetails,
+    AndroidNotificationSound,
+    StyleInformation> {
   FCMConfig._();
+  static late AndroidNotificationChannel _androidNotificationChannel;
   static FCMConfig get instance => FCMConfig._();
+
   static FirebaseMessaging get messaging => FirebaseMessaging.instance;
+
   @override
   Future<RemoteMessage?> getInitialMessage() async {
     if (!kIsWeb) {
@@ -41,13 +48,7 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     String? appAndroidIcon,
 
     /// Required to show head up notification in foreground
-    String? androidChannelId,
-
-    /// Required to show head up notification in foreground
-    String? androidChannelName,
-
-    /// Required to show head up notification in foreground
-    String? androidChannelDescription,
+    required AndroidNotificationChannel defaultAndroidChannel,
 
     /// Request permission to display alerts. Defaults to `true`.
     ///
@@ -99,6 +100,7 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     bool displayInForeground = true,
   }) async {
     WidgetsFlutterBinding.ensureInitialized();
+    _androidNotificationChannel = defaultAndroidChannel;
     await Firebase.initializeApp(name: name, options: options);
     await FirebaseMessaging.instance.requestPermission(
       alert: alert,
@@ -124,35 +126,27 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
 
     await LocaleNotificationManager.init(
       appAndroidIcon,
-      androidChannelId,
-      androidChannelName,
-      androidChannelDescription,
+      _androidNotificationChannel,
       displayInForeground && !Platform.isIOS,
     );
   }
 
   @override
   void displayNotification({
+    int? id,
     required String title,
     required String body,
     String? subTitle,
-    int? id,
     String? category,
     String? collapseKey,
     AndroidNotificationSound? sound,
-    String? androidChannelId,
-    String? androidChannelName,
-    String? androidChannelDescription,
     Map<String, dynamic>? data,
   }) {
     var _localeNotification = FlutterLocalNotificationsPlugin();
     var _iOS = IOSNotificationDetails(subtitle: subTitle);
     var _android = AndroidNotificationDetails(
-      androidChannelId ?? 'FCM_Config',
-      androidChannelName ?? 'FCM_Config',
-      channelDescription: androidChannelDescription,
-      importance: Importance.high,
-      priority: Priority.high,
+      _androidNotificationChannel.id,
+      _androidNotificationChannel.name,
       category: category,
       groupKey: collapseKey,
       showProgress: false,
@@ -193,17 +187,13 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     String? category,
     String? collapseKey,
     AndroidNotificationSound? sound,
-    String? androidChannelId,
-    String? androidChannelName,
-    String? androidChannelDescription,
     Map<String, dynamic>? data,
   }) {
     var _localeNotification = FlutterLocalNotificationsPlugin();
     var _iOS = IOSNotificationDetails(subtitle: subTitle);
     var _android = AndroidNotificationDetails(
-      androidChannelId ?? 'FCM_Config',
-      androidChannelName ?? 'FCM_Config',
-      channelDescription: androidChannelDescription,
+      _androidNotificationChannel.id,
+      _androidNotificationChannel.name,
       importance: Importance.high,
       priority: Priority.high,
       category: category,
@@ -270,15 +260,9 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
   }
 
   @override
-  void displayNotificationFrom({
-    required RemoteMessage notification,
-    int? id,
-    String? androidChannelId,
-    String? androidChannelName,
-    String? androidChannelDescription,
-  }) =>
-      LocaleNotificationManager.displayNotification(notification,
-          androidChannelId, androidChannelName, androidChannelDescription);
+  void displayNotificationFrom({required RemoteMessage notification}) =>
+      LocaleNotificationManager.displayNotification(
+          notification, _androidNotificationChannel);
   @override
   StreamSubscription<RemoteMessage> listen(
       Function(RemoteMessage event) onData) {

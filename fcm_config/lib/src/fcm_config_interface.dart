@@ -7,8 +7,10 @@ import 'details.dart';
 
 abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
   Future<RemoteMessage?> getInitialMessage();
+
   StreamSubscription<RemoteMessage> listen(
       Function(RemoteMessage event) onData);
+
   ClickStreamSubscription listenClick(Function(RemoteMessage event) onData);
 
   Future init({
@@ -20,13 +22,13 @@ abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
     String? appAndroidIcon,
 
     /// Required to show head up notification in foreground
-    String? androidChannelId,
+    required String? androidChannelId,
 
     /// Required to show head up notification in foreground
-    String? androidChannelName,
+    required String? androidChannelName,
 
     /// Required to show head up notification in foreground
-    String? androidChannelDescription,
+    required String? androidChannelDescription,
 
     /// Request permission to display alerts. Defaults to `true`.
     ///
@@ -128,6 +130,7 @@ abstract class FCMConfigInterface<TAndroid, TIos, TSound, TStyle> {
 
 class ClickStreamSubscription {
   final List<StreamSubscription<RemoteMessage>> subscriptions;
+
   ClickStreamSubscription(this.subscriptions);
 
   Future<void> cancel() async {
