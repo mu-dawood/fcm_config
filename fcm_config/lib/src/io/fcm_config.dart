@@ -278,7 +278,7 @@ class FCMConfig extends FCMConfigInterface<AndroidNotificationDetails,
     String? androidChannelDescription,
   }) =>
       LocaleNotificationManager.displayNotification(notification,
-          androidChannelId, androidChannelName, androidChannelDescription, id);
+          androidChannelId, androidChannelName, androidChannelDescription);
   @override
   StreamSubscription<RemoteMessage> listen(
       Function(RemoteMessage event) onData) {

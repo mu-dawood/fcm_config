@@ -57,8 +57,12 @@ class LocaleNotificationManager {
     if (displayInForeground == true) {
       _subscription = FirebaseMessaging.onMessage.listen((_notification) {
         if (_notification.notification != null) {
-          displayNotification(_notification, androidChannelId,
-              androidChannelName, androidChannelDescription);
+          displayNotification(
+            _notification,
+            androidChannelId,
+            androidChannelName,
+            androidChannelDescription,
+          );
         }
       });
     }
@@ -81,8 +85,7 @@ class LocaleNotificationManager {
       RemoteMessage _notification,
       String? androidChannelId,
       String? androidChannelName,
-      String? androidChannelDescription,
-      [int? id]) async {
+      String? androidChannelDescription) async {
     if (_notification.notification == null) return;
     var _localeNotification = FlutterLocalNotificationsPlugin();
     var smallIcon = _notification.notification?.android?.smallIcon;
@@ -165,9 +168,8 @@ class LocaleNotificationManager {
       iOS: _ios,
       macOS: _mac,
     );
-    var _id = id ?? DateTime.now().difference(DateTime(2021)).inSeconds;
     await _localeNotification.show(
-      _id,
+      _notification.hashCode,
       _notification.notification!.title,
       (Platform.isAndroid && bigPictureStyleInformation == null)
           ? ''
