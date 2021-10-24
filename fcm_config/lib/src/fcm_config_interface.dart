@@ -7,7 +7,6 @@ import 'details.dart';
 
 abstract class FCMConfigInterface<TAndroid, TChannel, TIos, TSound, TStyle> {
   Future<RemoteMessage?> getInitialMessage();
-
   StreamSubscription<RemoteMessage> listen(
       Function(RemoteMessage event) onData);
 
@@ -19,7 +18,7 @@ abstract class FCMConfigInterface<TAndroid, TChannel, TIos, TSound, TStyle> {
     BackgroundMessageHandler? onBackgroundMessage,
 
     /// Drawable icon works only in forground
-    String? appAndroidIcon,
+    String defaultAndroidForegroundIcon = '@mipmap/ic_launcher',
 
     /// Required to show head up notification in foreground
     required TChannel defaultAndroidChannel,

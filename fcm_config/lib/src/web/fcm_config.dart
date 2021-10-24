@@ -26,7 +26,7 @@ class FCMConfig extends FCMConfigInterface {
     BackgroundMessageHandler? onBackgroundMessage,
 
     /// Drawable icon works only in forground
-    String? appAndroidIcon,
+    String defaultAndroidForegroundIcon = '@mipmap/ic_launcher',
 
     /// Required to show head up notification in foreground
     required dynamic defaultAndroidChannel,

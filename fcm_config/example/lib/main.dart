@@ -7,28 +7,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-Map<String, Map<String, String>> translations = {
-  'ar': {
-    'New_Order_Title': 'طلب جديد',
-    'New_Order_Body': 'لديك طلب جديد برقم{args}',
-  },
-  'en': {
-    'New_Order_Title': 'New order',
-    'New_Order_Body': 'You has new order with number {args}',
-  }
-};
-Future<void> _firebaseMessagingBackgroundHandler(
-    RemoteMessage _notification) async {
-  var strings = translations[(await getSavedLocale()).languageCode] ??
-      translations['en'] ??
-      {};
-
-  var title = strings[_notification.data['title_key']];
-  var body = strings[_notification.data['body_key']]
-      ?.replaceAll('{args}', _notification.data['body_args']);
-  FCMConfig.instance.displayNotification(title: title ?? '', body: body ?? '');
-}
-
 Future<Locale> getSavedLocale() async {
   var prefs = await SharedPreferences.getInstance();
   await prefs.reload();
@@ -39,11 +17,15 @@ Future<Locale> getSavedLocale() async {
 void main() async {
   await FCMConfig.instance
       .init(
-    onBackgroundMessage: _firebaseMessagingBackgroundHandler,
+    defaultAndroidForegroundIcon: '@mipmap/custom_icon',
+    // Note once channel created it can not be changed
     defaultAndroidChannel: AndroidNotificationChannel(
-      'fcm',
+      'high_importance_channel',
       'Fcm config',
       importance: Importance.high,
+      ledColor: Colors.green,
+      enableLights: true,
+      sound: RawResourceAndroidNotificationSound('notification'),
     ),
   )
       .then((value) {
@@ -174,7 +156,6 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   void onNotify(RemoteMessage notification) {
-    _firebaseMessagingBackgroundHandler(notification);
     setState(() {
       _notification = notification;
     });

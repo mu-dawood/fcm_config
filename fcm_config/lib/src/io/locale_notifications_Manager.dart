@@ -21,20 +21,23 @@ class LocaleNotificationManager {
 
   static Future init(
     /// Drawable icon works only in forground
-    String? appAndroidIcon,
+    String appAndroidIcon,
 
     /// Required to show head up notification in foreground
     AndroidNotificationChannel defaultAndroidChannel,
     bool displayInForeground,
   ) async {
     var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    //! register android channel
+    var impl =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    await impl?.createNotificationChannel(defaultAndroidChannel);
+
     //! Android settings
     var initializationSettingsAndroid =
-        AndroidInitializationSettings(appAndroidIcon ?? '@mipmap/ic_launcher');
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(defaultAndroidChannel);
+        AndroidInitializationSettings(appAndroidIcon);
+
     //! Ios setings
     final initializationSettingsIOS = IOSInitializationSettings();
     //! macos setings
@@ -127,16 +130,17 @@ class LocaleNotificationManager {
     );
     var badge = int.tryParse(_notification.notification?.apple?.badge ?? '');
     var _ios = IOSNotificationDetails(
-        threadIdentifier: _notification.collapseKey,
-        sound: _notification.notification?.apple?.sound?.name,
-        badgeNumber: badge,
-        subtitle: _notification.notification?.apple?.subtitle,
-        presentBadge: badge == null ? null : true,
-        attachments: largeIconPath == null
-            ? []
-            : <IOSNotificationAttachment>[
-                IOSNotificationAttachment(largeIconPath)
-              ]);
+      threadIdentifier: _notification.collapseKey,
+      sound: _notification.notification?.apple?.sound?.name,
+      badgeNumber: badge,
+      subtitle: _notification.notification?.apple?.subtitle,
+      presentBadge: badge == null ? null : true,
+      attachments: largeIconPath == null
+          ? []
+          : <IOSNotificationAttachment>[
+              IOSNotificationAttachment(largeIconPath)
+            ],
+    );
     var _mac = MacOSNotificationDetails(
       threadIdentifier: _notification.collapseKey,
       sound: _notification.notification?.apple?.sound?.name,
