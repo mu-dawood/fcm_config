@@ -1,6 +1,11 @@
+## [3.1.4] 
+
+* update dependencies
+
 ## [3.1.3] 
 
 * update dependencies
+
 ## [3.1.0] 
 
 * update dependencies
