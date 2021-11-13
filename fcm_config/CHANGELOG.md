@@ -1,3 +1,7 @@
+## [3.1.7] 
+
+* use value changed as a callback for listeners
+
 ## [3.1.6] 
 
 * export ClickStreamSubscript
