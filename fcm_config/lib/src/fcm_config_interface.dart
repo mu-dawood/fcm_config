@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 
 import 'click_stream_subscription.dart';
 import 'details.dart';
 
 abstract class FCMConfigInterface<TAndroid, TChannel, TIos, TSound, TStyle> {
   Future<RemoteMessage?> getInitialMessage();
-  StreamSubscription<RemoteMessage> listen(
-      Function(RemoteMessage event) onData);
+  StreamSubscription<RemoteMessage> listen(ValueChanged<RemoteMessage> onData);
 
-  ClickStreamSubscription listenClick(Function(RemoteMessage event) onData);
+  ClickStreamSubscription listenClick(ValueChanged<RemoteMessage> onData);
 
   Future init({
     /// this function will be excuted while application is in background

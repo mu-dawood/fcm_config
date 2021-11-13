@@ -265,13 +265,12 @@ class FCMConfig extends FCMConfigInterface<
       LocaleNotificationManager.displayNotification(
           notification, _androidNotificationChannel);
   @override
-  StreamSubscription<RemoteMessage> listen(
-      Function(RemoteMessage event) onData) {
+  StreamSubscription<RemoteMessage> listen(ValueChanged<RemoteMessage> onData) {
     return FirebaseMessaging.onMessage.listen(onData);
   }
 
   @override
-  ClickStreamSubscription listenClick(Function(RemoteMessage event) onData) {
+  ClickStreamSubscription listenClick(ValueChanged<RemoteMessage> onData) {
     return ClickStreamSubscription(
       LocaleNotificationManager.onLocaleClick.stream.listen(onData),
       FirebaseMessaging.onMessageOpenedApp.listen(onData),
