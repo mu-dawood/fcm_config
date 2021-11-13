@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
+import '../click_stream_subscription.dart';
 import '../details.dart';
 import '../fcm_config_interface.dart';
 
@@ -185,9 +186,9 @@ class FCMConfig extends FCMConfigInterface {
 
   @override
   ClickStreamSubscription listenClick(Function(RemoteMessage event) onData) {
-    return ClickStreamSubscription([
-      FirebaseMessaging.onMessageOpenedApp.listen(onData),
+    return ClickStreamSubscription(
       WebNotificationManager.onLocaleClick.stream.listen(onData),
-    ]);
+      FirebaseMessaging.onMessageOpenedApp.listen(onData),
+    );
   }
 }

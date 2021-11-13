@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'click_stream_subscription.dart';
 import 'details.dart';
 
 abstract class FCMConfigInterface<TAndroid, TChannel, TIos, TSound, TStyle> {
@@ -107,48 +108,4 @@ abstract class FCMConfigInterface<TAndroid, TChannel, TIos, TSound, TStyle> {
   });
 
   void displayNotificationFrom({required RemoteMessage notification});
-}
-
-class ClickStreamSubscription {
-  final List<StreamSubscription<RemoteMessage>> subscriptions;
-
-  ClickStreamSubscription(this.subscriptions);
-
-  Future<void> cancel() async {
-    for (var s in subscriptions) {
-      await s.cancel();
-    }
-  }
-
-  bool get isPaused => subscriptions.any((element) => element.isPaused);
-
-  void onData(void Function(RemoteMessage data) handleData) {
-    for (var s in subscriptions) {
-      s.onData(handleData);
-    }
-  }
-
-  void onDone(void Function() handleDone) {
-    for (var s in subscriptions) {
-      s.onDone(handleDone);
-    }
-  }
-
-  void onError(Function? handleError) {
-    for (var s in subscriptions) {
-      s.onError(handleError);
-    }
-  }
-
-  void pause([Future<void>? resumeSignal]) {
-    for (var s in subscriptions) {
-      s.pause(resumeSignal);
-    }
-  }
-
-  void resume() {
-    for (var s in subscriptions) {
-      s.resume();
-    }
-  }
 }

@@ -99,7 +99,7 @@
     },
     {
       "name": "flutter_local_notifications",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications-9.0.3",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications-9.1.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -278,7 +278,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-11-09T21:51:57.884910Z",
+  "generated": "2021-11-13T22:29:09.465601Z",
   "generator": "pub",
   "generatorVersion": "2.14.4"
 }

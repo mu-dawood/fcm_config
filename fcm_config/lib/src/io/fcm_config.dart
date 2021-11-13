@@ -12,6 +12,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
+import '../click_stream_subscription.dart';
 import '../details.dart';
 import '../fcm_extension.dart';
 
@@ -271,9 +272,9 @@ class FCMConfig extends FCMConfigInterface<
 
   @override
   ClickStreamSubscription listenClick(Function(RemoteMessage event) onData) {
-    return ClickStreamSubscription([
-      FirebaseMessaging.onMessageOpenedApp.listen(onData),
+    return ClickStreamSubscription(
       LocaleNotificationManager.onLocaleClick.stream.listen(onData),
-    ]);
+      FirebaseMessaging.onMessageOpenedApp.listen(onData),
+    );
   }
 }
