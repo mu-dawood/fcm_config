@@ -1,3 +1,6 @@
+## [3.1.6] 
+
+* export ClickStreamSubscript
 ## [3.1.4] 
 
 * update dependencies
