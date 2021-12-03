@@ -94,7 +94,8 @@ class FCMConfig extends FCMConfigInterface {
       sound: sound,
       provisional: provisional,
     );
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       alert: alert,
       badge: badge,
       sound: sound,

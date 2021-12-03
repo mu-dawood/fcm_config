@@ -2,7 +2,8 @@ part of 'fcm_config.dart';
 
 class LocaleNotificationManager {
   static StreamSubscription<RemoteMessage>? _subscription;
-  static final StreamController<RemoteMessage> onLocaleClick = StreamController<RemoteMessage>.broadcast();
+  static final StreamController<RemoteMessage> onLocaleClick =
+      StreamController<RemoteMessage>.broadcast();
 
   static Future _onPayLoad(String? payload) async {
     if (payload == null) return;
@@ -29,11 +30,13 @@ class LocaleNotificationManager {
     var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     //! register android channel
     var impl =
-        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
     await impl?.createNotificationChannel(defaultAndroidChannel);
 
     //! Android settings
-    var initializationSettingsAndroid = AndroidInitializationSettings(appAndroidIcon);
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings(appAndroidIcon);
 
     //! Ios setings
     final initializationSettingsIOS = IOSInitializationSettings();
@@ -60,9 +63,12 @@ class LocaleNotificationManager {
     }
   }
 
-  static Future<String> _downloadAndSaveFile(String? url, String fileName) async {
+  static Future<String> _downloadAndSaveFile(
+      String? url, String fileName) async {
     final isIos = Platform.isIOS;
-    final directory = isIos ? await getApplicationSupportDirectory() : await getExternalStorageDirectory();
+    final directory = isIos
+        ? await getApplicationSupportDirectory()
+        : await getExternalStorageDirectory();
     final filePath = '${directory?.path}/$fileName';
     final response = await http.get(Uri.parse(url!));
     final file = File(filePath);
@@ -70,7 +76,8 @@ class LocaleNotificationManager {
     return filePath;
   }
 
-  static void displayNotification(RemoteMessage _notification, AndroidNotificationChannel defaultAndroidChannel) async {
+  static void displayNotification(RemoteMessage _notification,
+      AndroidNotificationChannel defaultAndroidChannel) async {
     if (_notification.notification == null) return;
     var _localeNotification = FlutterLocalNotificationsPlugin();
     var smallIcon = _notification.notification?.android?.smallIcon;
@@ -94,7 +101,8 @@ class LocaleNotificationManager {
 
     //! Android settings
     var _android = AndroidNotificationDetails(
-      _notification.notification?.android?.channelId ?? defaultAndroidChannel.id,
+      _notification.notification?.android?.channelId ??
+          defaultAndroidChannel.id,
       defaultAndroidChannel.name,
       channelDescription: defaultAndroidChannel.description,
       importance: _getImportance(_notification.notification!),
@@ -113,9 +121,12 @@ class LocaleNotificationManager {
       sound: _notification.isDefaultAndroidSound
           ? null
           : (_notification.isAndroidRemoteSound
-              ? UriAndroidNotificationSound(_notification.notification!.android!.sound!)
-              : RawResourceAndroidNotificationSound(_notification.notification!.android!.sound)),
-      largeIcon: largeIconPath == null ? null : FilePathAndroidBitmap(largeIconPath),
+              ? UriAndroidNotificationSound(
+                  _notification.notification!.android!.sound!)
+              : RawResourceAndroidNotificationSound(
+                  _notification.notification!.android!.sound)),
+      largeIcon:
+          largeIconPath == null ? null : FilePathAndroidBitmap(largeIconPath),
     );
     var badge = int.tryParse(_notification.notification?.apple?.badge ?? '');
     var _ios = IOSNotificationDetails(
@@ -124,7 +135,11 @@ class LocaleNotificationManager {
       badgeNumber: badge,
       subtitle: _notification.notification?.apple?.subtitle,
       presentBadge: badge == null ? null : true,
-      attachments: largeIconPath == null ? [] : <IOSNotificationAttachment>[IOSNotificationAttachment(largeIconPath)],
+      attachments: largeIconPath == null
+          ? []
+          : <IOSNotificationAttachment>[
+              IOSNotificationAttachment(largeIconPath)
+            ],
     );
     var _mac = MacOSNotificationDetails(
       threadIdentifier: _notification.collapseKey,
@@ -132,8 +147,11 @@ class LocaleNotificationManager {
       badgeNumber: badge,
       subtitle: _notification.notification?.apple?.subtitle,
       presentBadge: badge == null ? null : true,
-      attachments:
-          largeIconPath == null ? [] : <MacOSNotificationAttachment>[MacOSNotificationAttachment(largeIconPath)],
+      attachments: largeIconPath == null
+          ? []
+          : <MacOSNotificationAttachment>[
+              MacOSNotificationAttachment(largeIconPath)
+            ],
     );
     var _details = NotificationDetails(
       android: _android,
@@ -143,7 +161,9 @@ class LocaleNotificationManager {
     await _localeNotification.show(
       _notification.hashCode,
       _notification.notification!.title,
-      (Platform.isAndroid && bigPictureStyleInformation == null) ? '' : _notification.notification!.body,
+      (Platform.isAndroid && bigPictureStyleInformation == null)
+          ? ''
+          : _notification.notification!.body,
       _details,
       payload: jsonEncode(_notification.toMap()),
     );

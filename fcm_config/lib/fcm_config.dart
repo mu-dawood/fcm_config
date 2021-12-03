@@ -1,5 +1,6 @@
 export 'package:firebase_messaging/firebase_messaging.dart';
-export 'package:flutter_local_notifications/flutter_local_notifications.dart';
+export 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    if (dart.library.html) '';
 
 export './src/click_stream_subscription.dart';
 export './src/fcm_extension.dart';
