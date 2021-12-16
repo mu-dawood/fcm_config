@@ -19,3 +19,8 @@ dependencies:
 
 dev_dependencies:
   pedantic: ^1.11.0
+false_secrets:
+  - /example/android/app/google-services.json
+  - /example/ios/Runner/GoogleService-Info.plist
+  - /example/web/firebase-messaging-sw.js
+  - /example/web/index.html
