@@ -105,7 +105,7 @@
 > Get token
 
 ```dart
-  FCMConfig.messaging.getToken().then((token) {
+  FCMConfig.instance.messaging.getToken().then((token) {
         print(token);
    });
  ```

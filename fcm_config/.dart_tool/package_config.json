@@ -15,7 +15,7 @@
     },
     {
       "name": "characters",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/characters-1.1.0",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/characters-1.2.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -93,7 +93,7 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///Users/dawood/Desktop/flutter/packages/flutter",
+      "rootUri": "file:///Users/dawood/Desktop/flutter/current/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -117,7 +117,7 @@
     },
     {
       "name": "flutter_web_plugins",
-      "rootUri": "file:///Users/dawood/Desktop/flutter/packages/flutter_web_plugins",
+      "rootUri": "file:///Users/dawood/Desktop/flutter/current/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -213,7 +213,7 @@
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///Users/dawood/Desktop/flutter/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///Users/dawood/Desktop/flutter/current/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -249,9 +249,9 @@
     },
     {
       "name": "vector_math",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/vector_math-2.1.0",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/vector_math-2.1.1",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.14"
     },
     {
       "name": "win32",
@@ -278,7 +278,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-12-03T11:51:27.676755Z",
+  "generated": "2021-12-16T15:45:55.152649Z",
   "generator": "pub",
-  "generatorVersion": "2.14.4"
+  "generatorVersion": "2.15.0"
 }

@@ -30,7 +30,7 @@ void main() async {
   )
       .then((value) {
     if (!kIsWeb) {
-      FCMConfig.messaging.subscribeToTopic('test_fcm_topic');
+      FCMConfig.instance.messaging.subscribeToTopic('test_fcm_topic');
     }
   });
 
@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage>
           persistentFooterButtons: [
             TextButton(
               onPressed: () async {
-                FCMConfig.instance.displayNotification(
+                FCMConfig.instance.local.displayNotification(
                     title: 'title', body: DateTime.now().toString());
               },
               child: Text('Display notification'),
@@ -119,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage>
             ),
             TextButton(
               onPressed: () async {
-                print(await FCMConfig.messaging
+                print(await FCMConfig.instance.messaging
                     .getToken(vapidKey: 'your web token'));
               },
               child: Text('Get token'),

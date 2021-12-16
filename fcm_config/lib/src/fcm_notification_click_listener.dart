@@ -1,16 +1,16 @@
-import 'package:fcm_config/fcm_config.dart';
+import 'dart:async';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'click_stream_subscription.dart';
+import 'fcm_config.dart';
 
 /// This mixin can listen to notification tap
 mixin FCMNotificationClickMixin<T extends StatefulWidget> on State<T> {
-  late ClickStreamSubscription _subscription;
+  late StreamSubscription _subscription;
   @override
   void initState() {
-    _subscription = FCMConfig.instance.listenClick(_onClick);
+    _subscription = FCMConfig.instance.onTap.listen(_onClick);
     super.initState();
   }
 

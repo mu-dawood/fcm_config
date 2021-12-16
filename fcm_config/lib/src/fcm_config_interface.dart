@@ -2,17 +2,20 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    show
+        IOSNotificationDetails,
+        AndroidNotificationDetails,
+        MacOSNotificationDetails,
+        AndroidNotificationChannel;
 
-import 'click_stream_subscription.dart';
 import 'details.dart';
 
-abstract class FCMConfigInterface<TAndroid, TChannel, TIos, TSound, TStyle> {
+abstract class FCMConfigInterface {
   Future<RemoteMessage?> getInitialMessage();
-  StreamSubscription<RemoteMessage> listen(ValueChanged<RemoteMessage> onData);
-
-  ClickStreamSubscription listenClick(ValueChanged<RemoteMessage> onData);
-
+  Stream<RemoteMessage> get onMessage;
+  Stream<RemoteMessage> get onTap;
+  static FirebaseMessaging get messaging => FirebaseMessaging.instance;
   Future init({
     /// this function will be excuted while application is in background
     /// Not work on the web
@@ -22,7 +25,7 @@ abstract class FCMConfigInterface<TAndroid, TChannel, TIos, TSound, TStyle> {
     String defaultAndroidForegroundIcon = '@mipmap/ic_launcher',
 
     /// Required to show head up notification in foreground
-    required TChannel defaultAndroidChannel,
+    required AndroidNotificationChannel defaultAndroidChannel,
 
     /// Request permission to display alerts. Defaults to `true`.
     ///
@@ -73,39 +76,24 @@ abstract class FCMConfigInterface<TAndroid, TChannel, TIos, TSound, TStyle> {
     String? name,
     bool displayInForeground = true,
   });
+}
+
+abstract class LocaleNotificationInterface {
+  Future<RemoteMessage?> getInitialMessage();
+  Future init();
 
   void displayNotification({
-    required String title,
-    required String body,
     int? id,
-    String? subTitle,
-    String? category,
-    String? collapseKey,
-    TSound? sound,
-    Map<String, dynamic>? data,
-  });
-
-  void displayNotificationWithAndroidStyle({
-    required String title,
-    required TStyle styleInformation,
-    required String body,
-    int? id,
-    String? subTitle,
-    String? category,
-    String? collapseKey,
-    TSound? sound,
-    Map<String, dynamic>? data,
-  });
-
-  void displayNotificationWith({
-    int? id,
-    required String title,
+    String? title,
     String? body,
     Map<String, dynamic>? data,
-    required TAndroid android,
-    required TIos iOS,
-    required WebNotificationDetails? web,
+    AndroidNotificationDetails? android,
+    IOSNotificationDetails? iOS,
+    WebNotificationDetails? web,
+    MacOSNotificationDetails? macOS,
   });
 
-  void displayNotificationFrom({required RemoteMessage notification});
+  void displayNotificationFrom(RemoteMessage message);
+
+  Future close();
 }

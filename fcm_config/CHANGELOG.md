@@ -1,3 +1,10 @@
+## [3.3.0] 
+
+* Breaking chages
+* To make  this package support testing we removed all static intances except `FCMConfig.instance`
+* `FCMConfig.messaging` is now  `FCMConfig.instance.messaging`
+* now there is `FCMConfig.instance.local` that contains 2 methods to display local notification
+* now local notification inhirits diplay properties from init method
 ## [3.1.7] 
 
 * use value changed as a callback for listeners
