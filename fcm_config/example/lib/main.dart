@@ -19,7 +19,7 @@ void main() async {
       .init(
     defaultAndroidForegroundIcon: '@mipmap/custom_icon',
     // Note once channel created it can not be changed
-    defaultAndroidChannel: AndroidNotificationChannel(
+    defaultAndroidChannel: const AndroidNotificationChannel(
       'high_importance_channel',
       'Fcm config',
       importance: Importance.high,
@@ -41,7 +41,7 @@ void main() async {
 
 class MyHomePage extends StatefulWidget {
   final Locale? locale;
-  MyHomePage({Key? key, this.locale}) : super(key: key);
+  const MyHomePage({Key? key, this.locale}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -63,29 +63,29 @@ class _MyHomePageState extends State<MyHomePage>
     return MaterialApp(
       locale: locale,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      supportedLocales: [
+      supportedLocales: const [
         Locale('ar'),
         Locale('en'),
       ],
       home: Builder(builder: (context) {
         return Scaffold(
-          appBar: AppBar(title: Text('Notifications')),
+          appBar: AppBar(title: const Text('Notifications')),
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 ListTile(
-                  title: Text('title'),
+                  title: const Text('title'),
                   subtitle: Text(_notification?.notification?.title ?? ''),
                 ),
                 ListTile(
-                  title: Text('Body'),
+                  title: const Text('Body'),
                   subtitle: Text(
                       _notification?.notification?.body ?? 'No notification'),
                 ),
                 if (_notification != null)
                   ListTile(
-                    title: Text('data'),
+                    title: const Text('data'),
                     subtitle: Text(_notification?.data.toString() ?? ''),
                   )
               ],
@@ -97,32 +97,33 @@ class _MyHomePageState extends State<MyHomePage>
                 FCMConfig.instance.local.displayNotification(
                     title: 'title', body: DateTime.now().toString());
               },
-              child: Text('Display notification'),
+              child: const Text('Display notification'),
             ),
             TextButton(
               onPressed: () async {
                 var prefs = await SharedPreferences.getInstance();
                 setState(() {
                   locale = locale?.languageCode == 'ar'
-                      ? Locale('en')
-                      : Locale('ar');
+                      ? const Locale('en')
+                      : const Locale('ar');
                 });
                 await prefs.setString('locale', locale!.languageCode);
               },
-              child: Text('Toggle language'),
+              child: const Text('Toggle language'),
             ),
             TextButton(
               onPressed: () {
                 send();
               },
-              child: Text('Send with notification'),
+              child: const Text('Send with notification'),
             ),
             TextButton(
               onPressed: () async {
-                print(await FCMConfig.instance.messaging
-                    .getToken(vapidKey: 'your web token'));
+                if (kDebugMode)
+                  print(await FCMConfig.instance.messaging
+                      .getToken(vapidKey: 'your web token'));
               },
-              child: Text('Get token'),
+              child: const Text('Get token'),
             )
           ],
         );
@@ -166,7 +167,9 @@ class _MyHomePageState extends State<MyHomePage>
     setState(() {
       _notification = notification;
     });
-    print(
-        'Notification clicked with title: ${notification.notification?.title} && body: ${notification.notification?.body}');
+    if (kDebugMode) {
+      print(
+          'Notification clicked with title: ${notification.notification?.title} && body: ${notification.notification?.body}');
+    }
   }
 }

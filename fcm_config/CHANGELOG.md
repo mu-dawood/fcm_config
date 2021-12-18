@@ -1,3 +1,8 @@
+## [3.3.1] 
+
+* Update depedencies
+* use flutter_lints
+
 ## [3.3.0] 
 
 * Breaking chages
@@ -5,6 +10,7 @@
 * `FCMConfig.messaging` is now  `FCMConfig.instance.messaging`
 * now there is `FCMConfig.instance.local` that contains 2 methods to display local notification
 * now local notification inhirits diplay properties from init method
+
 ## [3.1.7] 
 
 * use value changed as a callback for listeners
@@ -12,6 +18,7 @@
 ## [3.1.6] 
 
 * export ClickStreamSubscript
+
 ## [3.1.4] 
 
 * update dependencies
