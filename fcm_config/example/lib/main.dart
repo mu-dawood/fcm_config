@@ -119,9 +119,10 @@ class _MyHomePageState extends State<MyHomePage>
             ),
             TextButton(
               onPressed: () async {
-                if (kDebugMode)
+                if (kDebugMode) {
                   print(await FCMConfig.instance.messaging
                       .getToken(vapidKey: 'your web token'));
+                }
               },
               child: const Text('Get token'),
             )

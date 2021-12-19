@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:fcm_config/src/fcm_config_interface.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'io_notifications_Manager.dart'
+import 'io_notifications_manager.dart'
     if (dart.library.html) 'web_notification_manager.dart';
 
 class FCMConfig extends FCMConfigInterface {
@@ -18,7 +17,7 @@ class FCMConfig extends FCMConfigInterface {
       _instance ??= FCMConfig._(FirebaseMessaging.instance);
 
   final FirebaseMessaging messaging;
-  late LocaleNotificationInterface? _localeNotification;
+  LocaleNotificationInterface? _localeNotification;
   LocaleNotificationInterface get local {
     if (_localeNotification == null) {
       throw Exception('you must call init before use this value');
@@ -112,13 +111,12 @@ class FCMConfig extends FCMConfigInterface {
       sound: sound,
       provisional: provisional,
     );
-    if (displayInForeground) {
-      await messaging.setForegroundNotificationPresentationOptions(
-        alert: alert,
-        badge: badge,
-        sound: sound,
-      );
-    }
+
+    await messaging.setForegroundNotificationPresentationOptions(
+      alert: false,
+      badge: false,
+      sound: false,
+    );
 
     if (onBackgroundMessage != null) {
       FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
@@ -128,7 +126,7 @@ class FCMConfig extends FCMConfigInterface {
     _localeNotification = NotificationManager(
       androidNotificationChannel: defaultAndroidChannel,
       appAndroidIcon: '',
-      displayInForeground: displayInForeground && !Platform.isIOS,
+      displayInForeground: displayInForeground,
       iosPresentAlert: alert,
       iosPresentBadge: badge,
       iosPresentSound: sound,
