@@ -82,7 +82,7 @@ abstract class LocaleNotificationInterface {
   Future<RemoteMessage?> getInitialMessage();
   Future init();
 
-  void displayNotification({
+  Future displayNotification({
     int? id,
     String? title,
     String? body,
@@ -93,7 +93,7 @@ abstract class LocaleNotificationInterface {
     MacOSNotificationDetails? macOS,
   });
 
-  void displayNotificationFrom(RemoteMessage message);
+  Future displayNotificationFrom(RemoteMessage message);
 
   Future close();
 }

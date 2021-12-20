@@ -11,12 +11,11 @@ import 'io_notifications_manager.dart'
     if (dart.library.html) 'web_notification_manager.dart';
 
 class FCMConfig extends FCMConfigInterface {
-  FCMConfig._(this.messaging);
+  FCMConfig._();
   static FCMConfig? _instance;
-  static FCMConfig get instance =>
-      _instance ??= FCMConfig._(FirebaseMessaging.instance);
+  static FCMConfig get instance => _instance ??= FCMConfig._();
 
-  final FirebaseMessaging messaging;
+  FirebaseMessaging get messaging => FirebaseMessaging.instance;
   LocaleNotificationInterface? _localeNotification;
   LocaleNotificationInterface get local {
     if (_localeNotification == null) {
@@ -99,6 +98,9 @@ class FCMConfig extends FCMConfigInterface {
     ///Name of the firebase instance app
     String? name,
     bool displayInForeground = true,
+
+    /// default action name for linux
+    String linuxActionName = 'fcm_config',
   }) async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(name: name, options: options);
@@ -125,13 +127,14 @@ class FCMConfig extends FCMConfigInterface {
 
     _localeNotification = NotificationManager(
       androidNotificationChannel: defaultAndroidChannel,
-      appAndroidIcon: '',
+      appAndroidIcon: defaultAndroidForegroundIcon,
       displayInForeground: displayInForeground,
       iosPresentAlert: alert,
       iosPresentBadge: badge,
       iosPresentSound: sound,
       onRemoteMessage: onMessage,
       tapSink: _onTapController.sink,
+      linuxActionName: linuxActionName,
     );
 
     await _localeNotification!.init();

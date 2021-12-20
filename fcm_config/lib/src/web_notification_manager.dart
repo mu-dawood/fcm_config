@@ -8,7 +8,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart'
         IOSNotificationDetails,
         AndroidNotificationDetails,
         MacOSNotificationDetails,
-        AndroidNotificationChannel;
+        AndroidNotificationChannel,
+        LinuxNotificationDetails;
 
 import 'details.dart';
 import 'fcm_config_interface.dart';
@@ -37,6 +38,8 @@ class NotificationManager implements LocaleNotificationInterface {
 
   /// ios notification sound
   final bool iosPresentSound;
+  final String linuxActionName;
+
   NotificationManager({
     required this.androidNotificationChannel,
     required this.appAndroidIcon,
@@ -46,10 +49,11 @@ class NotificationManager implements LocaleNotificationInterface {
     required this.iosPresentBadge,
     required this.iosPresentSound,
     required this.iosPresentAlert,
+    required this.linuxActionName,
   });
 
   @override
-  void displayNotification({
+  Future displayNotification({
     int? id,
     String? title,
     String? body,
@@ -58,7 +62,9 @@ class NotificationManager implements LocaleNotificationInterface {
     IOSNotificationDetails? iOS,
     WebNotificationDetails? web,
     MacOSNotificationDetails? macOS,
-  }) {
+    LinuxNotificationDetails? linux,
+  }) async {
+    Completer completer = Completer();
     var notifification = html.Notification(
       title ?? '',
       body: body,
@@ -90,12 +96,14 @@ class NotificationManager implements LocaleNotificationInterface {
     close = notifification.onClose.listen((event) {
       click.cancel();
       close?.cancel();
+      completer.complete();
     });
+    return completer.future;
   }
 
   @override
-  void displayNotificationFrom(RemoteMessage message) {
-    displayNotification(
+  Future displayNotificationFrom(RemoteMessage message) {
+    return displayNotification(
       id: int.tryParse(message.messageId ?? '') ?? message.hashCode,
       title: message.notification?.title,
       body: message.notification?.body,

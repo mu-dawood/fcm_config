@@ -38,6 +38,7 @@ class NotificationManager implements LocaleNotificationInterface {
 
   /// ios notification sound
   final bool iosPresentSound;
+  final String linuxActionName;
   NotificationManager({
     required this.androidNotificationChannel,
     required this.appAndroidIcon,
@@ -47,6 +48,7 @@ class NotificationManager implements LocaleNotificationInterface {
     required this.iosPresentBadge,
     required this.iosPresentSound,
     required this.iosPresentAlert,
+    required this.linuxActionName,
   });
 
   @override
@@ -73,10 +75,15 @@ class NotificationManager implements LocaleNotificationInterface {
       defaultPresentSound: iosPresentSound,
     );
 
+    //! Linux setings
+    final linuxInitializationSettings =
+        LinuxInitializationSettings(defaultActionName: linuxActionName);
+
     final initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
       macOS: initializationSettingsMac,
+      linux: linuxInitializationSettings,
     );
     await _localeNotification.initialize(
       initializationSettings,
@@ -108,8 +115,7 @@ class NotificationManager implements LocaleNotificationInterface {
     }
   }
 
-  static Future<String> _downloadAndSaveFile(
-      String? url, String fileName) async {
+  Future<String> _downloadAndSaveFile(String? url, String fileName) async {
     final isIos = Platform.isIOS;
     final directory = isIos
         ? await getApplicationSupportDirectory()
@@ -121,11 +127,227 @@ class NotificationManager implements LocaleNotificationInterface {
     return filePath;
   }
 
+  Priority _getPriority([RemoteNotification? notification]) {
+    if (notification == null) return Priority.defaultPriority;
+    if (notification.android?.priority == null) return Priority.defaultPriority;
+    switch (notification.android!.priority) {
+      case AndroidNotificationPriority.minimumPriority:
+        return Priority.min;
+      case AndroidNotificationPriority.lowPriority:
+        return Priority.low;
+      case AndroidNotificationPriority.defaultPriority:
+        return Priority.defaultPriority;
+      case AndroidNotificationPriority.highPriority:
+        return Priority.high;
+      case AndroidNotificationPriority.maximumPriority:
+        return Priority.max;
+    }
+  }
+
+  NotificationVisibility? _getVisibility([RemoteNotification? notification]) {
+    if (notification == null) return null;
+    if (notification.android?.visibility == null) return null;
+    switch (notification.android!.visibility) {
+      case AndroidNotificationVisibility.secret:
+        return NotificationVisibility.secret;
+      case AndroidNotificationVisibility.private:
+        return NotificationVisibility.private;
+
+      case AndroidNotificationVisibility.public:
+        return NotificationVisibility.public;
+    }
+  }
+
   @override
-  void displayNotificationFrom(RemoteMessage message) async {
+  Future close() async {
+    await _remoteSubscription?.cancel();
+  }
+
+  Future<AndroidNotificationDetails> _getAdriodDetails({
+    AndroidNotificationDetails? android,
+    RemoteMessage? message,
+  }) async {
+    var notification = message?.notification;
+    StyleInformation? styleInformation = android?.styleInformation;
+    AndroidBitmap<Object>? largeIcon = android?.largeIcon;
+
+    if (styleInformation == null && notification != null) {
+      String? imageUrl = notification.android?.imageUrl;
+      if (imageUrl != null) {
+        var largeIconPath = await _downloadAndSaveFile(imageUrl, 'largeIcon');
+        largeIcon = FilePathAndroidBitmap(largeIconPath);
+        styleInformation = BigPictureStyleInformation(
+          FilePathAndroidBitmap(largeIconPath),
+          largeIcon: FilePathAndroidBitmap(largeIconPath),
+          hideExpandedLargeIcon: true,
+        );
+      }
+    }
+    String? icon = android?.icon;
+    if (icon == null && notification != null) {
+      icon = notification.android?.smallIcon;
+    }
+
+    AndroidNotificationSound? sound = android?.sound;
+    if (sound == null && message != null) {
+      sound = message.isDefaultAndroidSound == true
+          ? null
+          : (message.isAndroidRemoteSound
+              ? UriAndroidNotificationSound(
+                  message.notification!.android!.sound!)
+              : RawResourceAndroidNotificationSound(
+                  message.notification!.android!.sound));
+    }
+
+    return AndroidNotificationDetails(
+      androidNotificationChannel.id,
+      androidNotificationChannel.name,
+      channelDescription: androidNotificationChannel.description,
+      importance: android?.importance ?? androidNotificationChannel.importance,
+      priority: android?.priority ?? _getPriority(notification),
+      styleInformation: styleInformation,
+      ticker: android?.ticker ?? notification?.android?.ticker,
+      icon: android?.icon == 'default' ? null : icon,
+      groupKey: android?.groupKey ?? message?.collapseKey,
+      category: android?.category ?? message?.category,
+      showProgress: android?.showProgress ?? false,
+      color: android?.color ?? message?.getAndroidColor(),
+      sound: sound,
+      largeIcon: largeIcon,
+      playSound: android?.playSound ?? true,
+      additionalFlags: android?.additionalFlags,
+      autoCancel: android?.autoCancel ?? true,
+      onlyAlertOnce: android?.onlyAlertOnce ?? false,
+      setAsGroupSummary: android?.setAsGroupSummary ?? false,
+      groupAlertBehavior: android?.groupAlertBehavior ?? GroupAlertBehavior.all,
+      channelAction: android?.channelAction ??
+          AndroidNotificationChannelAction.createIfNotExists,
+      ledColor: android?.ledColor ?? androidNotificationChannel.ledColor,
+      timeoutAfter: android?.timeoutAfter ?? message?.ttl,
+      showWhen: android?.showWhen ?? true,
+      enableLights:
+          android?.enableLights ?? androidNotificationChannel.enableLights,
+      enableVibration:
+          android?.enableLights ?? androidNotificationChannel.enableLights,
+      subText: android?.subText,
+      shortcutId: android?.shortcutId ?? notification?.android?.clickAction,
+      tag: android?.tag ?? notification?.android?.tag,
+      usesChronometer: android?.usesChronometer ?? false,
+      indeterminate: android?.indeterminate ?? false,
+      ongoing: android?.ongoing ?? false,
+      ledOffMs: android?.ledOffMs,
+      ledOnMs: android?.ledOnMs,
+      progress: android?.progress ?? 0,
+      maxProgress: android?.maxProgress ?? 0,
+      vibrationPattern: android?.vibrationPattern ??
+          androidNotificationChannel.vibrationPattern,
+      fullScreenIntent: android?.fullScreenIntent ?? false,
+      channelShowBadge:
+          android?.channelShowBadge ?? androidNotificationChannel.showBadge,
+      visibility: android?.visibility ?? _getVisibility(notification),
+    );
+  }
+
+  Future<IOSNotificationDetails> _getIosDetails({
+    IOSNotificationDetails? ios,
+    RemoteMessage? message,
+  }) async {
+    var notification = message?.notification;
+
+    int? badgeNumber = ios?.badgeNumber;
+    if (badgeNumber == null && notification != null) {
+      badgeNumber = int.tryParse(notification.apple?.badge ?? '');
+    }
+
+    String? subtitle = ios?.subtitle;
+    if (subtitle == null && notification != null) {
+      subtitle = notification.apple?.subtitle;
+    }
+
+    List<IOSNotificationAttachment>? _attachments = ios?.attachments;
+    if (_attachments == null && notification != null) {
+      String? imageUrl = notification.android?.imageUrl;
+      if (imageUrl != null) {
+        var largeIconPath = await _downloadAndSaveFile(imageUrl, 'largeIcon');
+        _attachments = <IOSNotificationAttachment>[
+          IOSNotificationAttachment(largeIconPath)
+        ];
+      }
+    }
+
+    return IOSNotificationDetails(
+      threadIdentifier: ios?.threadIdentifier ?? message?.collapseKey,
+      sound: ios?.sound ?? notification?.apple?.sound?.name,
+      badgeNumber: badgeNumber,
+      subtitle: subtitle,
+      presentBadge: ios?.presentBadge ?? iosPresentBadge,
+      attachments: _attachments,
+      presentAlert: ios?.presentAlert ?? iosPresentAlert,
+      presentSound: ios?.presentSound ?? iosPresentSound,
+    );
+  }
+
+  Future<MacOSNotificationDetails> _getMacOsDetails({
+    MacOSNotificationDetails? mac,
+    RemoteMessage? message,
+  }) async {
+    var notification = message?.notification;
+
+    int? badgeNumber = mac?.badgeNumber;
+    if (badgeNumber == null && notification != null) {
+      badgeNumber = int.tryParse(notification.apple?.badge ?? '');
+    }
+
+    String? subtitle = mac?.subtitle;
+    if (subtitle == null && notification != null) {
+      subtitle = notification.apple?.subtitle;
+    }
+
+    List<MacOSNotificationAttachment>? _attachments = mac?.attachments;
+    if (_attachments == null && notification != null) {
+      String? imageUrl = notification.android?.imageUrl;
+      if (imageUrl != null) {
+        var largeIconPath = await _downloadAndSaveFile(imageUrl, 'largeIcon');
+        _attachments = <MacOSNotificationAttachment>[
+          MacOSNotificationAttachment(largeIconPath)
+        ];
+      }
+    }
+
+    return MacOSNotificationDetails(
+      threadIdentifier: mac?.threadIdentifier ?? message?.collapseKey,
+      sound: mac?.sound ?? notification?.apple?.sound?.name,
+      badgeNumber: badgeNumber,
+      subtitle: subtitle,
+      presentBadge: mac?.presentBadge ?? iosPresentBadge,
+      attachments: _attachments,
+      presentAlert: mac?.presentAlert ?? iosPresentAlert,
+      presentSound: mac?.presentSound ?? iosPresentSound,
+    );
+  }
+
+  Future<LinuxNotificationDetails> _getLinuxDetails({
+    LinuxNotificationDetails? linux,
+    RemoteMessage? message,
+  }) async {
+    return LinuxNotificationDetails(
+      icon: linux?.icon,
+      sound: linux?.sound,
+      category: linux?.category,
+      urgency: linux?.urgency,
+      timeout: linux?.timeout ?? const LinuxNotificationTimeout.systemDefault(),
+      resident: linux?.resident ?? false,
+      suppressSound: linux?.suppressSound ?? false,
+      transient: linux?.transient ?? false,
+      location: linux?.location,
+      defaultActionName: linux?.defaultActionName ?? linuxActionName,
+      customHints: linux?.customHints,
+    );
+  }
+
+  @override
+  Future displayNotificationFrom(RemoteMessage message) async {
     if (message.notification == null) return;
-    var _localeNotification = FlutterLocalNotificationsPlugin();
-    var smallIcon = message.notification?.android?.smallIcon;
 
     String? largeIconPath;
     BigPictureStyleInformation? bigPictureStyleInformation;
@@ -144,63 +366,15 @@ class NotificationManager implements LocaleNotificationInterface {
       );
     }
 
-    //! Android settings
-    var _android = AndroidNotificationDetails(
-      message.notification?.android?.channelId ?? androidNotificationChannel.id,
-      androidNotificationChannel.name,
-      channelDescription: androidNotificationChannel.description,
-      importance: _getImportance(message.notification!),
-      priority: Priority.high,
-      styleInformation: bigPictureStyleInformation ??
-          BigTextStyleInformation(
-            message.notification?.body ?? '',
-            htmlFormatBigText: true,
-          ),
-      ticker: message.notification?.android?.ticker,
-      icon: smallIcon == 'default' ? null : smallIcon,
-      groupKey: message.collapseKey,
-      category: message.category,
-      showProgress: false,
-      color: message.getAndroidColor(),
-      sound: message.isDefaultAndroidSound
-          ? null
-          : (message.isAndroidRemoteSound
-              ? UriAndroidNotificationSound(
-                  message.notification!.android!.sound!)
-              : RawResourceAndroidNotificationSound(
-                  message.notification!.android!.sound)),
-      largeIcon:
-          largeIconPath == null ? null : FilePathAndroidBitmap(largeIconPath),
-    );
-    var badge = int.tryParse(message.notification?.apple?.badge ?? '');
-    var _ios = IOSNotificationDetails(
-      threadIdentifier: message.collapseKey,
-      sound: message.notification?.apple?.sound?.name,
-      badgeNumber: badge,
-      subtitle: message.notification?.apple?.subtitle,
-      presentBadge: badge == null ? null : true,
-      attachments: largeIconPath == null
-          ? []
-          : <IOSNotificationAttachment>[
-              IOSNotificationAttachment(largeIconPath)
-            ],
-    );
-    var _mac = MacOSNotificationDetails(
-      threadIdentifier: message.collapseKey,
-      sound: message.notification?.apple?.sound?.name,
-      badgeNumber: badge,
-      subtitle: message.notification?.apple?.subtitle,
-      presentBadge: badge == null ? null : true,
-      attachments: largeIconPath == null
-          ? []
-          : <MacOSNotificationAttachment>[
-              MacOSNotificationAttachment(largeIconPath)
-            ],
-    );
+    var _android = await _getAdriodDetails(message: message);
+    var _ios = await _getIosDetails(message: message);
+    var _mac = await _getMacOsDetails(message: message);
+    var _linux = await _getLinuxDetails(message: message);
     var _details = NotificationDetails(
       android: _android,
       iOS: _ios,
       macOS: _mac,
+      linux: _linux,
     );
     await _localeNotification.show(
       int.tryParse(message.messageId ?? '') ?? message.hashCode,
@@ -213,31 +387,8 @@ class NotificationManager implements LocaleNotificationInterface {
     );
   }
 
-  static Importance _getImportance(RemoteNotification notification) {
-    if (notification.android?.priority == null) return Importance.high;
-    switch (notification.android!.priority) {
-      case AndroidNotificationPriority.minimumPriority:
-        return Importance.min;
-      case AndroidNotificationPriority.lowPriority:
-        return Importance.low;
-      case AndroidNotificationPriority.defaultPriority:
-        return Importance.defaultImportance;
-      case AndroidNotificationPriority.highPriority:
-        return Importance.high;
-      case AndroidNotificationPriority.maximumPriority:
-        return Importance.max;
-      default:
-        return Importance.max;
-    }
-  }
-
   @override
-  Future close() async {
-    await _remoteSubscription?.cancel();
-  }
-
-  @override
-  void displayNotification({
+  Future displayNotification({
     int? id,
     String? title,
     String? body,
@@ -246,11 +397,17 @@ class NotificationManager implements LocaleNotificationInterface {
     IOSNotificationDetails? iOS,
     MacOSNotificationDetails? macOS,
     WebNotificationDetails? web,
-  }) {
+    LinuxNotificationDetails? linux,
+  }) async {
+    var _android = await _getAdriodDetails(android: android);
+    var _ios = await _getIosDetails(ios: iOS);
+    var _mac = await _getMacOsDetails(mac: macOS);
+    var _linux = await _getLinuxDetails(linux: linux);
     var _details = NotificationDetails(
-      android: android,
-      iOS: iOS,
-      macOS: macOS,
+      android: _android,
+      iOS: _ios,
+      macOS: _mac,
+      linux: _linux,
     );
     var _id = id ?? DateTime.now().difference(DateTime(2021)).inSeconds;
     var notify = RemoteMessage(
@@ -265,7 +422,7 @@ class NotificationManager implements LocaleNotificationInterface {
           title: title,
           body: body,
         ));
-    _localeNotification.show(
+    await _localeNotification.show(
       _id,
       title,
       body,

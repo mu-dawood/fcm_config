@@ -17,15 +17,13 @@ Future<Locale> getSavedLocale() async {
 void main() async {
   await FCMConfig.instance
       .init(
-    defaultAndroidForegroundIcon: '@mipmap/custom_icon',
     // Note once channel created it can not be changed
+    // defaultAndroidForegroundIcon: "@mipmap/custom_icon",
     defaultAndroidChannel: const AndroidNotificationChannel(
-      'high_importance_channel',
+      'fcm_channel',
       'Fcm config',
-      importance: Importance.high,
-      ledColor: Colors.green,
-      enableLights: true,
-      sound: RawResourceAndroidNotificationSound('notification'),
+      //importance: Importance.high,
+      // sound: RawResourceAndroidNotificationSound('notification'),
     ),
   )
       .then((value) {
