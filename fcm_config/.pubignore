@@ -26,6 +26,7 @@
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
+.DS_Store
 .packages
 .pub-cache/
 .pub/
@@ -41,7 +42,9 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-/example/android
-/example/ios
-/example/web
+**/android/**
+**/ios/**
+**/web/**
+**/build
+**/.dart_tool
 /.dart_tool

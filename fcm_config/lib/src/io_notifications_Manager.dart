@@ -376,8 +376,13 @@ class NotificationManager implements LocaleNotificationInterface {
       macOS: _mac,
       linux: _linux,
     );
+    var id = int.tryParse(message.messageId ?? '') ?? message.hashCode;
+    if (id > 0x7FFFFFFF || id < -0x80000000) {
+      var now = DateTime.now();
+      id = now.hour + now.minute + now.second + now.millisecond;
+    }
     await _localeNotification.show(
-      int.tryParse(message.messageId ?? '') ?? message.hashCode,
+      id,
       message.notification!.title,
       (Platform.isAndroid && bigPictureStyleInformation == null)
           ? ''
@@ -409,7 +414,11 @@ class NotificationManager implements LocaleNotificationInterface {
       macOS: _mac,
       linux: _linux,
     );
-    var _id = id ?? DateTime.now().difference(DateTime(2021)).inSeconds;
+    var _id = id;
+    if (_id == null) {
+      var now = DateTime.now();
+      _id = now.hour + now.minute + now.second + now.millisecond;
+    }
     var notify = RemoteMessage(
         data: data ?? {},
         from: 'locale',

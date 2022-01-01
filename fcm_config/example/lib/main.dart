@@ -26,9 +26,10 @@ void main() async {
       // sound: RawResourceAndroidNotificationSound('notification'),
     ),
   )
-      .then((value) {
+      .then((value) async {
+    print(await FCMConfig.instance.messaging.getToken());
     if (!kIsWeb) {
-      FCMConfig.instance.messaging.subscribeToTopic('test_fcm_topic');
+      FCMConfig.instance.messaging.subscribeToTopic('ssss_test_fcm_topic');
     }
   });
 
