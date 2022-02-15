@@ -22,8 +22,7 @@ void main() async {
     defaultAndroidChannel: const AndroidNotificationChannel(
       'fcm_channel',
       'Fcm config',
-      //importance: Importance.high,
-      // sound: RawResourceAndroidNotificationSound('notification'),
+      importance: Importance.high,
     ),
   )
       .then((value) async {
@@ -46,8 +45,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-    with FCMNotificationMixin, FCMNotificationClickMixin {
+class _MyHomePageState extends State<MyHomePage> with FCMNotificationMixin, FCMNotificationClickMixin {
   RemoteMessage? _notification;
   final String serverToken = 'your key here';
   Locale? locale;
@@ -79,8 +77,7 @@ class _MyHomePageState extends State<MyHomePage>
                 ),
                 ListTile(
                   title: const Text('Body'),
-                  subtitle: Text(
-                      _notification?.notification?.body ?? 'No notification'),
+                  subtitle: Text(_notification?.notification?.body ?? 'No notification'),
                 ),
                 if (_notification != null)
                   ListTile(
@@ -93,8 +90,7 @@ class _MyHomePageState extends State<MyHomePage>
           persistentFooterButtons: [
             TextButton(
               onPressed: () async {
-                FCMConfig.instance.local.displayNotification(
-                    title: 'title', body: DateTime.now().toString());
+                FCMConfig.instance.local.displayNotification(title: 'title', body: DateTime.now().toString());
               },
               child: const Text('Display notification'),
             ),
@@ -102,9 +98,7 @@ class _MyHomePageState extends State<MyHomePage>
               onPressed: () async {
                 var prefs = await SharedPreferences.getInstance();
                 setState(() {
-                  locale = locale?.languageCode == 'ar'
-                      ? const Locale('en')
-                      : const Locale('ar');
+                  locale = locale?.languageCode == 'ar' ? const Locale('en') : const Locale('ar');
                 });
                 await prefs.setString('locale', locale!.languageCode);
               },
@@ -119,8 +113,7 @@ class _MyHomePageState extends State<MyHomePage>
             TextButton(
               onPressed: () async {
                 if (kDebugMode) {
-                  print(await FCMConfig.instance.messaging
-                      .getToken(vapidKey: 'your web token'));
+                  print(await FCMConfig.instance.messaging.getToken(vapidKey: 'your web token'));
                 }
               },
               child: const Text('Get token'),
@@ -140,10 +133,7 @@ class _MyHomePageState extends State<MyHomePage>
       },
       body: jsonEncode(
         <String, dynamic>{
-          'notification': <String, dynamic>{
-            'body': 'this is a body',
-            'title': 'this is a title'
-          },
+          'notification': <String, dynamic>{'body': 'this is a body', 'title': 'this is a title'},
           'priority': 'high',
           'data': <String, dynamic>{
             'id': '1',

@@ -54,13 +54,11 @@ class NotificationManager implements LocaleNotificationInterface {
   @override
   Future init() async {
     //! register android channel
-    var impl = _localeNotification.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+    var impl = _localeNotification.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     await impl?.createNotificationChannel(androidNotificationChannel);
 
     //! Android settings
-    var initializationSettingsAndroid =
-        AndroidInitializationSettings(appAndroidIcon);
+    var initializationSettingsAndroid = AndroidInitializationSettings(appAndroidIcon);
 
     //! Ios setings
     final initializationSettingsIOS = IOSInitializationSettings(
@@ -76,8 +74,7 @@ class NotificationManager implements LocaleNotificationInterface {
     );
 
     //! Linux setings
-    final linuxInitializationSettings =
-        LinuxInitializationSettings(defaultActionName: linuxActionName);
+    final linuxInitializationSettings = LinuxInitializationSettings(defaultActionName: linuxActionName);
 
     final initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -117,9 +114,7 @@ class NotificationManager implements LocaleNotificationInterface {
 
   Future<String> _downloadAndSaveFile(String? url, String fileName) async {
     final isIos = Platform.isIOS;
-    final directory = isIos
-        ? await getApplicationSupportDirectory()
-        : await getExternalStorageDirectory();
+    final directory = isIos ? await getApplicationSupportDirectory() : await getExternalStorageDirectory();
     final filePath = '${directory?.path}/$fileName';
     final response = await http.get(Uri.parse(url!));
     final file = File(filePath);
@@ -182,6 +177,17 @@ class NotificationManager implements LocaleNotificationInterface {
           hideExpandedLargeIcon: true,
         );
       }
+      if (styleInformation == null && notification.body != null) {
+        styleInformation = BigTextStyleInformation(
+          notification.body!,
+          contentTitle: notification.title,
+          htmlFormatBigText: true,
+          htmlFormatContent: true,
+          htmlFormatContentTitle: true,
+          htmlFormatTitle: true,
+          htmlFormatSummaryText: true,
+        );
+      }
     }
     String? icon = android?.icon;
     if (icon == null && notification != null) {
@@ -193,10 +199,8 @@ class NotificationManager implements LocaleNotificationInterface {
       sound = message.isDefaultAndroidSound == true
           ? null
           : (message.isAndroidRemoteSound
-              ? UriAndroidNotificationSound(
-                  message.notification!.android!.sound!)
-              : RawResourceAndroidNotificationSound(
-                  message.notification!.android!.sound));
+              ? UriAndroidNotificationSound(message.notification!.android!.sound!)
+              : RawResourceAndroidNotificationSound(message.notification!.android!.sound));
     }
 
     return AndroidNotificationDetails(
@@ -220,15 +224,12 @@ class NotificationManager implements LocaleNotificationInterface {
       onlyAlertOnce: android?.onlyAlertOnce ?? false,
       setAsGroupSummary: android?.setAsGroupSummary ?? false,
       groupAlertBehavior: android?.groupAlertBehavior ?? GroupAlertBehavior.all,
-      channelAction: android?.channelAction ??
-          AndroidNotificationChannelAction.createIfNotExists,
+      channelAction: android?.channelAction ?? AndroidNotificationChannelAction.createIfNotExists,
       ledColor: android?.ledColor ?? androidNotificationChannel.ledColor,
       timeoutAfter: android?.timeoutAfter ?? message?.ttl,
       showWhen: android?.showWhen ?? true,
-      enableLights:
-          android?.enableLights ?? androidNotificationChannel.enableLights,
-      enableVibration:
-          android?.enableLights ?? androidNotificationChannel.enableLights,
+      enableLights: android?.enableLights ?? androidNotificationChannel.enableLights,
+      enableVibration: android?.enableLights ?? androidNotificationChannel.enableLights,
       subText: android?.subText,
       shortcutId: android?.shortcutId ?? notification?.android?.clickAction,
       tag: android?.tag ?? notification?.android?.tag,
@@ -239,11 +240,9 @@ class NotificationManager implements LocaleNotificationInterface {
       ledOnMs: android?.ledOnMs,
       progress: android?.progress ?? 0,
       maxProgress: android?.maxProgress ?? 0,
-      vibrationPattern: android?.vibrationPattern ??
-          androidNotificationChannel.vibrationPattern,
+      vibrationPattern: android?.vibrationPattern ?? androidNotificationChannel.vibrationPattern,
       fullScreenIntent: android?.fullScreenIntent ?? false,
-      channelShowBadge:
-          android?.channelShowBadge ?? androidNotificationChannel.showBadge,
+      channelShowBadge: android?.channelShowBadge ?? androidNotificationChannel.showBadge,
       visibility: android?.visibility ?? _getVisibility(notification),
     );
   }
@@ -269,9 +268,7 @@ class NotificationManager implements LocaleNotificationInterface {
       String? imageUrl = notification.android?.imageUrl;
       if (imageUrl != null) {
         var largeIconPath = await _downloadAndSaveFile(imageUrl, 'largeIcon');
-        _attachments = <IOSNotificationAttachment>[
-          IOSNotificationAttachment(largeIconPath)
-        ];
+        _attachments = <IOSNotificationAttachment>[IOSNotificationAttachment(largeIconPath)];
       }
     }
 
@@ -308,9 +305,7 @@ class NotificationManager implements LocaleNotificationInterface {
       String? imageUrl = notification.android?.imageUrl;
       if (imageUrl != null) {
         var largeIconPath = await _downloadAndSaveFile(imageUrl, 'largeIcon');
-        _attachments = <MacOSNotificationAttachment>[
-          MacOSNotificationAttachment(largeIconPath)
-        ];
+        _attachments = <MacOSNotificationAttachment>[MacOSNotificationAttachment(largeIconPath)];
       }
     }
 
@@ -384,9 +379,7 @@ class NotificationManager implements LocaleNotificationInterface {
     await _localeNotification.show(
       id,
       message.notification!.title,
-      (Platform.isAndroid && bigPictureStyleInformation == null)
-          ? ''
-          : message.notification!.body,
+      (Platform.isAndroid && bigPictureStyleInformation == null) ? '' : message.notification!.body,
       _details,
       payload: jsonEncode(message.toMap()),
     );
