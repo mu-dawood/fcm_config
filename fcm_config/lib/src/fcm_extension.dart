@@ -36,7 +36,7 @@ extension MapExt on RemoteMessage {
                       'count': notification!.android!.count,
                       'imageUrl': notification!.android!.imageUrl,
                       'link': notification!.android!.link,
-                      'priority': _getPeriority(),
+                      'priority': _getPriority(),
                       'smallIcon': notification!.android!.smallIcon,
                       'sound': notification!.android!.sound,
                       'ticker': notification!.android!.ticker,
@@ -67,7 +67,7 @@ extension MapExt on RemoteMessage {
     };
   }
 
-  int? _getPeriority() {
+  int? _getPriority() {
     if (notification?.android?.priority == null) return null;
     switch (notification!.android!.priority) {
       case AndroidNotificationPriority.minimumPriority:

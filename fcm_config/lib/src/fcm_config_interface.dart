@@ -17,11 +17,11 @@ abstract class FCMConfigInterface {
   Stream<RemoteMessage> get onTap;
   static FirebaseMessaging get messaging => FirebaseMessaging.instance;
   Future init({
-    /// this function will be excuted while application is in background
+    /// this function will be executed while application is in background
     /// Not work on the web
     BackgroundMessageHandler? onBackgroundMessage,
 
-    /// Drawable icon works only in forground
+    /// Drawable icon works only in foreground
     String defaultAndroidForegroundIcon = '@mipmap/ic_launcher',
 
     /// Required to show head up notification in foreground
@@ -69,7 +69,7 @@ abstract class FCMConfigInterface {
     /// iOS/macOS only.
     bool sound = true,
 
-    /// Options to pass to core intialization method
+    /// Options to pass to core initialization method
     FirebaseOptions? options,
 
     ///Name of the firebase instance app

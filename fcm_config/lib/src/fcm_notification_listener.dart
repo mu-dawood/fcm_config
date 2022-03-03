@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-/// This mixin can listen to incomming notification
+/// This mixin can listen to incoming notification
 mixin FCMNotificationMixin<T extends StatefulWidget> on State<T> {
   late StreamSubscription<RemoteMessage> _subscription;
   @override
@@ -18,7 +18,7 @@ mixin FCMNotificationMixin<T extends StatefulWidget> on State<T> {
     super.dispose();
   }
 
-  /// Will be called whenever a new notification come and app is in forground
+  /// Will be called whenever a new notification come and app is in foreground
   void onNotify(RemoteMessage notification);
 
   void _onNewNotify(RemoteMessage notification) {
@@ -26,11 +26,11 @@ mixin FCMNotificationMixin<T extends StatefulWidget> on State<T> {
   }
 }
 
-/// This mixin can listen to incomming notification instead of mixin
+/// This mixin can listen to incoming notification instead of mixin
 class FCMNotificationListener extends StatefulWidget {
   final Widget child;
 
-  /// Will be called whenever a new notification come and app is in forground
+  /// Will be called whenever a new notification come and app is in foreground
   final Function(RemoteMessage notification, VoidCallback setState)
       onNotification;
   const FCMNotificationListener(
@@ -50,7 +50,7 @@ class _FCMNotificationListenerState extends State<FCMNotificationListener>
 
   @override
 
-  /// Will be called whenever a new notification come and app is in forground
+  /// Will be called whenever a new notification come and app is in foreground
   void onNotify(RemoteMessage notification) {
     widget.onNotification(notification, () {
       if (mounted) setState(() {});

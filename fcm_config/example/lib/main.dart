@@ -8,9 +8,9 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<Locale> getSavedLocale() async {
-  var prefs = await SharedPreferences.getInstance();
-  await prefs.reload();
-  var locale = prefs.containsKey('locale') ? prefs.getString('locale') : null;
+  var pref = await SharedPreferences.getInstance();
+  await pref.reload();
+  var locale = pref.containsKey('locale') ? pref.getString('locale') : null;
   return Locale(locale ?? 'ar');
 }
 
@@ -26,7 +26,9 @@ void main() async {
     ),
   )
       .then((value) async {
-    print(await FCMConfig.instance.messaging.getToken());
+    if (kDebugMode) {
+      print(await FCMConfig.instance.messaging.getToken());
+    }
     if (!kIsWeb) {
       FCMConfig.instance.messaging.subscribeToTopic('ssss_test_fcm_topic');
     }
@@ -45,7 +47,8 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with FCMNotificationMixin, FCMNotificationClickMixin {
+class _MyHomePageState extends State<MyHomePage>
+    with FCMNotificationMixin, FCMNotificationClickMixin {
   RemoteMessage? _notification;
   final String serverToken = 'your key here';
   Locale? locale;
@@ -77,7 +80,8 @@ class _MyHomePageState extends State<MyHomePage> with FCMNotificationMixin, FCMN
                 ),
                 ListTile(
                   title: const Text('Body'),
-                  subtitle: Text(_notification?.notification?.body ?? 'No notification'),
+                  subtitle: Text(
+                      _notification?.notification?.body ?? 'No notification'),
                 ),
                 if (_notification != null)
                   ListTile(
@@ -90,17 +94,20 @@ class _MyHomePageState extends State<MyHomePage> with FCMNotificationMixin, FCMN
           persistentFooterButtons: [
             TextButton(
               onPressed: () async {
-                FCMConfig.instance.local.displayNotification(title: 'title', body: DateTime.now().toString());
+                FCMConfig.instance.local.displayNotification(
+                    title: 'title', body: DateTime.now().toString());
               },
               child: const Text('Display notification'),
             ),
             TextButton(
               onPressed: () async {
-                var prefs = await SharedPreferences.getInstance();
+                var pref = await SharedPreferences.getInstance();
                 setState(() {
-                  locale = locale?.languageCode == 'ar' ? const Locale('en') : const Locale('ar');
+                  locale = locale?.languageCode == 'ar'
+                      ? const Locale('en')
+                      : const Locale('ar');
                 });
-                await prefs.setString('locale', locale!.languageCode);
+                await pref.setString('locale', locale!.languageCode);
               },
               child: const Text('Toggle language'),
             ),
@@ -113,7 +120,8 @@ class _MyHomePageState extends State<MyHomePage> with FCMNotificationMixin, FCMN
             TextButton(
               onPressed: () async {
                 if (kDebugMode) {
-                  print(await FCMConfig.instance.messaging.getToken(vapidKey: 'your web token'));
+                  print(await FCMConfig.instance.messaging
+                      .getToken(vapidKey: 'your web token'));
                 }
               },
               child: const Text('Get token'),
@@ -133,7 +141,10 @@ class _MyHomePageState extends State<MyHomePage> with FCMNotificationMixin, FCMN
       },
       body: jsonEncode(
         <String, dynamic>{
-          'notification': <String, dynamic>{'body': 'this is a body', 'title': 'this is a title'},
+          'notification': <String, dynamic>{
+            'body': 'this is a body',
+            'title': 'this is a title'
+          },
           'priority': 'high',
           'data': <String, dynamic>{
             'id': '1',

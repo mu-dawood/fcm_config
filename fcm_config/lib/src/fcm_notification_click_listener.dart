@@ -25,7 +25,7 @@ mixin FCMNotificationClickMixin<T extends StatefulWidget> on State<T> {
   void _onClick(RemoteMessage notification) => onClick(notification);
 }
 
-/// This widit can listen to  notification tap instead of mixin
+/// This widget can listen to  notification tap instead of mixin
 class FCMNotificationClickListener extends StatefulWidget {
   final Widget child;
 

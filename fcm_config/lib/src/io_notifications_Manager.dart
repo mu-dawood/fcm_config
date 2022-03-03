@@ -14,13 +14,13 @@ import 'fcm_extension.dart';
 class NotificationManager implements LocaleNotificationInterface {
   final _localeNotification = FlutterLocalNotificationsPlugin();
 
-  /// Drawable icon works only in forground
+  /// Drawable icon works only in foreground
   final AndroidNotificationChannel androidNotificationChannel;
 
   /// Required to show head up notification in foreground
   final String appAndroidIcon;
 
-  /// if true notification will not work on forground
+  /// if true notification will not work on foreground
   final bool displayInForeground;
 
   /// remote message stream
@@ -54,27 +54,30 @@ class NotificationManager implements LocaleNotificationInterface {
   @override
   Future init() async {
     //! register android channel
-    var impl = _localeNotification.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    var impl = _localeNotification.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
     await impl?.createNotificationChannel(androidNotificationChannel);
 
     //! Android settings
-    var initializationSettingsAndroid = AndroidInitializationSettings(appAndroidIcon);
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings(appAndroidIcon);
 
-    //! Ios setings
+    //! Ios settings
     final initializationSettingsIOS = IOSInitializationSettings(
       defaultPresentAlert: iosPresentAlert,
       defaultPresentBadge: iosPresentBadge,
       defaultPresentSound: iosPresentSound,
     );
-    //! macos setings
+    //! macos settings
     final initializationSettingsMac = MacOSInitializationSettings(
       defaultPresentAlert: iosPresentAlert,
       defaultPresentBadge: iosPresentBadge,
       defaultPresentSound: iosPresentSound,
     );
 
-    //! Linux setings
-    final linuxInitializationSettings = LinuxInitializationSettings(defaultActionName: linuxActionName);
+    //! Linux settings
+    final linuxInitializationSettings =
+        LinuxInitializationSettings(defaultActionName: linuxActionName);
 
     final initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -110,11 +113,14 @@ class NotificationManager implements LocaleNotificationInterface {
     if (payload != null && payload.didNotificationLaunchApp) {
       return RemoteMessage.fromMap(jsonDecode(payload.payload ?? ''));
     }
+    return null;
   }
 
   Future<String> _downloadAndSaveFile(String? url, String fileName) async {
     final isIos = Platform.isIOS;
-    final directory = isIos ? await getApplicationSupportDirectory() : await getExternalStorageDirectory();
+    final directory = isIos
+        ? await getApplicationSupportDirectory()
+        : await getExternalStorageDirectory();
     final filePath = '${directory?.path}/$fileName';
     final response = await http.get(Uri.parse(url!));
     final file = File(filePath);
@@ -158,7 +164,7 @@ class NotificationManager implements LocaleNotificationInterface {
     await _remoteSubscription?.cancel();
   }
 
-  Future<AndroidNotificationDetails> _getAdriodDetails({
+  Future<AndroidNotificationDetails> _getAndroidDetails({
     AndroidNotificationDetails? android,
     RemoteMessage? message,
   }) async {
@@ -199,8 +205,10 @@ class NotificationManager implements LocaleNotificationInterface {
       sound = message.isDefaultAndroidSound == true
           ? null
           : (message.isAndroidRemoteSound
-              ? UriAndroidNotificationSound(message.notification!.android!.sound!)
-              : RawResourceAndroidNotificationSound(message.notification!.android!.sound));
+              ? UriAndroidNotificationSound(
+                  message.notification!.android!.sound!)
+              : RawResourceAndroidNotificationSound(
+                  message.notification!.android!.sound));
     }
 
     return AndroidNotificationDetails(
@@ -224,12 +232,15 @@ class NotificationManager implements LocaleNotificationInterface {
       onlyAlertOnce: android?.onlyAlertOnce ?? false,
       setAsGroupSummary: android?.setAsGroupSummary ?? false,
       groupAlertBehavior: android?.groupAlertBehavior ?? GroupAlertBehavior.all,
-      channelAction: android?.channelAction ?? AndroidNotificationChannelAction.createIfNotExists,
+      channelAction: android?.channelAction ??
+          AndroidNotificationChannelAction.createIfNotExists,
       ledColor: android?.ledColor ?? androidNotificationChannel.ledColor,
       timeoutAfter: android?.timeoutAfter ?? message?.ttl,
       showWhen: android?.showWhen ?? true,
-      enableLights: android?.enableLights ?? androidNotificationChannel.enableLights,
-      enableVibration: android?.enableLights ?? androidNotificationChannel.enableLights,
+      enableLights:
+          android?.enableLights ?? androidNotificationChannel.enableLights,
+      enableVibration:
+          android?.enableLights ?? androidNotificationChannel.enableLights,
       subText: android?.subText,
       shortcutId: android?.shortcutId ?? notification?.android?.clickAction,
       tag: android?.tag ?? notification?.android?.tag,
@@ -240,9 +251,11 @@ class NotificationManager implements LocaleNotificationInterface {
       ledOnMs: android?.ledOnMs,
       progress: android?.progress ?? 0,
       maxProgress: android?.maxProgress ?? 0,
-      vibrationPattern: android?.vibrationPattern ?? androidNotificationChannel.vibrationPattern,
+      vibrationPattern: android?.vibrationPattern ??
+          androidNotificationChannel.vibrationPattern,
       fullScreenIntent: android?.fullScreenIntent ?? false,
-      channelShowBadge: android?.channelShowBadge ?? androidNotificationChannel.showBadge,
+      channelShowBadge:
+          android?.channelShowBadge ?? androidNotificationChannel.showBadge,
       visibility: android?.visibility ?? _getVisibility(notification),
     );
   }
@@ -268,7 +281,9 @@ class NotificationManager implements LocaleNotificationInterface {
       String? imageUrl = notification.android?.imageUrl;
       if (imageUrl != null) {
         var largeIconPath = await _downloadAndSaveFile(imageUrl, 'largeIcon');
-        _attachments = <IOSNotificationAttachment>[IOSNotificationAttachment(largeIconPath)];
+        _attachments = <IOSNotificationAttachment>[
+          IOSNotificationAttachment(largeIconPath)
+        ];
       }
     }
 
@@ -305,7 +320,9 @@ class NotificationManager implements LocaleNotificationInterface {
       String? imageUrl = notification.android?.imageUrl;
       if (imageUrl != null) {
         var largeIconPath = await _downloadAndSaveFile(imageUrl, 'largeIcon');
-        _attachments = <MacOSNotificationAttachment>[MacOSNotificationAttachment(largeIconPath)];
+        _attachments = <MacOSNotificationAttachment>[
+          MacOSNotificationAttachment(largeIconPath)
+        ];
       }
     }
 
@@ -361,7 +378,7 @@ class NotificationManager implements LocaleNotificationInterface {
       );
     }
 
-    var _android = await _getAdriodDetails(message: message);
+    var _android = await _getAndroidDetails(message: message);
     var _ios = await _getIosDetails(message: message);
     var _mac = await _getMacOsDetails(message: message);
     var _linux = await _getLinuxDetails(message: message);
@@ -379,7 +396,9 @@ class NotificationManager implements LocaleNotificationInterface {
     await _localeNotification.show(
       id,
       message.notification!.title,
-      (Platform.isAndroid && bigPictureStyleInformation == null) ? '' : message.notification!.body,
+      (Platform.isAndroid && bigPictureStyleInformation == null)
+          ? ''
+          : message.notification!.body,
       _details,
       payload: jsonEncode(message.toMap()),
     );
@@ -397,7 +416,7 @@ class NotificationManager implements LocaleNotificationInterface {
     WebNotificationDetails? web,
     LinuxNotificationDetails? linux,
   }) async {
-    var _android = await _getAdriodDetails(android: android);
+    var _android = await _getAndroidDetails(android: android);
     var _ios = await _getIosDetails(ios: iOS);
     var _mac = await _getMacOsDetails(mac: macOS);
     var _linux = await _getLinuxDetails(linux: linux);

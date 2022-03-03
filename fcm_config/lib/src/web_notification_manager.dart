@@ -15,13 +15,13 @@ import 'details.dart';
 import 'fcm_config_interface.dart';
 
 class NotificationManager implements LocaleNotificationInterface {
-  /// Drawable icon works only in forground
+  /// Drawable icon works only in foreground
   final AndroidNotificationChannel androidNotificationChannel;
 
   /// Required to show head up notification in foreground
   final String appAndroidIcon;
 
-  /// if true notification will not work on forground
+  /// if true notification will not work on foreground
   final bool displayInForeground;
 
   /// remote message stream
@@ -65,7 +65,7 @@ class NotificationManager implements LocaleNotificationInterface {
     LinuxNotificationDetails? linux,
   }) async {
     Completer completer = Completer();
-    var notifification = html.Notification(
+    var notification = html.Notification(
       title ?? '',
       body: body,
       icon: web?.icon ?? '/icons/icon-192.png',
@@ -89,11 +89,11 @@ class NotificationManager implements LocaleNotificationInterface {
             imageUrl: web?.icon,
           ),
         ));
-    var click = notifification.onClick.listen((event) {
+    var click = notification.onClick.listen((event) {
       tapSink.add(notify);
     });
     StreamSubscription<html.Event>? close;
-    close = notifification.onClose.listen((event) {
+    close = notification.onClose.listen((event) {
       click.cancel();
       close?.cancel();
       completer.complete();
@@ -113,7 +113,9 @@ class NotificationManager implements LocaleNotificationInterface {
   }
 
   @override
-  Future<RemoteMessage?> getInitialMessage() async {}
+  Future<RemoteMessage?> getInitialMessage() async {
+    return null;
+  }
 
   @override
   Future close() async {}

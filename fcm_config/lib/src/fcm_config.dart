@@ -33,18 +33,18 @@ class FCMConfig extends FCMConfigInterface {
 
   @override
   Future<RemoteMessage?> getInitialMessage() async {
-    var intial = await local.getInitialMessage();
-    if (intial != null) return intial;
+    var initial = await local.getInitialMessage();
+    if (initial != null) return initial;
     return await messaging.getInitialMessage();
   }
 
   @override
   Future init({
-    /// this function will be excuted while application is in background
+    /// this function will be executed while application is in background
     /// Not work on the web
     BackgroundMessageHandler? onBackgroundMessage,
 
-    /// Drawable icon works only in forground
+    /// Drawable icon works only in foreground
     String defaultAndroidForegroundIcon = '@mipmap/ic_launcher',
 
     /// Required to show head up notification in foreground
@@ -92,7 +92,7 @@ class FCMConfig extends FCMConfigInterface {
     /// iOS/macOS only.
     bool sound = true,
 
-    /// Options to pass to core intialization method
+    /// Options to pass to core initialization method
     FirebaseOptions? options,
 
     ///Name of the firebase instance app
