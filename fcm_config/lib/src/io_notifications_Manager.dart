@@ -92,9 +92,9 @@ class NotificationManager implements LocaleNotificationInterface {
     await _remoteSubscription?.cancel();
     //Listen to messages
     if (displayInForeground == true) {
-      _remoteSubscription = onRemoteMessage.listen((_notification) {
-        if (_notification.notification != null) {
-          displayNotificationFrom(_notification);
+      _remoteSubscription = onRemoteMessage.listen((notification) {
+        if (notification.notification != null) {
+          displayNotificationFrom(notification);
         }
       });
     }
@@ -108,8 +108,8 @@ class NotificationManager implements LocaleNotificationInterface {
 
   @override
   Future<RemoteMessage?> getInitialMessage() async {
-    var _localeNotification = FlutterLocalNotificationsPlugin();
-    var payload = await _localeNotification.getNotificationAppLaunchDetails();
+    var localeNotification = FlutterLocalNotificationsPlugin();
+    var payload = await localeNotification.getNotificationAppLaunchDetails();
     if (payload != null && payload.didNotificationLaunchApp) {
       return RemoteMessage.fromMap(jsonDecode(payload.payload ?? ''));
     }
@@ -276,12 +276,12 @@ class NotificationManager implements LocaleNotificationInterface {
       subtitle = notification.apple?.subtitle;
     }
 
-    List<IOSNotificationAttachment>? _attachments = ios?.attachments;
-    if (_attachments == null && notification != null) {
+    List<IOSNotificationAttachment>? attachments = ios?.attachments;
+    if (attachments == null && notification != null) {
       String? imageUrl = notification.android?.imageUrl;
       if (imageUrl != null) {
         var largeIconPath = await _downloadAndSaveFile(imageUrl, 'largeIcon');
-        _attachments = <IOSNotificationAttachment>[
+        attachments = <IOSNotificationAttachment>[
           IOSNotificationAttachment(largeIconPath)
         ];
       }
@@ -293,7 +293,7 @@ class NotificationManager implements LocaleNotificationInterface {
       badgeNumber: badgeNumber,
       subtitle: subtitle,
       presentBadge: ios?.presentBadge ?? iosPresentBadge,
-      attachments: _attachments,
+      attachments: attachments,
       presentAlert: ios?.presentAlert ?? iosPresentAlert,
       presentSound: ios?.presentSound ?? iosPresentSound,
     );
@@ -315,12 +315,12 @@ class NotificationManager implements LocaleNotificationInterface {
       subtitle = notification.apple?.subtitle;
     }
 
-    List<MacOSNotificationAttachment>? _attachments = mac?.attachments;
-    if (_attachments == null && notification != null) {
+    List<MacOSNotificationAttachment>? attachments = mac?.attachments;
+    if (attachments == null && notification != null) {
       String? imageUrl = notification.android?.imageUrl;
       if (imageUrl != null) {
         var largeIconPath = await _downloadAndSaveFile(imageUrl, 'largeIcon');
-        _attachments = <MacOSNotificationAttachment>[
+        attachments = <MacOSNotificationAttachment>[
           MacOSNotificationAttachment(largeIconPath)
         ];
       }
@@ -332,7 +332,7 @@ class NotificationManager implements LocaleNotificationInterface {
       badgeNumber: badgeNumber,
       subtitle: subtitle,
       presentBadge: mac?.presentBadge ?? iosPresentBadge,
-      attachments: _attachments,
+      attachments: attachments,
       presentAlert: mac?.presentAlert ?? iosPresentAlert,
       presentSound: mac?.presentSound ?? iosPresentSound,
     );
@@ -378,15 +378,15 @@ class NotificationManager implements LocaleNotificationInterface {
       );
     }
 
-    var _android = await _getAndroidDetails(message: message);
-    var _ios = await _getIosDetails(message: message);
-    var _mac = await _getMacOsDetails(message: message);
-    var _linux = await _getLinuxDetails(message: message);
-    var _details = NotificationDetails(
-      android: _android,
-      iOS: _ios,
-      macOS: _mac,
-      linux: _linux,
+    var android = await _getAndroidDetails(message: message);
+    var ios = await _getIosDetails(message: message);
+    var mac = await _getMacOsDetails(message: message);
+    var linux = await _getLinuxDetails(message: message);
+    var details = NotificationDetails(
+      android: android,
+      iOS: ios,
+      macOS: mac,
+      linux: linux,
     );
     var id = int.tryParse(message.messageId ?? '') ?? message.hashCode;
     if (id > 0x7FFFFFFF || id < -0x80000000) {
@@ -399,7 +399,7 @@ class NotificationManager implements LocaleNotificationInterface {
       (Platform.isAndroid && bigPictureStyleInformation == null)
           ? ''
           : message.notification!.body,
-      _details,
+      details,
       payload: jsonEncode(message.toMap()),
     );
   }
@@ -416,20 +416,20 @@ class NotificationManager implements LocaleNotificationInterface {
     WebNotificationDetails? web,
     LinuxNotificationDetails? linux,
   }) async {
-    var _android = await _getAndroidDetails(android: android);
-    var _ios = await _getIosDetails(ios: iOS);
-    var _mac = await _getMacOsDetails(mac: macOS);
-    var _linux = await _getLinuxDetails(linux: linux);
-    var _details = NotificationDetails(
-      android: _android,
-      iOS: _ios,
-      macOS: _mac,
-      linux: _linux,
+    var androidDetails = await _getAndroidDetails(android: android);
+    var iosDetails = await _getIosDetails(ios: iOS);
+    var macDetails = await _getMacOsDetails(mac: macOS);
+    var linuxDetails = await _getLinuxDetails(linux: linux);
+    var details = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+      macOS: macDetails,
+      linux: linuxDetails,
     );
-    var _id = id;
-    if (_id == null) {
+    var nId = id;
+    if (nId == null) {
       var now = DateTime.now();
-      _id = now.hour + now.minute + now.second + now.millisecond;
+      nId = now.hour + now.minute + now.second + now.millisecond;
     }
     var notify = RemoteMessage(
         data: data ?? {},
@@ -438,16 +438,16 @@ class NotificationManager implements LocaleNotificationInterface {
         contentAvailable: true,
         category: android?.category,
         collapseKey: Platform.isIOS ? iOS?.threadIdentifier : android?.groupKey,
-        messageId: _id.toString(),
+        messageId: nId.toString(),
         notification: RemoteNotification(
           title: title,
           body: body,
         ));
     await _localeNotification.show(
-      _id,
+      nId,
       title,
       body,
-      _details,
+      details,
       payload: jsonEncode(notify.toMap()),
     );
   }

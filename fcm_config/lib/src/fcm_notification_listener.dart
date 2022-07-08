@@ -37,7 +37,7 @@ class FCMNotificationListener extends StatefulWidget {
       {Key? key, required this.child, required this.onNotification})
       : super(key: key);
   @override
-  _FCMNotificationListenerState createState() =>
+  State<FCMNotificationListener> createState() =>
       _FCMNotificationListenerState();
 }
 

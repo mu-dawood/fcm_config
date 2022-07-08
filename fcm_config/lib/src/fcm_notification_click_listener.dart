@@ -38,7 +38,8 @@ class FCMNotificationClickListener extends StatefulWidget {
     required this.onNotificationClick,
   }) : super(key: key);
   @override
-  _FCMNotificationClickState createState() => _FCMNotificationClickState();
+  State<FCMNotificationClickListener> createState() =>
+      _FCMNotificationClickState();
 }
 
 class _FCMNotificationClickState extends State<FCMNotificationClickListener>
