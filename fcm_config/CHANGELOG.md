@@ -1,3 +1,7 @@
+## [3.4.0] 
+
+* Update depedencies
+
 ## [3.3.5] 
 
 * Update depedencies

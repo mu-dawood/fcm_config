@@ -63,13 +63,8 @@ class NotificationManager implements LocaleNotificationInterface {
         AndroidInitializationSettings(appAndroidIcon);
 
     //! Ios settings
-    final initializationSettingsIOS = IOSInitializationSettings(
-      defaultPresentAlert: iosPresentAlert,
-      defaultPresentBadge: iosPresentBadge,
-      defaultPresentSound: iosPresentSound,
-    );
-    //! macos settings
-    final initializationSettingsMac = MacOSInitializationSettings(
+    final DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
       defaultPresentAlert: iosPresentAlert,
       defaultPresentBadge: iosPresentBadge,
       defaultPresentSound: iosPresentSound,
@@ -81,13 +76,13 @@ class NotificationManager implements LocaleNotificationInterface {
 
     final initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-      macOS: initializationSettingsMac,
+      iOS: initializationSettingsDarwin,
+      macOS: initializationSettingsDarwin,
       linux: linuxInitializationSettings,
     );
     await _localeNotification.initialize(
       initializationSettings,
-      onSelectNotification: _onPayLoad,
+      onDidReceiveNotificationResponse: _onPayLoad,
     );
     await _remoteSubscription?.cancel();
     //Listen to messages
@@ -100,9 +95,9 @@ class NotificationManager implements LocaleNotificationInterface {
     }
   }
 
-  Future _onPayLoad(String? payload) async {
-    if (payload == null) return;
-    var message = RemoteMessage.fromMap(jsonDecode(payload));
+  Future _onPayLoad(NotificationResponse response) async {
+    if (response.payload == null) return;
+    var message = RemoteMessage.fromMap(jsonDecode(response.payload!));
     tapSink.add(message);
   }
 
@@ -111,7 +106,8 @@ class NotificationManager implements LocaleNotificationInterface {
     var localeNotification = FlutterLocalNotificationsPlugin();
     var payload = await localeNotification.getNotificationAppLaunchDetails();
     if (payload != null && payload.didNotificationLaunchApp) {
-      return RemoteMessage.fromMap(jsonDecode(payload.payload ?? ''));
+      return RemoteMessage.fromMap(
+          jsonDecode(payload.notificationResponse?.payload ?? ''));
     }
     return null;
   }
@@ -221,7 +217,10 @@ class NotificationManager implements LocaleNotificationInterface {
       ticker: android?.ticker ?? notification?.android?.ticker,
       icon: android?.icon == 'default' ? null : icon,
       groupKey: android?.groupKey ?? message?.collapseKey,
-      category: android?.category ?? message?.category,
+      category: android?.category ??
+          (message?.category == null
+              ? null
+              : AndroidNotificationCategory(message!.category!)),
       showProgress: android?.showProgress ?? false,
       color: android?.color ?? message?.getAndroidColor(),
       sound: sound,
@@ -260,8 +259,8 @@ class NotificationManager implements LocaleNotificationInterface {
     );
   }
 
-  Future<IOSNotificationDetails> _getIosDetails({
-    IOSNotificationDetails? ios,
+  Future<DarwinNotificationDetails> _getDarwinDetails({
+    DarwinNotificationDetails? ios,
     RemoteMessage? message,
   }) async {
     var notification = message?.notification;
@@ -276,18 +275,18 @@ class NotificationManager implements LocaleNotificationInterface {
       subtitle = notification.apple?.subtitle;
     }
 
-    List<IOSNotificationAttachment>? attachments = ios?.attachments;
+    List<DarwinNotificationAttachment>? attachments = ios?.attachments;
     if (attachments == null && notification != null) {
       String? imageUrl = notification.android?.imageUrl;
       if (imageUrl != null) {
         var largeIconPath = await _downloadAndSaveFile(imageUrl, 'largeIcon');
-        attachments = <IOSNotificationAttachment>[
-          IOSNotificationAttachment(largeIconPath)
+        attachments = <DarwinNotificationAttachment>[
+          DarwinNotificationAttachment(largeIconPath)
         ];
       }
     }
 
-    return IOSNotificationDetails(
+    return DarwinNotificationDetails(
       threadIdentifier: ios?.threadIdentifier ?? message?.collapseKey,
       sound: ios?.sound ?? notification?.apple?.sound?.name,
       badgeNumber: badgeNumber,
@@ -296,45 +295,6 @@ class NotificationManager implements LocaleNotificationInterface {
       attachments: attachments,
       presentAlert: ios?.presentAlert ?? iosPresentAlert,
       presentSound: ios?.presentSound ?? iosPresentSound,
-    );
-  }
-
-  Future<MacOSNotificationDetails> _getMacOsDetails({
-    MacOSNotificationDetails? mac,
-    RemoteMessage? message,
-  }) async {
-    var notification = message?.notification;
-
-    int? badgeNumber = mac?.badgeNumber;
-    if (badgeNumber == null && notification != null) {
-      badgeNumber = int.tryParse(notification.apple?.badge ?? '');
-    }
-
-    String? subtitle = mac?.subtitle;
-    if (subtitle == null && notification != null) {
-      subtitle = notification.apple?.subtitle;
-    }
-
-    List<MacOSNotificationAttachment>? attachments = mac?.attachments;
-    if (attachments == null && notification != null) {
-      String? imageUrl = notification.android?.imageUrl;
-      if (imageUrl != null) {
-        var largeIconPath = await _downloadAndSaveFile(imageUrl, 'largeIcon');
-        attachments = <MacOSNotificationAttachment>[
-          MacOSNotificationAttachment(largeIconPath)
-        ];
-      }
-    }
-
-    return MacOSNotificationDetails(
-      threadIdentifier: mac?.threadIdentifier ?? message?.collapseKey,
-      sound: mac?.sound ?? notification?.apple?.sound?.name,
-      badgeNumber: badgeNumber,
-      subtitle: subtitle,
-      presentBadge: mac?.presentBadge ?? iosPresentBadge,
-      attachments: attachments,
-      presentAlert: mac?.presentAlert ?? iosPresentAlert,
-      presentSound: mac?.presentSound ?? iosPresentSound,
     );
   }
 
@@ -379,13 +339,13 @@ class NotificationManager implements LocaleNotificationInterface {
     }
 
     var android = await _getAndroidDetails(message: message);
-    var ios = await _getIosDetails(message: message);
-    var mac = await _getMacOsDetails(message: message);
+    var darwin = await _getDarwinDetails(message: message);
+
     var linux = await _getLinuxDetails(message: message);
     var details = NotificationDetails(
       android: android,
-      iOS: ios,
-      macOS: mac,
+      iOS: darwin,
+      macOS: darwin,
       linux: linux,
     );
     var id = int.tryParse(message.messageId ?? '') ?? message.hashCode;
@@ -411,14 +371,14 @@ class NotificationManager implements LocaleNotificationInterface {
     String? body,
     Map<String, dynamic>? data,
     AndroidNotificationDetails? android,
-    IOSNotificationDetails? iOS,
-    MacOSNotificationDetails? macOS,
+    DarwinNotificationDetails? iOS,
+    DarwinNotificationDetails? macOS,
     WebNotificationDetails? web,
     LinuxNotificationDetails? linux,
   }) async {
     var androidDetails = await _getAndroidDetails(android: android);
-    var iosDetails = await _getIosDetails(ios: iOS);
-    var macDetails = await _getMacOsDetails(mac: macOS);
+    var iosDetails = await _getDarwinDetails(ios: iOS);
+    var macDetails = await _getDarwinDetails(ios: macOS);
     var linuxDetails = await _getLinuxDetails(linux: linux);
     var details = NotificationDetails(
       android: androidDetails,
@@ -436,7 +396,7 @@ class NotificationManager implements LocaleNotificationInterface {
         from: 'locale',
         sentTime: DateTime.now(),
         contentAvailable: true,
-        category: android?.category,
+        category: android?.category?.name,
         collapseKey: Platform.isIOS ? iOS?.threadIdentifier : android?.groupKey,
         messageId: nId.toString(),
         notification: RemoteNotification(

@@ -4,9 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     show
-        IOSNotificationDetails,
+        DarwinNotificationDetails,
         AndroidNotificationDetails,
-        MacOSNotificationDetails,
         AndroidNotificationChannel;
 
 import 'details.dart';
@@ -88,9 +87,9 @@ abstract class LocaleNotificationInterface {
     String? body,
     Map<String, dynamic>? data,
     AndroidNotificationDetails? android,
-    IOSNotificationDetails? iOS,
+    DarwinNotificationDetails? iOS,
     WebNotificationDetails? web,
-    MacOSNotificationDetails? macOS,
+    DarwinNotificationDetails? macOS,
   });
 
   Future displayNotificationFrom(RemoteMessage message);

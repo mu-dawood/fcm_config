@@ -2,6 +2,12 @@
   "configVersion": 2,
   "packages": [
     {
+      "name": "_flutterfire_internals",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/_flutterfire_internals-1.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.16"
+    },
+    {
       "name": "args",
       "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/args-2.3.1",
       "packageUri": "lib/",
@@ -9,9 +15,9 @@
     },
     {
       "name": "async",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/async-2.8.2",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/async-2.9.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.14"
     },
     {
       "name": "boolean_selector",
@@ -21,21 +27,27 @@
     },
     {
       "name": "characters",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/characters-1.2.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "charcode",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/charcode-1.3.1",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/characters-1.2.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "clock",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/clock-1.1.0",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/clock-1.1.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "cloud_firestore_platform_interface",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_platform_interface-5.7.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.16"
+    },
+    {
+      "name": "cloud_firestore_web",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_web-2.8.10",
+      "packageUri": "lib/",
+      "languageVersion": "2.16"
     },
     {
       "name": "collection",
@@ -45,13 +57,13 @@
     },
     {
       "name": "dbus",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/dbus-0.7.5",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/dbus-0.7.8",
       "packageUri": "lib/",
       "languageVersion": "2.15"
     },
     {
       "name": "fake_async",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/fake_async-1.3.0",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/fake_async-1.3.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -69,37 +81,37 @@
     },
     {
       "name": "firebase_core",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/firebase_core-1.19.1",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/firebase_core-1.24.0",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     },
     {
       "name": "firebase_core_platform_interface",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/firebase_core_platform_interface-4.4.3",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/firebase_core_platform_interface-4.5.1",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     },
     {
       "name": "firebase_core_web",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-1.6.6",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-1.7.3",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     },
     {
       "name": "firebase_messaging",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/firebase_messaging-11.4.4",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/firebase_messaging-13.1.0",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     },
     {
       "name": "firebase_messaging_platform_interface",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/firebase_messaging_platform_interface-3.5.4",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/firebase_messaging_platform_interface-4.2.0",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     },
     {
       "name": "firebase_messaging_web",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/firebase_messaging_web-2.4.4",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/firebase_messaging_web-3.2.0",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     },
@@ -107,7 +119,7 @@
       "name": "flutter",
       "rootUri": "file:///Users/dawood/Desktop/flutter/current/packages/flutter",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.17"
     },
     {
       "name": "flutter_lints",
@@ -117,19 +129,19 @@
     },
     {
       "name": "flutter_local_notifications",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications-9.6.1",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications-12.0.1+1",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.15"
     },
     {
       "name": "flutter_local_notifications_linux",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications_linux-0.5.0+1",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications_linux-2.0.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.15"
     },
     {
       "name": "flutter_local_notifications_platform_interface",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications_platform_interface-5.0.0",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications_platform_interface-6.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -147,7 +159,7 @@
     },
     {
       "name": "http",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/http-0.13.4",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/http-0.13.5",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
@@ -171,25 +183,25 @@
     },
     {
       "name": "matcher",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.11",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.12",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "material_color_utilities",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/material_color_utilities-0.1.4",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/material_color_utilities-0.1.5",
       "packageUri": "lib/",
       "languageVersion": "2.13"
     },
     {
       "name": "meta",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/meta-1.7.0",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/meta-1.8.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "path",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/path-1.8.1",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/path-1.8.2",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -267,7 +279,7 @@
     },
     {
       "name": "source_span",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/source_span-1.8.2",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/source_span-1.9.0",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
@@ -285,25 +297,25 @@
     },
     {
       "name": "string_scanner",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/string_scanner-1.1.0",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/string_scanner-1.1.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "term_glyph",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/term_glyph-1.2.0",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/term_glyph-1.2.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "test_api",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/test_api-0.4.9",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/test_api-0.4.12",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "timezone",
-      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/timezone-0.8.0",
+      "rootUri": "file:///Users/dawood/.pub-cache/hosted/pub.dartlang.org/timezone-0.9.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -344,7 +356,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2022-07-08T23:26:25.653284Z",
+  "generated": "2022-10-08T20:12:58.793924Z",
   "generator": "pub",
-  "generatorVersion": "2.17.5"
+  "generatorVersion": "2.18.2"
 }

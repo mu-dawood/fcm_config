@@ -5,9 +5,8 @@ import 'dart:html' as html;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     show
-        IOSNotificationDetails,
+        DarwinNotificationDetails,
         AndroidNotificationDetails,
-        MacOSNotificationDetails,
         AndroidNotificationChannel,
         LinuxNotificationDetails;
 
@@ -59,9 +58,9 @@ class NotificationManager implements LocaleNotificationInterface {
     String? body,
     Map<String, dynamic>? data,
     AndroidNotificationDetails? android,
-    IOSNotificationDetails? iOS,
+    DarwinNotificationDetails? iOS,
     WebNotificationDetails? web,
-    MacOSNotificationDetails? macOS,
+    DarwinNotificationDetails? macOS,
     LinuxNotificationDetails? linux,
   }) async {
     Completer completer = Completer();
