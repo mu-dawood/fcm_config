@@ -7,6 +7,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'firebase_options.dart';
+
 Future<Locale> getSavedLocale() async {
   var pref = await SharedPreferences.getInstance();
   await pref.reload();
@@ -17,6 +19,7 @@ Future<Locale> getSavedLocale() async {
 void main() async {
   await FCMConfig.instance
       .init(
+    options: DefaultFirebaseOptions.currentPlatform,
     // Note once channel created it can not be changed
     // defaultAndroidForegroundIcon: "@mipmap/custom_icon",
     defaultAndroidChannel: const AndroidNotificationChannel(
@@ -24,6 +27,9 @@ void main() async {
       'Fcm config',
       importance: Importance.high,
     ),
+    displayInForeground: (notification) {
+      return notification.data['is_chat_message'] == "true";
+    },
   )
       .then((value) async {
     if (kDebugMode) {

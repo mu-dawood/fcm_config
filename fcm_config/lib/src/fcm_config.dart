@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:fcm_config/src/fcm_config_interface.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'fcm_config_interface.dart';
 import 'io_notifications_manager.dart'
     if (dart.library.html) 'web_notification_manager.dart';
 
@@ -37,6 +37,8 @@ class FCMConfig extends FCMConfigInterface {
     if (initial != null) return initial;
     return await messaging.getInitialMessage();
   }
+
+  static bool _defaultDisplayInForeground(RemoteMessage notification) => true;
 
   @override
   Future init({
@@ -97,7 +99,8 @@ class FCMConfig extends FCMConfigInterface {
 
     ///Name of the firebase instance app
     String? name,
-    bool displayInForeground = true,
+    bool Function(RemoteMessage notification) displayInForeground =
+        _defaultDisplayInForeground,
 
     /// default action name for linux
     String linuxActionName = 'fcm_config',

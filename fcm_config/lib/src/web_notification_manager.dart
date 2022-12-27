@@ -21,7 +21,7 @@ class NotificationManager implements LocaleNotificationInterface {
   final String appAndroidIcon;
 
   /// if true notification will not work on foreground
-  final bool displayInForeground;
+  final bool Function(RemoteMessage notification) displayInForeground;
 
   /// remote message stream
   final Stream<RemoteMessage> onRemoteMessage;

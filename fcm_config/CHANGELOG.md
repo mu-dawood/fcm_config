@@ -1,23 +1,28 @@
+## [3.5.1] 
+
+* Update dependencies
+* Allow handling foreground notifications
+
 ## [3.4.0] 
 
-* Update depedencies
+* Update dependencies
 
 ## [3.3.5] 
 
-* Update depedencies
+* Update dependencies
 
 ## [3.3.1] 
 
-* Update depedencies
+* Update dependencies
 * use flutter_lints
 
 ## [3.3.0] 
 
-* Breaking chages
-* To make  this package support testing we removed all static intances except `FCMConfig.instance`
+* Breaking chagos
+* To make  this package support testing we removed all static instances except `FCMConfig.instance`
 * `FCMConfig.messaging` is now  `FCMConfig.instance.messaging`
 * now there is `FCMConfig.instance.local` that contains 2 methods to display local notification
-* now local notification inhirits diplay properties from init method
+* now local notification inherits display properties from init method
 
 ## [3.1.7] 
 
@@ -41,7 +46,7 @@
 
 ## [3.0.8] -3/008/2021
 
-* Fix adroid notificatio color
+* Fix android notification color
 
 ## [3.0.7] -30/06/2021
 

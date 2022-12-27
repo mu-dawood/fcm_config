@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>209398921538-2g26rpk2ei8g5hgm73912ahn1urllibl.apps.googleusercontent.com</string>
+	<string>590619822303-6pb0bcnhfnb96b5097vhnlq9m8ndare0.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.209398921538-2g26rpk2ei8g5hgm73912ahn1urllibl</string>
+	<string>com.googleusercontent.apps.590619822303-6pb0bcnhfnb96b5097vhnlq9m8ndare0</string>
 	<key>API_KEY</key>
-	<string>AIzaSyD7fICWqkXZj2hk575kFpi3meyl5aZbAFA</string>
+	<string>AIzaSyD75qs85Bfi6EvH-sOn-kiQaL2C-zQsYfI</string>
 	<key>GCM_SENDER_ID</key>
-	<string>209398921538</string>
+	<string>590619822303</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.example</string>
 	<key>PROJECT_ID</key>
-	<string>paromera-188017</string>
+	<string>fcmconfig-d7f91</string>
 	<key>STORAGE_BUCKET</key>
-	<string>paromera-188017.appspot.com</string>
+	<string>fcmconfig-d7f91.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:209398921538:ios:5faf777fea325aa7f6b0db</string>
-	<key>DATABASE_URL</key>
-	<string>https://paromera-188017.firebaseio.com</string>
+	<string>1:590619822303:ios:cb615764952224aa4d816a</string>
 </dict>
 </plist>

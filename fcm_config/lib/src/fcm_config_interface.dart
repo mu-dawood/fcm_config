@@ -73,7 +73,7 @@ abstract class FCMConfigInterface {
 
     ///Name of the firebase instance app
     String? name,
-    bool displayInForeground = true,
+    bool Function(RemoteMessage notification) displayInForeground,
   });
 }
 

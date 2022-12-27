@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:fcm_config/src/fcm_config_interface.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 import 'details.dart';
+import 'fcm_config_interface.dart';
 import 'fcm_extension.dart';
 
 class NotificationManager implements LocaleNotificationInterface {
@@ -21,7 +21,7 @@ class NotificationManager implements LocaleNotificationInterface {
   final String appAndroidIcon;
 
   /// if true notification will not work on foreground
-  final bool displayInForeground;
+  final bool Function(RemoteMessage notification) displayInForeground;
 
   /// remote message stream
   final Stream<RemoteMessage> onRemoteMessage;
@@ -86,13 +86,13 @@ class NotificationManager implements LocaleNotificationInterface {
     );
     await _remoteSubscription?.cancel();
     //Listen to messages
-    if (displayInForeground == true) {
-      _remoteSubscription = onRemoteMessage.listen((notification) {
-        if (notification.notification != null) {
-          displayNotificationFrom(notification);
-        }
-      });
-    }
+
+    _remoteSubscription = onRemoteMessage.listen((notification) {
+      if (notification.notification != null &&
+          displayInForeground(notification)) {
+        displayNotificationFrom(notification);
+      }
+    });
   }
 
   Future _onPayLoad(NotificationResponse response) async {
