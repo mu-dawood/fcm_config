@@ -28,7 +28,7 @@ void main() async {
       importance: Importance.high,
     ),
     displayInForeground: (notification) {
-      return notification.data['is_chat_message'] == "true";
+      return true;
     },
   )
       .then((value) async {
@@ -36,7 +36,7 @@ void main() async {
       print(await FCMConfig.instance.messaging.getToken());
     }
     if (!kIsWeb) {
-      FCMConfig.instance.messaging.subscribeToTopic('ssss_test_fcm_topic');
+      FCMConfig.instance.messaging.subscribeToTopic('ssssa_test_fcm_topic');
     }
   });
 
