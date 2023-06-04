@@ -1,3 +1,7 @@
+## [3.5.2] 
+
+* Update dependencies
+
 ## [3.5.1] 
 
 * Update dependencies

@@ -160,6 +160,15 @@ class NotificationManager implements LocaleNotificationInterface {
     await _remoteSubscription?.cancel();
   }
 
+  AndroidNotificationCategory? tryParseCategory(String? name) {
+    if (name == null) return null;
+    if (name.isEmpty) return null;
+    for (var value in AndroidNotificationCategory.values) {
+      if (value.name == name) return value;
+    }
+    return null;
+  }
+
   Future<AndroidNotificationDetails> _getAndroidDetails({
     AndroidNotificationDetails? android,
     RemoteMessage? message,
@@ -217,10 +226,7 @@ class NotificationManager implements LocaleNotificationInterface {
       ticker: android?.ticker ?? notification?.android?.ticker,
       icon: android?.icon == 'default' ? null : icon,
       groupKey: android?.groupKey ?? message?.collapseKey,
-      category: android?.category ??
-          (message?.category == null
-              ? null
-              : AndroidNotificationCategory(message!.category!)),
+      category: android?.category ?? tryParseCategory(message?.category),
       showProgress: android?.showProgress ?? false,
       color: android?.color ?? message?.getAndroidColor(),
       sound: sound,

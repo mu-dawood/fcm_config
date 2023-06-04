@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '590619822303',
     projectId: 'fcmconfig-d7f91',
     storageBucket: 'fcmconfig-d7f91.appspot.com',
-    iosClientId: '590619822303-6pb0bcnhfnb96b5097vhnlq9m8ndare0.apps.googleusercontent.com',
+    iosClientId:
+        '590619822303-6pb0bcnhfnb96b5097vhnlq9m8ndare0.apps.googleusercontent.com',
     iosBundleId: 'com.example.example',
   );
 }

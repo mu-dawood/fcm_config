@@ -1,11 +1,11 @@
 # This is a generated file; do not edit or check into version control.
-firebase_core=/Users/dawood/.pub-cache/hosted/pub.dev/firebase_core-2.4.1/
-firebase_core_web=/Users/dawood/.pub-cache/hosted/pub.dev/firebase_core_web-2.1.0/
-firebase_messaging=/Users/dawood/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.1/
-firebase_messaging_web=/Users/dawood/.pub-cache/hosted/pub.dev/firebase_messaging_web-3.2.11/
-flutter_local_notifications=/Users/dawood/.pub-cache/hosted/pub.dev/flutter_local_notifications-13.0.0/
-path_provider=/Users/dawood/.pub-cache/hosted/pub.dev/path_provider-2.0.12/
-path_provider_android=/Users/dawood/.pub-cache/hosted/pub.dev/path_provider_android-2.0.22/
-path_provider_foundation=/Users/dawood/.pub-cache/hosted/pub.dev/path_provider_foundation-2.1.1/
-path_provider_linux=/Users/dawood/.pub-cache/hosted/pub.dev/path_provider_linux-2.1.7/
-path_provider_windows=/Users/dawood/.pub-cache/hosted/pub.dev/path_provider_windows-2.1.3/
+firebase_core=/Users/mohamed_dawood/.pub-cache/hosted/pub.dev/firebase_core-2.13.1/
+firebase_core_web=/Users/mohamed_dawood/.pub-cache/hosted/pub.dev/firebase_core_web-2.5.0/
+firebase_messaging=/Users/mohamed_dawood/.pub-cache/hosted/pub.dev/firebase_messaging-14.6.2/
+firebase_messaging_web=/Users/mohamed_dawood/.pub-cache/hosted/pub.dev/firebase_messaging_web-3.5.2/
+flutter_local_notifications=/Users/mohamed_dawood/.pub-cache/hosted/pub.dev/flutter_local_notifications-14.1.1/
+path_provider=/Users/mohamed_dawood/.pub-cache/hosted/pub.dev/path_provider-2.0.15/
+path_provider_android=/Users/mohamed_dawood/.pub-cache/hosted/pub.dev/path_provider_android-2.0.22/
+path_provider_foundation=/Users/mohamed_dawood/.pub-cache/hosted/pub.dev/path_provider_foundation-2.1.1/
+path_provider_linux=/Users/mohamed_dawood/.pub-cache/hosted/pub.dev/path_provider_linux-2.1.7/
+path_provider_windows=/Users/mohamed_dawood/.pub-cache/hosted/pub.dev/path_provider_windows-2.1.3/

@@ -42,9 +42,9 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-**/android/**
-**/ios/**
-**/web/**
+**/android/
+**/ios/
+**/web/
 **/build
 **/.dart_tool
 /.dart_tool
