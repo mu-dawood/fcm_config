@@ -17,6 +17,7 @@ Future<Locale> getSavedLocale() async {
 }
 
 void main() async {
+  // FCMConfig.instance.onMessage.listen((event) { })
   await FCMConfig.instance
       .init(
     options: DefaultFirebaseOptions.currentPlatform,
