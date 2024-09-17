@@ -101,7 +101,11 @@ class NotificationManager implements LocaleNotificationInterface {
   }
 
   @override
-  Future displayNotificationFrom(RemoteMessage message) {
+  Future displayNotificationFrom(
+      RemoteMessage message,
+      AndroidNotificationDetailsCallback? onAndroidNotification,
+      DarwinNotificationDetailsCallback? onIosNotification,
+      LinuxNotificationDetailsCallback? onLinuxNotification) {
     return displayNotification(
       id: int.tryParse(message.messageId ?? '') ?? message.hashCode,
       title: message.notification?.title,

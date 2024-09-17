@@ -1,3 +1,11 @@
+## [3.6.0] 
+
+* Added call back for notification details for android,darwin(IOS,MACOS),Linux
+* Added onDidReceiveBackgroundNotificationResponse for callback,which willbe fired when the user
+  selects a notification or notification action that should show the
+  application/user interface
+
+
 ## [3.5.3] 
 
 * Update dependencies
