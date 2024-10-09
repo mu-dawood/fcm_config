@@ -1,3 +1,6 @@
+## [3.6.2]
+* Added callback before notification display handler,onDidReceiveBack
+
 ## [3.6.0] 
 
 * Added call back for notification details for android,darwin(IOS,MACOS),Linux
