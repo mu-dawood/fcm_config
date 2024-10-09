@@ -4,11 +4,30 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     show
-        DarwinNotificationDetails,
+        AndroidNotificationChannel,
         AndroidNotificationDetails,
-        AndroidNotificationChannel;
+        DarwinNotificationDetails,
+        LinuxNotificationDetails;
 
 import 'details.dart';
+
+typedef AndroidNotificationDetailsCallback
+    = Future<AndroidNotificationDetails?>? Function(
+  AndroidNotificationDetails androidNotificationDetails,
+  RemoteMessage remoteMessage,
+)?;
+
+typedef DarwinNotificationDetailsCallback = Future<DarwinNotificationDetails?>?
+    Function(
+  DarwinNotificationDetails darwinNotificationDetails,
+  RemoteMessage remoteMessage,
+)?;
+
+typedef LinuxNotificationDetailsCallback = Future<LinuxNotificationDetails?>?
+    Function(
+  LinuxNotificationDetails darwinNotificationDetails,
+  RemoteMessage remoteMessage,
+)?;
 
 abstract class FCMConfigInterface {
   Future<RemoteMessage?> getInitialMessage();
@@ -92,7 +111,23 @@ abstract class LocaleNotificationInterface {
     DarwinNotificationDetails? macOS,
   });
 
-  Future displayNotificationFrom(RemoteMessage message);
+  Future displayNotificationFrom(
+    RemoteMessage message,
+
+    /// callback for mutate [AndroidNotificationDetails]
+    /// which will  get android notification details using [_getAndroidDetails] from [remoteMessage]
+    /// callback for mutate [AndroidNotificationDetails]
+    /// which will  get android notification details using [_getAndroidDetails] from [remoteMessage]
+    AndroidNotificationDetailsCallback? onAndroidNotification,
+
+    /// callback for mutate [DarwinNotificationDetails]
+    /// which will  get [Darwin] notification details using [_getDarwinDetails] from [remoteMessage]
+    DarwinNotificationDetailsCallback? onIosNotification,
+
+    /// callback for mutate [LinuxNotificationDetails]
+    /// which will  get [Linux] notification details using [_getLinuxDetails] from [remoteMessage]
+    LinuxNotificationDetailsCallback? onLinuxNotification,
+  );
 
   Future close();
 }

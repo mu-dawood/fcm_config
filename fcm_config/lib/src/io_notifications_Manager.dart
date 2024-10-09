@@ -39,6 +39,32 @@ class NotificationManager implements LocaleNotificationInterface {
   /// ios notification sound
   final bool iosPresentSound;
   final String linuxActionName;
+
+  ///
+  /// The [onDidReceiveNotificationResponse] callback is fired when the user
+  /// selects a notification or notification action that should show the
+  /// application/user interface.
+  /// application was running. To handle when a notification launched an
+  /// application, use [getNotificationAppLaunchDetails]. For notification
+  /// actions that don't show the application/user interface, the
+  /// [onDidReceiveBackgroundNotificationResponse] callback is invoked on
+  /// a background isolate. Functions passed to the
+  /// [onDidReceiveBackgroundNotificationResponse]
+  /// callback need to be annotated with the `@pragma('vm:entry-point')`
+  /// annotation to ensure they are not stripped out by the Dart compiler.
+  void Function(NotificationResponse)?
+      onDidReceiveBackgroundNotificationResponse;
+
+  //Callbacks for Notification
+  ///Android
+  final AndroidNotificationDetailsCallback? androidNotificationDetailsCallback;
+
+  ///IOS,MACOS
+  final DarwinNotificationDetailsCallback? darwinNotificationDetailsCallback;
+
+  ///Linux
+  final LinuxNotificationDetailsCallback? linuxNotificationDetailsCallback;
+
   NotificationManager({
     required this.androidNotificationChannel,
     required this.appAndroidIcon,
@@ -49,6 +75,10 @@ class NotificationManager implements LocaleNotificationInterface {
     required this.iosPresentSound,
     required this.iosPresentAlert,
     required this.linuxActionName,
+    this.onDidReceiveBackgroundNotificationResponse,
+    this.androidNotificationDetailsCallback,
+    this.darwinNotificationDetailsCallback,
+    this.linuxNotificationDetailsCallback,
   });
 
   @override
@@ -83,6 +113,8 @@ class NotificationManager implements LocaleNotificationInterface {
     await _localeNotification.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: _onPayLoad,
+      onDidReceiveBackgroundNotificationResponse:
+          onDidReceiveBackgroundNotificationResponse,
     );
     await _remoteSubscription?.cancel();
     //Listen to messages
@@ -90,7 +122,12 @@ class NotificationManager implements LocaleNotificationInterface {
     _remoteSubscription = onRemoteMessage.listen((notification) {
       if (notification.notification != null &&
           displayInForeground(notification)) {
-        displayNotificationFrom(notification);
+        displayNotificationFrom(
+          notification,
+          androidNotificationDetailsCallback,
+          darwinNotificationDetailsCallback,
+          linuxNotificationDetailsCallback,
+        );
       }
     });
   }
@@ -262,6 +299,13 @@ class NotificationManager implements LocaleNotificationInterface {
       channelShowBadge:
           android?.channelShowBadge ?? androidNotificationChannel.showBadge,
       visibility: android?.visibility ?? _getVisibility(notification),
+      actions: android?.actions,
+      audioAttributesUsage:
+          android?.audioAttributesUsage ?? AudioAttributesUsage.notification,
+      chronometerCountDown: android?.chronometerCountDown ?? false,
+      colorized: android?.colorized ?? false,
+      number: android?.number,
+      when: android?.when,
     );
   }
 
@@ -324,7 +368,12 @@ class NotificationManager implements LocaleNotificationInterface {
   }
 
   @override
-  Future displayNotificationFrom(RemoteMessage message) async {
+  Future displayNotificationFrom(
+    RemoteMessage message,
+    AndroidNotificationDetailsCallback? onAndroidNotification,
+    DarwinNotificationDetailsCallback? onIosNotification,
+    LinuxNotificationDetailsCallback? onLinuxNotification,
+  ) async {
     if (message.notification == null) return;
 
     String? largeIconPath;
@@ -343,11 +392,31 @@ class NotificationManager implements LocaleNotificationInterface {
         hideExpandedLargeIcon: true,
       );
     }
+    late AndroidNotificationDetails android;
+    if (onAndroidNotification != null) {
+      android = (await onAndroidNotification(
+              await _getAndroidDetails(message: message), message)) ??
+          await _getAndroidDetails(message: message);
+    } else {
+      android = await _getAndroidDetails(message: message);
+    }
+    late DarwinNotificationDetails darwin;
+    if (onIosNotification != null) {
+      darwin = await onIosNotification(
+              await _getDarwinDetails(message: message), message) ??
+          await _getDarwinDetails(message: message);
+    } else {
+      darwin = await _getDarwinDetails(message: message);
+    }
+    late LinuxNotificationDetails linux;
+    if (onLinuxNotification != null) {
+      linux = await onLinuxNotification(
+              await _getLinuxDetails(message: message), message) ??
+          await _getLinuxDetails(message: message);
+    } else {
+      linux = await _getLinuxDetails(message: message);
+    }
 
-    var android = await _getAndroidDetails(message: message);
-    var darwin = await _getDarwinDetails(message: message);
-
-    var linux = await _getLinuxDetails(message: message);
     var details = NotificationDetails(
       android: android,
       iOS: darwin,

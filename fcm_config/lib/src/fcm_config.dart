@@ -46,6 +46,21 @@ class FCMConfig extends FCMConfigInterface {
     /// Not work on the web
     BackgroundMessageHandler? onBackgroundMessage,
 
+    ///
+    /// The [onDidReceiveNotificationResponse] callback is fired when the user
+    /// selects a notification or notification action that should show the
+    /// application/user interface.
+    /// application was running. To handle when a notification launched an
+    /// application, use [getNotificationAppLaunchDetails]. For notification
+    /// actions that don't show the application/user interface, the
+    /// [onDidReceiveBackgroundNotificationResponse] callback is invoked on
+    /// a background isolate. Functions passed to the
+    /// [onDidReceiveBackgroundNotificationResponse]
+    /// callback need to be annotated with the `@pragma('vm:entry-point')`
+    /// annotation to ensure they are not stripped out by the Dart compiler.
+    void Function(NotificationResponse)?
+        onDidReceiveBackgroundNotificationResponse,
+
     /// Drawable icon works only in foreground
     String defaultAndroidForegroundIcon = '@mipmap/ic_launcher',
 
@@ -104,6 +119,17 @@ class FCMConfig extends FCMConfigInterface {
 
     /// default action name for linux
     String linuxActionName = 'fcm_config',
+
+    //Callbacks for Notification
+    ///Android
+    final AndroidNotificationDetailsCallback?
+        androidNotificationDetailsCallback,
+
+    ///IOS,MACOS
+    final DarwinNotificationDetailsCallback? darwinNotificationDetailsCallback,
+
+    ///Linux
+    final LinuxNotificationDetailsCallback linuxNotificationDetailsCallback,
   }) async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(name: name, options: options);
@@ -138,6 +164,11 @@ class FCMConfig extends FCMConfigInterface {
       onRemoteMessage: onMessage,
       tapSink: _onTapController.sink,
       linuxActionName: linuxActionName,
+      onDidReceiveBackgroundNotificationResponse:
+          onDidReceiveBackgroundNotificationResponse,
+      androidNotificationDetailsCallback: androidNotificationDetailsCallback,
+      darwinNotificationDetailsCallback: darwinNotificationDetailsCallback,
+      linuxNotificationDetailsCallback: linuxNotificationDetailsCallback,
     );
 
     await _localeNotification!.init();
