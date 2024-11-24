@@ -79,7 +79,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.5.3"
+    version: "3.6.4"
   ffi:
     dependency: transitive
     description:
@@ -522,5 +522,5 @@ packages:
     source: hosted
     version: "6.5.0"
 sdks:
-  dart: ">=3.4.0 <4.0.0"
+  dart: ">=3.5.3 <4.0.0"
   flutter: ">=3.22.0"

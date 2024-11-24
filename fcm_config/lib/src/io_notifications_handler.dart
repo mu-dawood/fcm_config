@@ -10,99 +10,39 @@ import 'package:path_provider/path_provider.dart';
 import 'details.dart';
 import 'fcm_config_interface.dart';
 import 'fcm_extension.dart';
+import 'notification_manger.dart';
 
-class NotificationManager implements LocaleNotificationInterface {
+class PlatformNotificationHandler implements LocaleNotificationInterface {
   final _localeNotification = FlutterLocalNotificationsPlugin();
 
-  /// Drawable icon works only in foreground
-  final AndroidNotificationChannel androidNotificationChannel;
+  final NotificationManager manager;
 
-  /// Required to show head up notification in foreground
-  final String appAndroidIcon;
-
-  /// if true notification will not work on foreground
-  final bool Function(RemoteMessage notification) displayInForeground;
-
-  /// remote message stream
-  final Stream<RemoteMessage> onRemoteMessage;
-
-  /// tap sink
-  final StreamSink<RemoteMessage> tapSink;
   StreamSubscription<RemoteMessage>? _remoteSubscription;
 
-  /// ios alert
-  final bool iosPresentAlert;
-
-  /// ios notification badge
-  final bool iosPresentBadge;
-
-  /// ios notification sound
-  final bool iosPresentSound;
-  final String linuxActionName;
-
-  ///
-  /// The [onDidReceiveNotificationResponse] callback is fired when the user
-  /// selects a notification or notification action that should show the
-  /// application/user interface.
-  /// application was running. To handle when a notification launched an
-  /// application, use [getNotificationAppLaunchDetails]. For notification
-  /// actions that don't show the application/user interface, the
-  /// [onDidReceiveBackgroundNotificationResponse] callback is invoked on
-  /// a background isolate. Functions passed to the
-  /// [onDidReceiveBackgroundNotificationResponse]
-  /// callback need to be annotated with the `@pragma('vm:entry-point')`
-  /// annotation to ensure they are not stripped out by the Dart compiler.
-  void Function(NotificationResponse)?
-      onDidReceiveBackgroundNotificationResponse;
-
-  //Callbacks for Notification
-  ///Android
-  final AndroidNotificationDetailsCallback? androidNotificationDetailsCallback;
-
-  ///IOS,MACOS
-  final DarwinNotificationDetailsCallback? darwinNotificationDetailsCallback;
-
-  ///Linux
-  final LinuxNotificationDetailsCallback? linuxNotificationDetailsCallback;
-
-  NotificationManager({
-    required this.androidNotificationChannel,
-    required this.appAndroidIcon,
-    required this.onRemoteMessage,
-    required this.displayInForeground,
-    required this.tapSink,
-    required this.iosPresentBadge,
-    required this.iosPresentSound,
-    required this.iosPresentAlert,
-    required this.linuxActionName,
-    this.onDidReceiveBackgroundNotificationResponse,
-    this.androidNotificationDetailsCallback,
-    this.darwinNotificationDetailsCallback,
-    this.linuxNotificationDetailsCallback,
-  });
+  PlatformNotificationHandler(this.manager);
 
   @override
   Future init() async {
     //! register android channel
     var impl = _localeNotification.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
-    await impl?.createNotificationChannel(androidNotificationChannel);
+    await impl?.createNotificationChannel(manager.androidNotificationChannel);
 
     //! Android settings
     var initializationSettingsAndroid =
-        AndroidInitializationSettings(appAndroidIcon);
+        AndroidInitializationSettings(manager.appAndroidIcon);
 
     //! Ios settings
     final DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
-      defaultPresentAlert: iosPresentAlert,
-      defaultPresentBadge: iosPresentBadge,
-      defaultPresentSound: iosPresentSound,
+      defaultPresentAlert: manager.iosPresentAlert,
+      defaultPresentBadge: manager.iosPresentBadge,
+      defaultPresentSound: manager.iosPresentSound,
     );
 
     //! Linux settings
     final linuxInitializationSettings =
-        LinuxInitializationSettings(defaultActionName: linuxActionName);
+        LinuxInitializationSettings(defaultActionName: manager.linuxActionName);
 
     final initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -114,19 +54,19 @@ class NotificationManager implements LocaleNotificationInterface {
       initializationSettings,
       onDidReceiveNotificationResponse: _onPayLoad,
       onDidReceiveBackgroundNotificationResponse:
-          onDidReceiveBackgroundNotificationResponse,
+          manager.onDidReceiveBackgroundNotificationResponse,
     );
     await _remoteSubscription?.cancel();
     //Listen to messages
 
-    _remoteSubscription = onRemoteMessage.listen((notification) {
+    _remoteSubscription = manager.onRemoteMessage.listen((notification) {
       if (notification.notification != null &&
-          displayInForeground(notification)) {
+          manager.displayInForeground(notification)) {
         displayNotificationFrom(
           notification,
-          androidNotificationDetailsCallback,
-          darwinNotificationDetailsCallback,
-          linuxNotificationDetailsCallback,
+          manager.androidNotificationDetailsCallback,
+          manager.darwinNotificationDetailsCallback,
+          manager.linuxNotificationDetailsCallback,
         );
       }
     });
@@ -135,7 +75,7 @@ class NotificationManager implements LocaleNotificationInterface {
   Future _onPayLoad(NotificationResponse response) async {
     if (response.payload == null) return;
     var message = RemoteMessage.fromMap(jsonDecode(response.payload!));
-    tapSink.add(message);
+    manager.tapSink.add(message);
   }
 
   @override
@@ -254,10 +194,11 @@ class NotificationManager implements LocaleNotificationInterface {
     }
 
     return AndroidNotificationDetails(
-      androidNotificationChannel.id,
-      androidNotificationChannel.name,
-      channelDescription: androidNotificationChannel.description,
-      importance: android?.importance ?? androidNotificationChannel.importance,
+      manager.androidNotificationChannel.id,
+      manager.androidNotificationChannel.name,
+      channelDescription: manager.androidNotificationChannel.description,
+      importance:
+          android?.importance ?? manager.androidNotificationChannel.importance,
       priority: android?.priority ?? _getPriority(notification),
       styleInformation: styleInformation,
       ticker: android?.ticker ?? notification?.android?.ticker,
@@ -276,13 +217,14 @@ class NotificationManager implements LocaleNotificationInterface {
       groupAlertBehavior: android?.groupAlertBehavior ?? GroupAlertBehavior.all,
       channelAction: android?.channelAction ??
           AndroidNotificationChannelAction.createIfNotExists,
-      ledColor: android?.ledColor ?? androidNotificationChannel.ledColor,
+      ledColor:
+          android?.ledColor ?? manager.androidNotificationChannel.ledColor,
       timeoutAfter: android?.timeoutAfter ?? message?.ttl,
       showWhen: android?.showWhen ?? true,
-      enableLights:
-          android?.enableLights ?? androidNotificationChannel.enableLights,
-      enableVibration:
-          android?.enableLights ?? androidNotificationChannel.enableLights,
+      enableLights: android?.enableLights ??
+          manager.androidNotificationChannel.enableLights,
+      enableVibration: android?.enableLights ??
+          manager.androidNotificationChannel.enableLights,
       subText: android?.subText,
       shortcutId: android?.shortcutId ?? notification?.android?.clickAction,
       tag: android?.tag ?? notification?.android?.tag,
@@ -294,10 +236,10 @@ class NotificationManager implements LocaleNotificationInterface {
       progress: android?.progress ?? 0,
       maxProgress: android?.maxProgress ?? 0,
       vibrationPattern: android?.vibrationPattern ??
-          androidNotificationChannel.vibrationPattern,
+          manager.androidNotificationChannel.vibrationPattern,
       fullScreenIntent: android?.fullScreenIntent ?? false,
-      channelShowBadge:
-          android?.channelShowBadge ?? androidNotificationChannel.showBadge,
+      channelShowBadge: android?.channelShowBadge ??
+          manager.androidNotificationChannel.showBadge,
       visibility: android?.visibility ?? _getVisibility(notification),
       actions: android?.actions,
       audioAttributesUsage:
@@ -341,10 +283,10 @@ class NotificationManager implements LocaleNotificationInterface {
       sound: ios?.sound ?? notification?.apple?.sound?.name,
       badgeNumber: badgeNumber,
       subtitle: subtitle,
-      presentBadge: ios?.presentBadge ?? iosPresentBadge,
+      presentBadge: ios?.presentBadge ?? manager.iosPresentBadge,
       attachments: attachments,
-      presentAlert: ios?.presentAlert ?? iosPresentAlert,
-      presentSound: ios?.presentSound ?? iosPresentSound,
+      presentAlert: ios?.presentAlert ?? manager.iosPresentAlert,
+      presentSound: ios?.presentSound ?? manager.iosPresentSound,
     );
   }
 
@@ -362,7 +304,7 @@ class NotificationManager implements LocaleNotificationInterface {
       suppressSound: linux?.suppressSound ?? false,
       transient: linux?.transient ?? false,
       location: linux?.location,
-      defaultActionName: linux?.defaultActionName ?? linuxActionName,
+      defaultActionName: linux?.defaultActionName ?? manager.linuxActionName,
       customHints: linux?.customHints,
     );
   }

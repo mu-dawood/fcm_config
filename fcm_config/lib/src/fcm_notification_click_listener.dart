@@ -33,10 +33,10 @@ class FCMNotificationClickListener extends StatefulWidget {
   final Function(RemoteMessage notification, VoidCallback setState)
       onNotificationClick;
   const FCMNotificationClickListener({
-    Key? key,
+    super.key,
     required this.child,
     required this.onNotificationClick,
-  }) : super(key: key);
+  });
   @override
   State<FCMNotificationClickListener> createState() =>
       _FCMNotificationClickState();

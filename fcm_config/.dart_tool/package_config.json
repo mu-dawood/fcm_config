@@ -111,21 +111,21 @@
     },
     {
       "name": "flutter_local_notifications",
-      "rootUri": "file:///Users/mohamed_dawood/.pub-cache/hosted/pub.dev/flutter_local_notifications-17.2.3",
+      "rootUri": "file:///Users/mohamed_dawood/.pub-cache/hosted/pub.dev/flutter_local_notifications-18.0.1",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.1"
     },
     {
       "name": "flutter_local_notifications_linux",
-      "rootUri": "file:///Users/mohamed_dawood/.pub-cache/hosted/pub.dev/flutter_local_notifications_linux-4.0.1",
+      "rootUri": "file:///Users/mohamed_dawood/.pub-cache/hosted/pub.dev/flutter_local_notifications_linux-5.0.0",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.1"
     },
     {
       "name": "flutter_local_notifications_platform_interface",
-      "rootUri": "file:///Users/mohamed_dawood/.pub-cache/hosted/pub.dev/flutter_local_notifications_platform_interface-7.2.0",
+      "rootUri": "file:///Users/mohamed_dawood/.pub-cache/hosted/pub.dev/flutter_local_notifications_platform_interface-8.0.0",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.1"
     },
     {
       "name": "flutter_test",
@@ -341,13 +341,13 @@
       "name": "fcm_config",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-10-09T20:01:03.255298Z",
+  "generated": "2024-11-24T00:22:10.259102Z",
   "generator": "pub",
-  "generatorVersion": "3.5.1",
+  "generatorVersion": "3.5.3",
   "flutterRoot": "file:///Users/mohamed_dawood/Desktop/flutter",
-  "flutterVersion": "3.24.1",
+  "flutterVersion": "3.24.3",
   "pubCache": "file:///Users/mohamed_dawood/.pub-cache"
 }

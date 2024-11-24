@@ -7,3 +7,7 @@
 ## [1.0.1] - 27/04/2021
 
 * Update dependencies
+
+## [1.0.2]
+
+* Update dependencies

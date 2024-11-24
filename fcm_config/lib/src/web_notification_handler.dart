@@ -1,55 +1,22 @@
 import 'dart:async';
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
+import 'dart:js_interop';
+import 'package:web/web.dart' as html;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     show
         DarwinNotificationDetails,
         AndroidNotificationDetails,
-        AndroidNotificationChannel,
         LinuxNotificationDetails;
 
 import 'details.dart';
 import 'fcm_config_interface.dart';
+import 'notification_manger.dart';
 
-class NotificationManager implements LocaleNotificationInterface {
-  /// Drawable icon works only in foreground
-  final AndroidNotificationChannel androidNotificationChannel;
+class PlatformNotificationHandler implements LocaleNotificationInterface {
+  final NotificationManager manager;
 
-  /// Required to show head up notification in foreground
-  final String appAndroidIcon;
-
-  /// if true notification will not work on foreground
-  final bool Function(RemoteMessage notification) displayInForeground;
-
-  /// remote message stream
-  final Stream<RemoteMessage> onRemoteMessage;
-
-  /// tap sink
-  final StreamSink<RemoteMessage> tapSink;
-
-  /// ios alert
-  final bool iosPresentAlert;
-
-  /// ios notification badge
-  final bool iosPresentBadge;
-
-  /// ios notification sound
-  final bool iosPresentSound;
-  final String linuxActionName;
-
-  NotificationManager({
-    required this.androidNotificationChannel,
-    required this.appAndroidIcon,
-    required this.onRemoteMessage,
-    required this.displayInForeground,
-    required this.tapSink,
-    required this.iosPresentBadge,
-    required this.iosPresentSound,
-    required this.iosPresentAlert,
-    required this.linuxActionName,
-  });
+  PlatformNotificationHandler(this.manager);
 
   @override
   Future displayNotification({
@@ -64,13 +31,16 @@ class NotificationManager implements LocaleNotificationInterface {
     LinuxNotificationDetails? linux,
   }) async {
     Completer completer = Completer();
+
     var notification = html.Notification(
       title ?? '',
-      body: body,
-      icon: web?.icon ?? '/icons/icon-192.png',
-      dir: web?.dir,
-      tag: web?.tag,
-      lang: web?.lang,
+      html.NotificationOptions(
+        body: body ?? "",
+        icon: web?.icon ?? '/icons/icon-192.png',
+        dir: web?.dir ?? "",
+        tag: web?.tag ?? "",
+        lang: web?.lang ?? "",
+      ),
     );
     var notify = RemoteMessage(
         collapseKey: web?.tag,
@@ -88,15 +58,20 @@ class NotificationManager implements LocaleNotificationInterface {
             imageUrl: web?.icon,
           ),
         ));
-    var click = notification.onClick.listen((event) {
-      tapSink.add(notify);
-    });
-    StreamSubscription<html.Event>? close;
-    close = notification.onClose.listen((event) {
-      click.cancel();
-      close?.cancel();
+
+    JSFunction? onClick() {
+      manager.tapSink.add(notify);
+      return null;
+    }
+
+    JSFunction? onClose() {
       completer.complete();
-    });
+      return null;
+    }
+
+    notification.addEventListener('click', onClick());
+    notification.addEventListener('close', onClose());
+
     return completer.future;
   }
 
@@ -125,9 +100,9 @@ class NotificationManager implements LocaleNotificationInterface {
 
   @override
   Future init() async {
-    var permission = html.Notification.permission;
+    String permission = html.Notification.permission;
     if (permission == 'granted') {
-      permission = await html.Notification.requestPermission();
+      permission = (await html.Notification.requestPermission().toDart).toDart;
     }
     // var localStorage = js.context['localStorage'] as js.JsObject;
     // var message = localStorage.callMethod('getItem', ['last_tapped_notification']);

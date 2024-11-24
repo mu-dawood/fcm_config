@@ -7,8 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'fcm_config_interface.dart';
-import 'io_notifications_manager.dart'
-    if (dart.library.html) 'web_notification_manager.dart';
+import 'notification_manger.dart';
 
 class FCMConfig extends FCMConfigInterface {
   FCMConfig._();
@@ -169,7 +168,7 @@ class FCMConfig extends FCMConfigInterface {
       androidNotificationDetailsCallback: androidNotificationDetailsCallback,
       darwinNotificationDetailsCallback: darwinNotificationDetailsCallback,
       linuxNotificationDetailsCallback: linuxNotificationDetailsCallback,
-    );
+    ).handler();
 
     await _localeNotification!.init();
   }

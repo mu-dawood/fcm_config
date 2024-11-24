@@ -1,3 +1,12 @@
+## [3.6.5]
+* Update repository
+
+## [3.6.4]
+* Update repository
+
+## [3.6.3]
+* Version constraints resolve
+
 ## [3.6.2]
 * Added callback before notification display handler,onDidReceiveBack
 

@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "590619822303",
     "project_id": "fcmconfig-d7f91",
-    "storage_bucket": "fcmconfig-d7f91.appspot.com"
+    "storage_bucket": "fcmconfig-d7f91.firebasestorage.app"
   },
   "client": [
     {
